@@ -109,23 +109,25 @@ namespace AlgoView
 
         }
 
-
-        
-
         private void swapsort(TextBox a, TextBox b)
         {
             int b1 = Convert.ToInt32(a.Text);
             int b2 = Convert.ToInt32(b.Text);
 
             Point temp;
-            if(b1 > b2)
+            int tempnum = 0;
+
+            if (b1 > b2)
             {
-                temp = b.Location;
-                b.Location = a.Location;
-                a.Location = temp;
+                tempnum = b2;
+                b2 = b1;
+                b1 = tempnum;
+
+                a.Text = Convert.ToString(b1);
+                b.Text = Convert.ToString(b2);
             }
         }
 
-        
+
     }
 }
