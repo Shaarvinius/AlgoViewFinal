@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace AlgoView
 {
     public partial class Form1 : Form
@@ -17,6 +19,7 @@ namespace AlgoView
         {
             Label title = new Label();
             title.Width = 150;
+           
             title.Height = 25;
             title.BackColor = Color.Empty;
 
@@ -51,7 +54,48 @@ namespace AlgoView
 
                 if (selectedAlgorithm == "Bubble Sort")
                 {
-                    
+                    TextBox userinput = BoxMaker.MakeNewBox("Enter a list of numbers separated by spaces: ", 440);
+                    this.Controls.Add(userinput);
+                    Center(userinput, 250, 0);
+                    this.Resize += (s, e) => Center(userinput, 250,0);
+
+                    TextBox numlist = BoxMaker.MakeNewBox("",600);
+                    this.Controls.Add(numlist);
+                    Center(numlist, 300, 0);
+                    this.Resize += (s, e) => Center(numlist, 300, 0);
+
+                    Button makelist = new Button();
+                    makelist.Size = new Size(100, 50);
+                    makelist.Text = "Enter";
+                    this.Controls.Add(makelist);
+                    Center(makelist, 350, 0);
+                    this.Resize += (s, e) => Center(makelist, 350, 0);
+
+                    makelist.Click += (sender, args) =>
+                    {
+                        ListMaker Maker = new ListMaker();
+                        string[] inputList = numlist.Text.Split(' ');
+                        int numberOfElements = inputList.Length;
+
+                        TextBox[] bubblelist = Maker.MakeList(inputList);
+
+                        for (int i = 0; i < bubblelist.Length; i++)
+                        {
+                            this.Controls.Add(bubblelist[i]);
+                            Center(bubblelist[i], 425, (i * 100 - 100 * (bubblelist.Length / 2 )));  
+                        }
+
+                        this.Resize += (s, e) =>
+                        {
+                            for (int i = 0; i < bubblelist.Length; i++)
+                            {
+                                Center(bubblelist[i], 425, (i * 100 - 100 * (bubblelist.Length / 2)));
+                            }
+                        };
+                    };
+
+
+
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
@@ -109,6 +153,9 @@ namespace AlgoView
 
         }
 
+       
+       
+
         private void swapsort(TextBox a, TextBox b)
         {
             int b1 = Convert.ToInt32(a.Text);
@@ -127,7 +174,37 @@ namespace AlgoView
                 b.Text = Convert.ToString(b2);
             }
         }
-
-
     }
+
+    public class ListMaker
+    {
+        public TextBox[] MakeList(string[] input)
+        {
+            TextBox[] list = new TextBox[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                list[i] = new TextBox();
+                list[i].Size = new Size(25, 25);
+                list[i].Text = input[i];
+            }
+
+            return list;
+        }
+    }
+
+    public static class BoxMaker
+    {
+        public static TextBox MakeNewBox(string text, int width)
+        {
+            TextBox box = new TextBox();
+            box.Size = new Size(width, 25);
+            box.Text = text;
+            box.TextAlign = HorizontalAlignment.Center;
+            return box;
+        }
+    }
+
+
+
+
 }
