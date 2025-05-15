@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
 namespace AlgoView
 {
@@ -9,7 +10,7 @@ namespace AlgoView
             InitializeComponent();
         }
 
-        private void Center(Control ctrl, int topoffset, int midoffset)
+        public void Center(Control ctrl, int topoffset, int midoffset)
         {
             ctrl.Left = ((this.ClientSize.Width - ctrl.Width) / 2) + midoffset;
             ctrl.Top = topoffset;
@@ -99,7 +100,10 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
+                    SetUpEnvironment binarysearch = new SetUpEnvironment();
                     
+
+                  //  binarysearch.AddListToSpace();
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
@@ -189,6 +193,78 @@ namespace AlgoView
             }
 
             return list;
+        }
+    }
+
+
+    public partial class SetUpEnvironment : Form1
+    {
+        public TextBox[] AddListToSpace(string[] input)
+        {
+            TextBox[] list = new TextBox[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                list[i] = new TextBox();
+                list[i].Size = new Size(25, 25);
+                list[i].Text = input[i];
+            }
+            
+            
+            return list;
+        }
+        
+        public TextBox AddInputToSpace(string inputquestion)
+        {
+            TextBox question = new TextBox();
+            question.Size = new Size(450, 25);
+            question.Location = new Point(500, 200);
+            question.Text = inputquestion;
+
+            Center(question, 250, 0);
+            this.Resize += (s, e) => Center(question, 250, 0);
+
+            return question;
+
+            
+        }
+
+        public TextBox AddBoxToList(string boxvalue, int width)
+        {
+            TextBox box = new TextBox();
+            box.Size = new Size(width, 25);
+            box.Text = boxvalue;
+            box.TextAlign = HorizontalAlignment.Center;
+            Form1 format = new Form1();
+
+
+            return box;
+        }
+
+        public Button AddButton(string buttonname, int width)
+        {
+            Button custombutton = new Button();
+            custombutton.Size = new Size(100, 50);
+            custombutton.Location = new Point(550, 150);
+            custombutton.Text = buttonname;
+            Center(custombutton, 350, 0);
+            this.Resize += (s, e) => Center(custombutton, 350, 0);
+
+
+            return custombutton;
+        }
+
+
+    }
+
+    public class ButtonMaker
+    {
+        public Button MakeNewButton(string buttonname, int width)
+        {
+            Button custombutton = new Button();
+            custombutton.Size = new Size(100, 50);
+            custombutton.Location = new Point(550, 150);
+            custombutton.Text = buttonname;
+            return custombutton;
         }
     }
 
