@@ -101,11 +101,11 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
-                    SetUpEnvironment binarysearch = new SetUpEnvironment();
-                    this.Controls.Add(binarysearch.AddInputToSpace("bd"));
+                    SetUpUI("Enter a list of numbers separated by spaces: ");
+                    /*this.Controls.Add(binarysearch.AddInputToSpace("bd"));
                     Center(binarysearch.AddInputToSpace("bd"), 250, 0);
                     this.Resize += (s, e) => Center(binarysearch.AddInputToSpace("bd"), 250, 0);
-                    //binarysearch.PositionInSpace(binarysearch.AddInputToSpace("bd"), 250, 0);
+                    //binarysearch.PositionInSpace(binarysearch.AddInputToSpace("bd"), 250, 0);*/
                     // TextBox input = binarysearch.AddInputToSpace("Enter a list in of numbers separated by spaces in the space below: ", 250, 0);
                     
                 }
@@ -163,7 +163,48 @@ namespace AlgoView
 
        
        
+        private void SetUpUI(string inputquestion)
+        {
+            TextBox userinput = BoxMaker.MakeNewBox(inputquestion, 600);
+            this.Controls.Add(userinput);
+            Center(userinput, 250, 0);
+            this.Resize += (s, e) => Center(userinput, 250, 0);
 
+            TextBox numlist = BoxMaker.MakeNewBox("", 600);
+            this.Controls.Add(numlist);
+            Center(numlist, 300, 0);
+            this.Resize += (s, e) => Center(numlist, 300, 0);
+
+            Button makelist = new Button();
+            makelist.Size = new Size(100, 50);
+            makelist.Text = "Enter";
+            this.Controls.Add(makelist);
+            Center(makelist, 350, 0);
+            this.Resize += (s, e) => Center(makelist, 350, 0);
+
+            makelist.Click += (sender, args) =>
+            {
+                ListMaker Maker = new ListMaker();
+                string[] inputList = numlist.Text.Split(' ');
+                int numberOfElements = inputList.Length;
+
+                TextBox[] bubblelist = Maker.MakeList(inputList);
+
+                for (int i = 0; i < bubblelist.Length; i++)
+                {
+                    this.Controls.Add(bubblelist[i]);
+                    Center(bubblelist[i], 425, (i * 100 - 100 * (bubblelist.Length / 2)));
+                }
+
+                this.Resize += (s, e) =>
+                {
+                    for (int i = 0; i < bubblelist.Length; i++)
+                    {
+                        Center(bubblelist[i], 425, (i * 100 - 100 * (bubblelist.Length / 2)));
+                    }
+                };
+            };
+        }
         private void swapsort(TextBox a, TextBox b)
         {
             int b1 = Convert.ToInt32(a.Text);
@@ -200,66 +241,6 @@ namespace AlgoView
         }
     }
 
-
-    public class SetUpEnvironment : Form1
-    {
-        public TextBox[] AddListToSpace(string[] input)
-        {
-            TextBox[] list = new TextBox[input.Length];
-            for (int i = 0; i < input.Length; i++)
-            {
-                list[i] = new TextBox();
-                list[i].Size = new Size(25, 25);
-                list[i].Text = input[i];
-            }
-            
-            
-            return list;
-        }
-       
-        public TextBox AddInputToSpace(string inputquestion)
-        {
-            TextBox question = new TextBox();
-            question.Size = new Size(600, 25);
-            question.Text = inputquestion;
-
-            
-
-            return question;
-
-            
-        }
-
-        /*public void PositionInSpace(Control element, int downoffset, int midoffset)
-        {
-            Center(element, downoffset, midoffset);
-            this.Resize += (s, e) => Center(element, downoffset, midoffset);
-        }*/
-
-
-        public TextBox AddBoxToList(string boxvalue, int width)
-        {
-            TextBox box = new TextBox();
-            box.Size = new Size(width, 25);
-            box.Text = boxvalue;
-            box.TextAlign = HorizontalAlignment.Center;
-            Form1 format = new Form1();
-
-            return box;
-        }
-
-        public Button AddButton(string buttonname, int width)
-        {
-            Button custombutton = new Button();
-            custombutton.Size = new Size(100, 50);
-            custombutton.Location = new Point(550, 150);
-            custombutton.Text = buttonname;
-            Center(custombutton, 350, 0);
-            this.Resize += (s, e) => Center(custombutton, 350, 0);
-
-            return custombutton;
-        }
-    }
 
     public class ButtonMaker
     {
