@@ -101,13 +101,7 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
-                    SetUpUI("Enter a list of numbers separated by spaces: ");
-                    /*this.Controls.Add(binarysearch.AddInputToSpace("bd"));
-                    Center(binarysearch.AddInputToSpace("bd"), 250, 0);
-                    this.Resize += (s, e) => Center(binarysearch.AddInputToSpace("bd"), 250, 0);
-                    //binarysearch.PositionInSpace(binarysearch.AddInputToSpace("bd"), 250, 0);*/
-                    // TextBox input = binarysearch.AddInputToSpace("Enter a list in of numbers separated by spaces in the space below: ", 250, 0);
-                    
+                    SetUpListUI("Enter a list of numbers separated by spaces: ");
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
@@ -163,39 +157,24 @@ namespace AlgoView
 
        
        
-        private void SetUpUI(string inputquestion)
+        private void SetUpListUI(string inputquestion)
         {
             TextBox userinput = BoxMaker.MakeNewBox(inputquestion, 600);
-            this.Controls.Add(userinput);
-            Center(userinput, 250, 0);
-            this.Resize += (s, e) => Center(userinput, 250, 0);
-
+            PositionInListUI(userinput, 250, 0);
             TextBox numlist = BoxMaker.MakeNewBox("", 600);
-            this.Controls.Add(numlist);
-            Center(numlist, 300, 0);
-            this.Resize += (s, e) => Center(numlist, 300, 0);
-
-            Button makelist = new Button();
-            makelist.Size = new Size(100, 50);
-            makelist.Text = "Enter";
-            this.Controls.Add(makelist);
-            Center(makelist, 350, 0);
-            this.Resize += (s, e) => Center(makelist, 350, 0);
-
+            PositionInListUI(numlist, 300, 0);
+            Button makelist = ButtonMaker.MakeNewButton("Enter", 100, 50);
+            PositionInListUI(makelist, 350, 0);
             makelist.Click += (sender, args) =>
             {
                 ListMaker Maker = new ListMaker();
                 string[] inputList = numlist.Text.Split(' ');
                 int numberOfElements = inputList.Length;
-
                 TextBox[] bubblelist = Maker.MakeList(inputList);
-
                 for (int i = 0; i < bubblelist.Length; i++)
                 {
-                    this.Controls.Add(bubblelist[i]);
-                    Center(bubblelist[i], 425, (i * 100 - 100 * (bubblelist.Length / 2)));
+                    PositionInListUI(bubblelist[i],425, (i * 100 - 100 * (bubblelist.Length / 2)));
                 }
-
                 this.Resize += (s, e) =>
                 {
                     for (int i = 0; i < bubblelist.Length; i++)
@@ -205,6 +184,15 @@ namespace AlgoView
                 };
             };
         }
+
+        private void PositionInListUI(Control element,int topoffset, int midoffset)
+        {
+            this.Controls.Add(element);
+            Center(element, topoffset, midoffset);
+            this.Resize += (s, e) => Center(element, topoffset, midoffset);
+        }
+
+
         private void swapsort(TextBox a, TextBox b)
         {
             int b1 = Convert.ToInt32(a.Text);
@@ -242,13 +230,12 @@ namespace AlgoView
     }
 
 
-    public class ButtonMaker
+    public static class ButtonMaker
     {
-        public Button MakeNewButton(string buttonname, int width)
+        public static Button MakeNewButton(string buttonname, int width, int height)
         {
             Button custombutton = new Button();
-            custombutton.Size = new Size(100, 50);
-            custombutton.Location = new Point(550, 150);
+            custombutton.Size = new Size(width, height);
             custombutton.Text = buttonname;
             return custombutton;
         }
