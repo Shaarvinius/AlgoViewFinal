@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace AlgoView
 {
@@ -101,9 +102,12 @@ namespace AlgoView
                 else if (selectedAlgorithm == "Binary Search")
                 {
                     SetUpEnvironment binarysearch = new SetUpEnvironment();
+                    this.Controls.Add(binarysearch.AddInputToSpace("bd"));
+                    Center(binarysearch.AddInputToSpace("bd"), 250, 0);
+                    this.Resize += (s, e) => Center(binarysearch.AddInputToSpace("bd"), 250, 0);
+                    //binarysearch.PositionInSpace(binarysearch.AddInputToSpace("bd"), 250, 0);
+                    // TextBox input = binarysearch.AddInputToSpace("Enter a list in of numbers separated by spaces in the space below: ", 250, 0);
                     
-
-                  //  binarysearch.AddListToSpace();
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
@@ -197,7 +201,7 @@ namespace AlgoView
     }
 
 
-    public partial class SetUpEnvironment : Form1
+    public class SetUpEnvironment : Form1
     {
         public TextBox[] AddListToSpace(string[] input)
         {
@@ -212,21 +216,26 @@ namespace AlgoView
             
             return list;
         }
-        
+       
         public TextBox AddInputToSpace(string inputquestion)
         {
             TextBox question = new TextBox();
-            question.Size = new Size(450, 25);
-            question.Location = new Point(500, 200);
+            question.Size = new Size(600, 25);
             question.Text = inputquestion;
 
-            Center(question, 250, 0);
-            this.Resize += (s, e) => Center(question, 250, 0);
+            
 
             return question;
 
             
         }
+
+        /*public void PositionInSpace(Control element, int downoffset, int midoffset)
+        {
+            Center(element, downoffset, midoffset);
+            this.Resize += (s, e) => Center(element, downoffset, midoffset);
+        }*/
+
 
         public TextBox AddBoxToList(string boxvalue, int width)
         {
@@ -235,7 +244,6 @@ namespace AlgoView
             box.Text = boxvalue;
             box.TextAlign = HorizontalAlignment.Center;
             Form1 format = new Form1();
-
 
             return box;
         }
@@ -249,11 +257,8 @@ namespace AlgoView
             Center(custombutton, 350, 0);
             this.Resize += (s, e) => Center(custombutton, 350, 0);
 
-
             return custombutton;
         }
-
-
     }
 
     public class ButtonMaker
