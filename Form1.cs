@@ -10,7 +10,6 @@ namespace AlgoView
         {
             InitializeComponent();
         }
-
         public void Center(Control ctrl, int topoffset, int midoffset)
         {
             ctrl.Left = ((this.ClientSize.Width - ctrl.Width) / 2) + midoffset;
@@ -80,7 +79,7 @@ namespace AlgoView
 
         private void SetUpListUI(string inputquestion,string buttonname, Action<TextBox[]> onListCreated)
         {
-            TextBox userinput = BoxMaker.MakeNewBox(inputquestion, 600);
+            Label userinput = LabelMaker.MakeNewLabel(inputquestion, 600);
             PositionInListUI(userinput, 250, 0);
 
             TextBox numlist = BoxMaker.MakeNewBox("", 600);
@@ -88,6 +87,7 @@ namespace AlgoView
 
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
             PositionInListUI(makelist, 350, 0);
+            
 
             makelist.Click += (sender, args) =>
             {
@@ -95,18 +95,30 @@ namespace AlgoView
                 ListMaker maker = new ListMaker();
                 TextBox[] boxlist = maker.MakeList(inputList);
 
-                for (int i = 0; i < boxlist.Length; i++)
+                for (int i = 0; i < inputList.Length; i++)
                 {
-                    PositionInListUI(boxlist[i],425, (i * 100 - 100 * (boxlist.Length / 2)));
-                }
-                this.Resize += (s, e) =>
-                {
-                    for (int i = 0; i < boxlist.Length; i++)
+                    if (int.TryParse(boxlist[i].Text, out int result))
                     {
-                        Center(boxlist[i], 425, (i * 100 - 100 * (boxlist.Length / 2)));
+                        for (int j = 0; j < boxlist.Length; j++)
+                        {
+                            PositionInListUI(boxlist[i], 425, (i * 100 - 100 * (boxlist.Length / 2)));
+                        }
+                        this.Resize += (s, e) =>
+                        {
+                            for (int j = 0; j < boxlist.Length; j++)
+                            {
+                                Center(boxlist[i], 425, (i * 100 - 100 * (boxlist.Length / 2)));
+                            }
+                        };
+                        onListCreated(boxlist);
                     }
-                };
-                onListCreated(boxlist);
+                    else
+                    {
+                        MessageBox.Show("Invalid Character entered. Please enter only integers.");
+                        numlist.Clear();
+                        break;
+                    }
+                }
             };
         }
 
@@ -186,4 +198,6 @@ namespace AlgoView
             return label;
         }
     }
+
+    
 }
