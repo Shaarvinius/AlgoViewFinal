@@ -21,7 +21,6 @@ namespace AlgoView
         {
             Label title = new Label();
             title.Width = 150;
-           
             title.Height = 25;
             title.BackColor = Color.Empty;
 
@@ -59,9 +58,9 @@ namespace AlgoView
                     TextBox userinput = BoxMaker.MakeNewBox("Enter a list of numbers separated by spaces: ", 440);
                     this.Controls.Add(userinput);
                     Center(userinput, 250, 0);
-                    this.Resize += (s, e) => Center(userinput, 250,0);
+                    this.Resize += (s, e) => Center(userinput, 250, 0);
 
-                    TextBox numlist = BoxMaker.MakeNewBox("",600);
+                    TextBox numlist = BoxMaker.MakeNewBox("", 600);
                     this.Controls.Add(numlist);
                     Center(numlist, 300, 0);
                     this.Resize += (s, e) => Center(numlist, 300, 0);
@@ -84,7 +83,7 @@ namespace AlgoView
                         for (int i = 0; i < bubblelist.Length; i++)
                         {
                             this.Controls.Add(bubblelist[i]);
-                            Center(bubblelist[i], 425, (i * 100 - 100 * (bubblelist.Length / 2 )));  
+                            Center(bubblelist[i], 425, (i * 100 - 100 * (bubblelist.Length / 2)));
                         }
 
                         this.Resize += (s, e) =>
@@ -101,11 +100,14 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ");
+                    SetUpListUI("Enter a list of numbers separated by spaces: ", (TextBox[] numbers) =>
+                    {
+                        numbers[1].Text = "n";
+                    });
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
-                    
+
                 }
                 else if (selectedAlgorithm == "Tree Traversal")
                 {
@@ -122,7 +124,7 @@ namespace AlgoView
                     Center(num1, 300, -50);
                     this.Resize += (s, e) => Center(num1, 300, -50);
 
-                    
+
 
                     TextBox num2 = new TextBox();
                     num2.Size = new Size(25, 25);
@@ -149,39 +151,43 @@ namespace AlgoView
                     {
                         swapsort(num1, num2);
                     };
-                    
+
                 }
             };
 
         }
 
-       
-       
-        private void SetUpListUI(string inputquestion)
+        private void SetUpListUI(string inputquestion, Action<TextBox[]> onListCreated)
         {
             TextBox userinput = BoxMaker.MakeNewBox(inputquestion, 600);
             PositionInListUI(userinput, 250, 0);
+
             TextBox numlist = BoxMaker.MakeNewBox("", 600);
             PositionInListUI(numlist, 300, 0);
+
             Button makelist = ButtonMaker.MakeNewButton("Enter", 100, 50);
             PositionInListUI(makelist, 350, 0);
+
+            
             makelist.Click += (sender, args) =>
             {
-                ListMaker Maker = new ListMaker();
                 string[] inputList = numlist.Text.Split(' ');
-                int numberOfElements = inputList.Length;
-                TextBox[] bubblelist = Maker.MakeList(inputList);
-                for (int i = 0; i < bubblelist.Length; i++)
+                ListMaker maker = new ListMaker();
+                TextBox[] boxlist = maker.MakeList(inputList);
+
+                for (int i = 0; i < boxlist.Length; i++)
                 {
-                    PositionInListUI(bubblelist[i],425, (i * 100 - 100 * (bubblelist.Length / 2)));
+                    PositionInListUI(boxlist[i],425, (i * 100 - 100 * (boxlist.Length / 2)));
                 }
                 this.Resize += (s, e) =>
                 {
-                    for (int i = 0; i < bubblelist.Length; i++)
+                    for (int i = 0; i < boxlist.Length; i++)
                     {
-                        Center(bubblelist[i], 425, (i * 100 - 100 * (bubblelist.Length / 2)));
+                        Center(boxlist[i], 425, (i * 100 - 100 * (boxlist.Length / 2)));
                     }
                 };
+
+                onListCreated(boxlist);
             };
         }
 
@@ -228,7 +234,6 @@ namespace AlgoView
             return list;
         }
     }
-
 
     public static class ButtonMaker
     {
