@@ -18,24 +18,27 @@ namespace AlgoView
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Label appheading = LabelMaker.MakeNewLabel("AlgoView", 150);
-            PositionInListUI(appheading, 25, 0);
-            appheading.BackColor = Color.Empty;
+            PictureBox logo = new PictureBox();
+            logo.Size = new Size(265,107);
+            PositionInListUI(logo, 100,0);
+            logo.Image = Image.FromFile("AlgoViewLogo.png");
+            this.Controls.Add(logo);
 
             ComboBox algorithmSelector = new ComboBox();
-            algorithmSelector.Width = 300;
+            algorithmSelector.Width = 250;
+            algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+            algorithmSelector.Items.Add("Select Algorithm");
             algorithmSelector.Items.Add("Bubble Sort");
             algorithmSelector.Items.Add("Insertion Sort");
             algorithmSelector.Items.Add("Binary Search");
             algorithmSelector.Items.Add("Tree Traversal");
             algorithmSelector.Items.Add("Merge sort");
-            algorithmSelector.Text = "Select Algorithm";
-
+            algorithmSelector.SelectedIndex = 0;
+            
             this.Controls.Add(algorithmSelector);
 
-            Center(algorithmSelector, 65, 0);
-            
-            this.Resize += (s, e) => Center(algorithmSelector, 65, 0);
+            Center(algorithmSelector, 375, 0);
+            this.Resize += (s, e) => Center(algorithmSelector, 375, 0);
 
             algorithmSelector.SelectedIndexChanged += (s, e) =>
             {
@@ -99,18 +102,15 @@ namespace AlgoView
                 {
                     if (int.TryParse(boxlist[i].Text, out int result))
                     {
-                        for (int j = 0; j < boxlist.Length; j++)
-                        {
-                            PositionInListUI(boxlist[i], 425, (i * 100 - 100 * (boxlist.Length / 2)));
-                        }
+                        PositionInListUI(boxlist[i], 425, (i * 100 - 100 * (boxlist.Length / 2)));
+
                         this.Resize += (s, e) =>
                         {
                             for (int j = 0; j < boxlist.Length; j++)
                             {
-                                Center(boxlist[i], 425, (i * 100 - 100 * (boxlist.Length / 2)));
+                                Center(boxlist[j], 425, (j * 100 - 100 * (boxlist.Length / 2)));
                             }
                         };
-                        onListCreated(boxlist);
                     }
                     else
                     {
@@ -198,6 +198,4 @@ namespace AlgoView
             return label;
         }
     }
-
-    
 }
