@@ -9,6 +9,7 @@ namespace AlgoView
         public Form1()
         {
             InitializeComponent();
+            this.BackColor = Color.Black;
         }
         public void Center(Control ctrl, int topoffset, int midoffset)
         {
@@ -19,14 +20,14 @@ namespace AlgoView
         private void Form1_Load(object sender, EventArgs e)
         {
             PictureBox logo = new PictureBox();
-            logo.Size = new Size(265,107);
-            PositionInListUI(logo, 100,0);
+            logo.Size = new Size(610,245);
+            PositionInListUI(logo, 39,0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
             this.Controls.Add(logo);
 
             ComboBox algorithmSelector = new ComboBox();
-            algorithmSelector.Width = 250;
-            algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+            algorithmSelector.DropDownStyle = ComboBoxStyle.DropDown;
+            algorithmSelector.Size = new Size(360, 50);
             algorithmSelector.Items.Add("Select Algorithm");
             algorithmSelector.Items.Add("Bubble Sort");
             algorithmSelector.Items.Add("Insertion Sort");
@@ -37,8 +38,8 @@ namespace AlgoView
             
             this.Controls.Add(algorithmSelector);
 
-            Center(algorithmSelector, 375, 0);
-            this.Resize += (s, e) => Center(algorithmSelector, 375, 0);
+            Center(algorithmSelector, 333, 0);
+            this.Resize += (s, e) => Center(algorithmSelector, 333, 0);
 
             algorithmSelector.SelectedIndexChanged += (s, e) =>
             {
@@ -82,14 +83,15 @@ namespace AlgoView
 
         private void SetUpListUI(string inputquestion,string buttonname, Action<TextBox[]> onListCreated)
         {
-            Label userinput = LabelMaker.MakeNewLabel(inputquestion, 600);
-            PositionInListUI(userinput, 250, 0);
+            Button userinput = ButtonMaker.MakeNewButton(inputquestion, 600, 50);
+            //userinput.Enabled = false;
+            PositionInListUI(userinput, 444, 0);
 
             TextBox numlist = BoxMaker.MakeNewBox("", 600);
-            PositionInListUI(numlist, 300, 0);
+            PositionInListUI(numlist, 550, 0);
 
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
-            PositionInListUI(makelist, 350, 0);
+            PositionInListUI(makelist, 640, 0);
             
 
             makelist.Click += (sender, args) =>
@@ -102,13 +104,13 @@ namespace AlgoView
                 {
                     if (int.TryParse(boxlist[i].Text, out int result))
                     {
-                        PositionInListUI(boxlist[i], 425, (i * 100 - 100 * (boxlist.Length / 2)));
+                        PositionInListUI(boxlist[i], 553, (i * 100 - 100 * (boxlist.Length / 2)));
 
                         this.Resize += (s, e) =>
                         {
                             for (int j = 0; j < boxlist.Length; j++)
                             {
-                                Center(boxlist[j], 425, (j * 100 - 100 * (boxlist.Length / 2)));
+                                Center(boxlist[j], 553, (j * 100 - 100 * (boxlist.Length / 2)));
                             }
                         };
                     }
@@ -119,6 +121,10 @@ namespace AlgoView
                         break;
                     }
                 }
+
+                userinput.Hide();
+                numlist.Hide();
+                makelist.Hide();
             };
         }
 
@@ -156,8 +162,12 @@ namespace AlgoView
             for (int i = 0; i < input.Length; i++)
             {
                 list[i] = new TextBox();
-                list[i].Size = new Size(25, 25);
+                list[i].Multiline = true;
+                list[i].Size = new Size(50,50);
+                list[i].TextAlign = HorizontalAlignment.Center;
                 list[i].Text = input[i];
+                list[i].ForeColor = Color.Turquoise;
+                list[i].BackColor = Color.Black;
             }
 
             return list;
@@ -171,6 +181,11 @@ namespace AlgoView
             Button custombutton = new Button();
             custombutton.Size = new Size(width, height);
             custombutton.Text = buttonname;
+            custombutton.FlatStyle = FlatStyle.Flat;
+            custombutton.BackColor = Color.Black;
+            custombutton.FlatAppearance.BorderColor = Color.Turquoise;
+            custombutton.FlatAppearance.BorderSize = 2;
+            custombutton.ForeColor = Color.Turquoise;
             return custombutton;
         }
     }
@@ -182,7 +197,10 @@ namespace AlgoView
             TextBox box = new TextBox();
             box.Size = new Size(width, 25);
             box.Text = boxname;
+
             box.TextAlign = HorizontalAlignment.Center;
+            box.ForeColor = Color.Turquoise;
+            box.BackColor = Color.Black;
             return box;
         }
     }
