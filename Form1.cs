@@ -58,7 +58,7 @@ namespace AlgoView
                 {
                     SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
                     {
-
+                        ListMethods.BinarySearch(numbers, 9);
                     });
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
@@ -147,6 +147,7 @@ namespace AlgoView
                         break;
                     }
                 }
+                onListCreated(boxlist);
                 userinput.Hide();
                 numlist.Hide();
                 makelist.Hide();
@@ -254,4 +255,38 @@ namespace AlgoView
             return label;
         }
     }
+
+
+    public class ListMethods()
+    {
+        public static void BinarySearch(TextBox[] list, int numtofind) 
+        {
+            int left = 0;
+            int right = list.Length - 1;
+            bool found = false;
+            while(left <= right)
+            {
+                int mid = (left + right) / 2; 
+                if (Convert.ToInt32(list[mid].Text) < numtofind)
+                {
+                    left = mid+1;
+                }
+                else if(Convert.ToInt32(list[mid].Text) > numtofind)
+                {
+                    right = mid-1;
+                }
+                else if(Convert.ToInt32(list[mid].Text) == numtofind)
+                {
+                    MessageBox.Show(numtofind + " found at index " + mid);
+                    found = true;
+                    break;
+                }
+            }
+            if(!found)
+            {
+                MessageBox.Show("Number not found in array");
+            }
+        }
+    }
+
 }
