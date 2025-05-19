@@ -32,7 +32,9 @@ namespace AlgoView
             algorithmSelector.Items.Add("Bubble Sort");
             algorithmSelector.Items.Add("Insertion Sort");
             algorithmSelector.Items.Add("Binary Search");
-            algorithmSelector.Items.Add("Tree Traversal");
+            algorithmSelector.Items.Add("Exponential Search");
+            algorithmSelector.Items.Add("Breadth first search");
+            algorithmSelector.Items.Add("Depth first search");
             algorithmSelector.Items.Add("Merge sort");
             algorithmSelector.SelectedIndex = 0;
             
@@ -54,27 +56,44 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ","Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
                     {
-                        
+
                     });
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
                     SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
                     {
-                        
+
                     });
                 }
-                else if (selectedAlgorithm == "Tree Traversal")
+                else if (selectedAlgorithm == "Exponential Search")
                 {
+                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    {
 
+                    });
                 }
                 else if (selectedAlgorithm == "Merge sort")
                 {
                     SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
                     {
-                        
+
+                    });
+                }
+                else if (selectedAlgorithm == "Depth first search")
+                {
+                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    {
+
+                    });
+                }
+                else if (selectedAlgorithm == "Breadth first search")
+                {
+                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    {
+
                     });
                 }
             };
@@ -83,12 +102,19 @@ namespace AlgoView
 
         private void SetUpListUI(string inputquestion,string buttonname, Action<TextBox[]> onListCreated)
         {
-            Button userinput = ButtonMaker.MakeNewButton(inputquestion, 600, 50);
-            //userinput.Enabled = false;
+
+            Label userinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
             PositionInListUI(userinput, 444, 0);
+            Panel labeloutline = PanelMaker.MakeNewPanel("", 610, 60);
+            PositionInListUI(labeloutline, 439, 0);
+            labeloutline.SendToBack();
 
             TextBox numlist = BoxMaker.MakeNewBox("", 600);
             PositionInListUI(numlist, 550, 0);
+
+            Panel outline = PanelMaker.MakeNewPanel("", 610, 40);
+            PositionInListUI(outline, 545, 0);
+            outline.SendToBack();
 
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
             PositionInListUI(makelist, 640, 0);
@@ -121,10 +147,11 @@ namespace AlgoView
                         break;
                     }
                 }
-
                 userinput.Hide();
                 numlist.Hide();
                 makelist.Hide();
+                outline.Hide();
+                labeloutline.Hide();
             };
         }
 
@@ -162,12 +189,11 @@ namespace AlgoView
             for (int i = 0; i < input.Length; i++)
             {
                 list[i] = new TextBox();
-                list[i].Multiline = true;
                 list[i].Size = new Size(50,50);
-                list[i].TextAlign = HorizontalAlignment.Center;
                 list[i].Text = input[i];
                 list[i].ForeColor = Color.Turquoise;
                 list[i].BackColor = Color.Black;
+                list[i].TextAlign = HorizontalAlignment.Center;
             }
 
             return list;
@@ -205,13 +231,25 @@ namespace AlgoView
         }
     }
 
+    public static class PanelMaker
+    {
+        public static Panel MakeNewPanel(string boxname, int width, int height)
+        {
+            Panel panel = new Panel();
+            panel.Size = new Size(width, height);
+            panel.BackColor = Color.Turquoise;
+            return panel;
+        }
+    }
+
     public static class LabelMaker 
     {
-        public static Label MakeNewLabel(string labelname, int width)
+        public static Label MakeNewLabel(string labelname, int width, int height)
         {
             Label label = new Label();
-            label.Size = new Size(width, 25);
+            label.Size = new Size(width, height);
             label.Text = labelname;
+            label.ForeColor = Color.White;
             label.TextAlign = ContentAlignment.MiddleCenter;
             return label;
         }
