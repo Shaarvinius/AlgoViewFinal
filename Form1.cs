@@ -1,7 +1,9 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
+using System.Threading;    
+using System.Timers;   
+using System.Diagnostics;
 namespace AlgoView
 {
     public partial class Form1 : Form
@@ -58,7 +60,7 @@ namespace AlgoView
                 {
                     SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
                     {
-                        ListMethods.BinarySearch(numbers, 9);
+                        ListMethods.BinarySearch(numbers, 6);
                     });
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
@@ -147,12 +149,20 @@ namespace AlgoView
                         break;
                     }
                 }
-                onListCreated(boxlist);
+
+                
                 userinput.Hide();
                 numlist.Hide();
                 makelist.Hide();
-                outline.Hide();
                 labeloutline.Hide();
+                outline.Hide();
+
+                Application.DoEvents();
+
+                this.BeginInvoke((MethodInvoker)(() =>
+                {
+                    onListCreated(boxlist);
+                }));
             };
         }
 
@@ -163,23 +173,7 @@ namespace AlgoView
             this.Resize += (s, e) => Center(element, topoffset, midoffset);
         }
 
-        private void swapsort(TextBox a, TextBox b)
-        {
-            int b1 = Convert.ToInt32(a.Text);
-            int b2 = Convert.ToInt32(b.Text);
-
-            int tempnum = 0;
-
-            if (b1 > b2)
-            {
-                tempnum = b2;
-                b2 = b1;
-                b1 = tempnum;
-
-                a.Text = Convert.ToString(b1);
-                b.Text = Convert.ToString(b2);
-            }
-        }
+        
     }
 
     public class ListMaker
@@ -277,6 +271,7 @@ namespace AlgoView
                 }
                 else if(Convert.ToInt32(list[mid].Text) == numtofind)
                 {
+                    Thread.Sleep(1500);
                     MessageBox.Show(numtofind + " found at index " + mid);
                     found = true;
                     break;
@@ -284,9 +279,9 @@ namespace AlgoView
             }
             if(!found)
             {
+                Thread.Sleep(1500);
                 MessageBox.Show("Number not found in array");
             }
         }
     }
-
 }
