@@ -60,7 +60,7 @@ namespace AlgoView
                 {
                     SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
                     {
-                        ListMethods.BinarySearch(numbers, 16);
+                        ListMethods.BinarySearch(numbers, 2);
                     });
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
@@ -264,15 +264,26 @@ namespace AlgoView
                 Thread.Sleep(1000);
                 list[mid].BackColor = Color.Turquoise;
                 list[mid].ForeColor = Color.Black;
+
+                list[left].BackColor = Color.Blue;
+                list[left].ForeColor = Color.Black;
+
+                list[right].BackColor = Color.Blue;
+                list[right].ForeColor = Color.Black;
                 Application.DoEvents();
                 if (Convert.ToInt32(list[mid].Text) < numtofind)
                 {
+                    list[left].BackColor = Color.Black;
+                    list[left].ForeColor = Color.Turquoise;
                     left = mid+1;
                     list[mid].BackColor = Color.Black;
                     list[mid].ForeColor = Color.Turquoise;
                 }
                 else if(Convert.ToInt32(list[mid].Text) > numtofind)
                 {
+
+                    list[right].BackColor = Color.Black;
+                    list[right].ForeColor = Color.Turquoise;
                     right = mid-1;
                     list[mid].BackColor = Color.Black;
                     list[mid].ForeColor = Color.Turquoise;
@@ -284,8 +295,6 @@ namespace AlgoView
                     found = true;
                     break;
                 }
-                ///Thread.Sleep(1000);
-                
             }
             if(!found)
             {
