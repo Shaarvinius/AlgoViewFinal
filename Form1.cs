@@ -261,6 +261,8 @@ namespace AlgoView
             while(left <= right)
             {
                 int mid = (left + right) / 2; 
+                ///list[mid].BackColor = Color.Turquoise;
+               /// list[mid].ForeColor = Color.Black;
                 if (Convert.ToInt32(list[mid].Text) < numtofind)
                 {
                     left = mid+1;
@@ -276,6 +278,9 @@ namespace AlgoView
                     found = true;
                     break;
                 }
+                ///Thread.Sleep(1000);
+               /// list[mid].BackColor = Color.Black;
+               /// list[mid].ForeColor = Color.Turquoise;
             }
             if(!found)
             {
