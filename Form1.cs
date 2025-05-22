@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using System.Threading;    
 using System.Timers;   
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 namespace AlgoView
 {
     public partial class Form1 : Form
@@ -58,42 +59,56 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 200, 30);
+                    PositionInListUI(numtofind, 625, 0);
+
+                    TextBox input = BoxMaker.MakeNewBox("", 30);
+                    PositionInListUI(input, 690, 0);
+
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
-                        ListMethods.BinarySearch(numbers, 2);
+                        if (!int.TryParse(input.Text, out int result) && input.Text != "")
+                        {
+                            MessageBox.Show("Invalid character entered");
+                            input.Clear();
+                        }
+                        else
+                        {
+                            ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text));
+                        }
                     });
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Exponential Search")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Merge sort")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Depth first search")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Breadth first search")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
@@ -111,24 +126,37 @@ namespace AlgoView
             PositionInListUI(labeloutline, 439, 0);
             labeloutline.SendToBack();
 
-            TextBox numlist = BoxMaker.MakeNewBox("", 600);
-            PositionInListUI(numlist, 550, 0);
+            TextBox firstnum = BoxMaker.MakeNewBox("", 30);
+            PositionInListUI(firstnum, 550, -50);
 
-            Panel outline = PanelMaker.MakeNewPanel("", 610, 40);
-            PositionInListUI(outline, 545, 0);
-            outline.SendToBack();
+            TextBox lastnum = BoxMaker.MakeNewBox("", 30);
+            PositionInListUI(lastnum, 550, 50);
 
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
-            PositionInListUI(makelist, 640, 0);
-            
+            PositionInListUI(makelist, 750, 0);
+
 
             makelist.Click += (sender, args) =>
             {
-                string[] inputList = numlist.Text.Split(' ');
-                ListMaker maker = new ListMaker();
-                TextBox[] boxlist = maker.MakeList(inputList);
+                if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last))
+                {
+                    MessageBox.Show("Invalid character inputted. Please enter integers.");
+                    firstnum.Clear();
+                    lastnum.Clear();
+                    return;
+                }
+                if (first >= last)
+                {
+                    MessageBox.Show("First number should be less than the last.");
+                    firstnum.Clear();
+                    lastnum.Clear();
+                    return;
+                }
 
-                for (int i = 0; i < inputList.Length; i++)
+                ListMaker maker = new ListMaker();
+                TextBox[] boxlist = maker.MakeList(firstnum.Text, lastnum.Text);
+
+                for (int i = 0; i < boxlist.Length; i++)
                 {
                     if (int.TryParse(boxlist[i].Text, out int result))
                     {
@@ -145,17 +173,16 @@ namespace AlgoView
                     else
                     {
                         MessageBox.Show("Invalid Character entered. Please enter only integers.");
-                        numlist.Clear();
+                        firstnum.Clear();
+                        lastnum.Clear();
                         break;
                     }
                 }
 
-                
                 userinput.Hide();
-                numlist.Hide();
-                makelist.Hide();
+                firstnum.Hide();
+                lastnum.Hide();
                 labeloutline.Hide();
-                outline.Hide();
 
                 Application.DoEvents();
 
@@ -172,24 +199,23 @@ namespace AlgoView
             Center(element, topoffset, midoffset);
             this.Resize += (s, e) => Center(element, topoffset, midoffset);
         }
-
-        
     }
 
     public class ListMaker
     {
-        public TextBox[] MakeList(string[] input)
+        public TextBox[] MakeList(string firstnum, string lastnum)
         {
-            TextBox[] list = new TextBox[input.Length];
-            for (int i = 0; i < input.Length; i++)
+            int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
+            TextBox[] list = new TextBox[length];
+            for (int i = 0; i < length; i++)
             {
                 list[i] = new TextBox();
-                list[i].Size = new Size(50,50);
-                list[i].Text = input[i];
+                list[i].Size = new Size(50, 50);
+                list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
                 list[i].ForeColor = Color.Turquoise;
                 list[i].BackColor = Color.Black;
                 list[i].TextAlign = HorizontalAlignment.Center;
-            }
+            } 
 
             return list;
         }
@@ -218,7 +244,6 @@ namespace AlgoView
             TextBox box = new TextBox();
             box.Size = new Size(width, 25);
             box.Text = boxname;
-
             box.TextAlign = HorizontalAlignment.Center;
             box.ForeColor = Color.Turquoise;
             box.BackColor = Color.Black;
@@ -244,7 +269,7 @@ namespace AlgoView
             Label label = new Label();
             label.Size = new Size(width, height);
             label.Text = labelname;
-            label.ForeColor = Color.White;
+            label.ForeColor = Color.Turquoise;
             label.TextAlign = ContentAlignment.MiddleCenter;
             return label;
         }
@@ -258,8 +283,10 @@ namespace AlgoView
             int left = 0;
             int right = list.Length - 1;
             bool found = false;
+            int step = 0;
             while(left <= right)
             {
+                step++;
                 int mid = (left + right) / 2;
                 Thread.Sleep(1000);
                 list[mid].BackColor = Color.Turquoise;
