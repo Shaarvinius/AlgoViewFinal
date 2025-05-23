@@ -14,11 +14,14 @@ namespace AlgoView
             InitializeComponent();
             this.BackColor = Color.Black;
         }
+
+
         public void Center(Control ctrl, int topoffset, int midoffset)
         {
             ctrl.Left = ((this.ClientSize.Width - ctrl.Width) / 2) + midoffset;
             ctrl.Top = topoffset;
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -64,6 +67,21 @@ namespace AlgoView
 
                     TextBox input = BoxMaker.MakeNewBox("", 30);
                     PositionInListUI(input, 690, 0);
+
+                    Label left = LabelMaker.MakeNewLabel("Left", 70, 30);
+                    PositionInListUI(left, 825, -75);
+                    left.BackColor = Color.LimeGreen;
+                    left.ForeColor = Color.Black;
+
+                    Label right = LabelMaker.MakeNewLabel("Right", 70, 30);
+                    PositionInListUI(right, 825, 75);
+                    right.BackColor = Color.Blue;
+                    right.ForeColor = Color.Black;
+
+                    Label mid = LabelMaker.MakeNewLabel("Middle", 70, 30);
+                    PositionInListUI(mid, 825, 0);
+                    mid.BackColor = Color.Turquoise;
+                    mid.ForeColor = Color.Black;
 
                     SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
@@ -114,14 +132,14 @@ namespace AlgoView
                     });
                 }
             };
-
         }
+
 
         private void SetUpListUI(string inputquestion,string buttonname, Action<TextBox[]> onListCreated)
         {
-
             Label userinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
             PositionInListUI(userinput, 444, 0);
+
             Panel labeloutline = PanelMaker.MakeNewPanel("", 610, 60);
             PositionInListUI(labeloutline, 439, 0);
             labeloutline.SendToBack();
@@ -134,7 +152,6 @@ namespace AlgoView
 
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
             PositionInListUI(makelist, 750, 0);
-
 
             makelist.Click += (sender, args) =>
             {
@@ -193,6 +210,7 @@ namespace AlgoView
             };
         }
 
+
         private void PositionInListUI(Control element,int topoffset, int midoffset)
         {
             this.Controls.Add(element);
@@ -201,12 +219,15 @@ namespace AlgoView
         }
     }
 
+
+
     public class ListMaker
     {
         public TextBox[] MakeList(string firstnum, string lastnum)
         {
             int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
             TextBox[] list = new TextBox[length];
+
             for (int i = 0; i < length; i++)
             {
                 list[i] = new TextBox();
@@ -221,6 +242,8 @@ namespace AlgoView
         }
     }
 
+
+
     public static class ButtonMaker
     {
         public static Button MakeNewButton(string buttonname, int width, int height)
@@ -233,9 +256,12 @@ namespace AlgoView
             custombutton.FlatAppearance.BorderColor = Color.Turquoise;
             custombutton.FlatAppearance.BorderSize = 2;
             custombutton.ForeColor = Color.Turquoise;
+
             return custombutton;
         }
     }
+
+
 
     public static class BoxMaker
     {
@@ -247,6 +273,7 @@ namespace AlgoView
             box.TextAlign = HorizontalAlignment.Center;
             box.ForeColor = Color.Turquoise;
             box.BackColor = Color.Black;
+
             return box;
         }
     }
@@ -258,6 +285,7 @@ namespace AlgoView
             Panel panel = new Panel();
             panel.Size = new Size(width, height);
             panel.BackColor = Color.Turquoise;
+
             return panel;
         }
     }
@@ -271,6 +299,7 @@ namespace AlgoView
             label.Text = labelname;
             label.ForeColor = Color.Turquoise;
             label.TextAlign = ContentAlignment.MiddleCenter;
+
             return label;
         }
     }
@@ -284,34 +313,41 @@ namespace AlgoView
             int right = list.Length - 1;
             bool found = false;
             int step = 0;
+
             while(left <= right)
             {
                 step++;
                 int mid = (left + right) / 2;
                 Thread.Sleep(1000);
+
                 list[mid].BackColor = Color.Turquoise;
                 list[mid].ForeColor = Color.Black;
 
-                list[left].BackColor = Color.Blue;
+                list[left].BackColor = Color.LimeGreen;
                 list[left].ForeColor = Color.Black;
 
                 list[right].BackColor = Color.Blue;
                 list[right].ForeColor = Color.Black;
+
                 Application.DoEvents();
+
                 if (Convert.ToInt32(list[mid].Text) < numtofind)
                 {
                     list[left].BackColor = Color.Black;
                     list[left].ForeColor = Color.Turquoise;
+
                     left = mid+1;
+
                     list[mid].BackColor = Color.Black;
                     list[mid].ForeColor = Color.Turquoise;
                 }
                 else if(Convert.ToInt32(list[mid].Text) > numtofind)
                 {
-
                     list[right].BackColor = Color.Black;
                     list[right].ForeColor = Color.Turquoise;
+
                     right = mid-1;
+
                     list[mid].BackColor = Color.Black;
                     list[mid].ForeColor = Color.Turquoise;
                 }
@@ -323,6 +359,8 @@ namespace AlgoView
                     break;
                 }
             }
+
+
             if(!found)
             {
                 Thread.Sleep(1500);
