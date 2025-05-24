@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.ComponentModel.DataAnnotations;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+
+
 namespace AlgoView
 {
     public partial class Form1 : Form
@@ -33,6 +35,26 @@ namespace AlgoView
                 .ToArray();
         }
 
+
+        private void UndoClick(object sender, EventArgs e)
+        {
+            if(ListMethods.UndoStack.Count > 1)
+            {
+                ListSnapshot currentstate = ListMethods.UndoStack.Pop();
+                ListMethods.UndoStack.Push(currentstate);
+                ListMethods.UndoStack.Peek()?.Restore(GetCurrentTextBoxes());
+            }
+        }
+
+        private void RedoClick(object sender, EventArgs e)
+        {
+            if(ListMethods.RedoStack.Count > 0)
+            {
+                ListSnapshot redostate = ListMethods.RedoStack.Pop();
+                ListMethods.UndoStack.Push(redostate);
+                redostate.Restore(GetCurrentTextBoxes());
+            }
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
