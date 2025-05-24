@@ -5,6 +5,8 @@ using System.Threading;
 using System.Timers;   
 using System.Diagnostics;
 using System.ComponentModel.DataAnnotations;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace AlgoView
 {
     public partial class Form1 : Form
@@ -20,6 +22,15 @@ namespace AlgoView
         {
             ctrl.Left = ((this.ClientSize.Width - ctrl.Width) / 2) + midoffset;
             ctrl.Top = topoffset;
+        }
+
+
+        private TextBox[] GetCurrentTextBoxes()
+        {
+            return this.Controls.OfType<TextBox>()
+                .Where(numbox => numbox.Width == 50 && numbox.Height == 50)
+                .OrderBy(numbox => numbox.Left)
+                .ToArray();
         }
 
 
@@ -43,11 +54,13 @@ namespace AlgoView
             algorithmSelector.Items.Add("Depth first search");
             algorithmSelector.Items.Add("Merge sort");
             algorithmSelector.SelectedIndex = 0;
-            
-            this.Controls.Add(algorithmSelector);
+            PositionInListUI(algorithmSelector, 333, 0);
 
-            Center(algorithmSelector, 333, 0);
-            this.Resize += (s, e) => Center(algorithmSelector, 333, 0);
+            Button undoButton = ButtonMaker.MakeNewButton("Undo", 100, 50);
+            PositionInListUI(undoButton, 625, -150);
+
+            Button redoButton = ButtonMaker.MakeNewButton("Redo", 100, 50);
+            PositionInListUI(redoButton, 625, 150);
 
             algorithmSelector.SelectedIndexChanged += (s, e) =>
             {
@@ -133,8 +146,10 @@ namespace AlgoView
                 }
             };
         }
-        
 
+        
+        private Button undobutton;
+        private Button redobutton;
         private void SetUpListUI(string inputquestion,string buttonname, Action<TextBox[]> onListCreated)
         {
             Label userinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
@@ -200,6 +215,38 @@ namespace AlgoView
                 firstnum.Hide();
                 lastnum.Hide();
                 labeloutline.Hide();
+
+                Application.DoEvents();
+
+                this.BeginInvoke((MethodInvoker)(() =>
+                {
+                    onListCreated(boxlist);
+                }));
+
+
+                if (undobutton == null)
+                {
+                    undobutton = ButtonMaker.MakeNewButton("Undo", 100, 50);
+                    PositionInListUI(undobutton, 625, -150);
+                }
+                else
+                {
+                    undobutton.Show();
+                }
+
+                if (redobutton == null)
+                {
+                    redobutton = ButtonMaker.MakeNewButton("Undo", 100, 50);
+                    PositionInListUI(redobutton, 625, -150);
+                }
+                else
+                {
+                    redobutton.Show();
+                }
+
+                ListMethods.UndoStack.Clear();
+                ListMethods.RedoStack.Clear();
+                ListMethods.UndoStack.Push(new ListSnapshot(boxlist));
 
                 Application.DoEvents();
 
@@ -279,6 +326,8 @@ namespace AlgoView
         }
     }
 
+
+
     public static class PanelMaker
     {
         public static Panel MakeNewPanel(string boxname, int width, int height)
@@ -290,6 +339,7 @@ namespace AlgoView
             return panel;
         }
     }
+
 
     public static class LabelMaker 
     {
@@ -306,8 +356,12 @@ namespace AlgoView
     }
 
 
+
     public class ListMethods
     {
+        public static Stack<ListSnapshot> UndoStack = new Stack<ListSnapshot>();
+        public static Stack<ListSnapshot> RedoStack = new Stack<ListSnapshot>();
+
         public static void BinarySearch(TextBox[] list, int numtofind) 
         {
             int left = 0;
@@ -317,6 +371,9 @@ namespace AlgoView
             TextBox stepcount = BoxMaker.MakeNewBox("Step: ", 70);
             while(left <= right)
             {
+                UndoStack.Push(new ListSnapshot(list));
+                RedoStack.Clear();
+
                 int mid = (left + right) / 2;
                 Thread.Sleep(1000);
                 list[mid].BackColor = Color.Turquoise;
@@ -365,6 +422,7 @@ namespace AlgoView
                 Thread.Sleep(1500);
                 MessageBox.Show("Number not found in array");
             }
+           
         }
     }
 
@@ -420,7 +478,7 @@ namespace AlgoView
 
         public ListSnapshot Pop()
         {
-            if(statelist.Count > 0)
+            if(statelist.Count == 0)
             {
                 return null;
             }
@@ -446,7 +504,4 @@ namespace AlgoView
             statelist.Clear();
         }
     }
-
-
-
 }
