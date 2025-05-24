@@ -7,8 +7,6 @@ using System.Diagnostics;
 using System.ComponentModel.DataAnnotations;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-
-
 namespace AlgoView
 {
     public partial class Form1 : Form
@@ -38,7 +36,7 @@ namespace AlgoView
 
         private void UndoClick(object sender, EventArgs e)
         {
-            if(ListMethods.UndoStack.Count > 1)
+            if(ListMethods.UndoStack.Count > 0)
             {
                 ListSnapshot currentstate = ListMethods.UndoStack.Pop();
                 ListMethods.UndoStack.Push(currentstate);
@@ -77,12 +75,6 @@ namespace AlgoView
             algorithmSelector.Items.Add("Merge sort");
             algorithmSelector.SelectedIndex = 0;
             PositionInListUI(algorithmSelector, 333, 0);
-
-            Button undoButton = ButtonMaker.MakeNewButton("Undo", 100, 50);
-            PositionInListUI(undoButton, 625, -150);
-
-            Button redoButton = ButtonMaker.MakeNewButton("Redo", 100, 50);
-            PositionInListUI(redoButton, 625, 150);
 
             algorithmSelector.SelectedIndexChanged += (s, e) =>
             {
@@ -250,6 +242,7 @@ namespace AlgoView
                 {
                     undobutton = ButtonMaker.MakeNewButton("Undo", 100, 50);
                     PositionInListUI(undobutton, 625, -150);
+                    undobutton.Click += UndoClick;
                 }
                 else
                 {
@@ -258,8 +251,9 @@ namespace AlgoView
 
                 if (redobutton == null)
                 {
-                    redobutton = ButtonMaker.MakeNewButton("Undo", 100, 50);
-                    PositionInListUI(redobutton, 625, -150);
+                    redobutton = ButtonMaker.MakeNewButton("Redo", 100, 50);
+                    PositionInListUI(redobutton, 625, 150);
+                    redobutton.Click += RedoClick;
                 }
                 else
                 {
