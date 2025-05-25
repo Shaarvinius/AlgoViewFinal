@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.ComponentModel.DataAnnotations;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Drawing.Text;
 namespace AlgoView
 {
     public partial class Form1 : Form
@@ -36,6 +37,9 @@ namespace AlgoView
             ComboBox algorithmSelector = new ComboBox();
             algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             algorithmSelector.Size = new Size(360, 50);
+            algorithmSelector.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+            algorithmSelector.BackColor = Color.Black;
+            algorithmSelector.ForeColor = Color.Turquoise;
             algorithmSelector.Items.Add("Select Algorithm");
             algorithmSelector.Items.Add("Bubble Sort");
             algorithmSelector.Items.Add("Insertion Sort");
@@ -60,23 +64,23 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
-                    Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 200, 30);
+                    Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 385, 30);
                     PositionInListUI(numtofind, 625, 0);
 
                     TextBox input = BoxMaker.MakeNewBox("", 30);
                     PositionInListUI(input, 690, 0);
 
-                    Label left = LabelMaker.MakeNewLabel("Left", 70, 30);
-                    PositionInListUI(left, 825, -75);
+                    Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
+                    PositionInListUI(left, 825, -150);
                     left.BackColor = Color.LimeGreen;
                     left.ForeColor = Color.Black;
 
-                    Label right = LabelMaker.MakeNewLabel("Right", 70, 30);
-                    PositionInListUI(right, 825, 75);
+                    Label right = LabelMaker.MakeNewLabel("Right", 90, 30);
+                    PositionInListUI(right, 825, 150);
                     right.BackColor = Color.Blue;
                     right.ForeColor = Color.Black;
 
-                    Label mid = LabelMaker.MakeNewLabel("Middle", 70, 30);
+                    Label mid = LabelMaker.MakeNewLabel("Middle", 90, 30);
                     PositionInListUI(mid, 825, 0);
                     mid.BackColor = Color.Turquoise;
                     mid.ForeColor = Color.Black;
@@ -256,7 +260,7 @@ namespace AlgoView
                 if (stepbackbutton == null)
                 {
                     stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
-                    PositionInListUI(stepbackbutton, 625, -300);
+                    PositionInListUI(stepbackbutton, 625, -400);
                     stepbackbutton.Click += StepBackClick;
                 }
                 else
@@ -267,15 +271,13 @@ namespace AlgoView
                 if (stepforwardbutton == null)
                 {
                     stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
-                    PositionInListUI(stepforwardbutton, 625, 300);
+                    PositionInListUI(stepforwardbutton, 625, 400);
                     stepforwardbutton.Click += StepForwardClick;
                 }
                 else
                 {
                     stepforwardbutton.Show();
                 }
-
-                
 
                 Application.DoEvents();
 
@@ -310,6 +312,7 @@ namespace AlgoView
                 list[i] = new TextBox();
                 list[i].Size = new Size(50, 50);
                 list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
+                list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
                 list[i].ForeColor = Color.Turquoise;
                 list[i].BackColor = Color.Black;
                 list[i].TextAlign = HorizontalAlignment.Center;
@@ -328,6 +331,7 @@ namespace AlgoView
             Button custombutton = new Button();
             custombutton.Size = new Size(width, height);
             custombutton.Text = buttonname;
+            custombutton.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             custombutton.FlatStyle = FlatStyle.Flat;
             custombutton.BackColor = Color.Black;
             custombutton.FlatAppearance.BorderColor = Color.Turquoise;
@@ -347,6 +351,7 @@ namespace AlgoView
             TextBox box = new TextBox();
             box.Size = new Size(width, 25);
             box.Text = boxname;
+            box.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             box.TextAlign = HorizontalAlignment.Center;
             box.ForeColor = Color.Turquoise;
             box.BackColor = Color.Black;
@@ -364,7 +369,7 @@ namespace AlgoView
             Panel panel = new Panel();
             panel.Size = new Size(width, height);
             panel.BackColor = Color.Turquoise;
-
+            
             return panel;
         }
     }
@@ -377,6 +382,7 @@ namespace AlgoView
             Label label = new Label();
             label.Size = new Size(width, height);
             label.Text = labelname;
+            label.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             label.ForeColor = Color.Turquoise;
             label.TextAlign = ContentAlignment.MiddleCenter;
 
@@ -518,7 +524,7 @@ namespace AlgoView
             return statelist[statelist.Count - 1];
         }
 
-        public void Clear()
+        public void Clear() 
         {
             statelist.Clear();
         }
