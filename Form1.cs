@@ -24,36 +24,7 @@ namespace AlgoView
             ctrl.Top = topoffset;
         }
 
-
-        private TextBox[] GetCurrentTextBoxes()
-        {
-            return this.Controls.OfType<TextBox>()
-                .Where(numbox => numbox.Width == 50 && numbox.Height == 50)
-                .OrderBy(numbox => numbox.Left)
-                .ToArray();
-        }
-
-
-        private void UndoClick(object sender, EventArgs e)
-        {
-            if(ListMethods.UndoStack.Count > 0)
-            {
-                ListSnapshot currentstate = ListMethods.UndoStack.Pop();
-                ListMethods.UndoStack.Push(currentstate);
-                ListMethods.UndoStack.Peek()?.Restore(GetCurrentTextBoxes());
-            }
-        }
-
-        private void RedoClick(object sender, EventArgs e)
-        {
-            if(ListMethods.RedoStack.Count > 0)
-            {
-                ListSnapshot redostate = ListMethods.RedoStack.Pop();
-                ListMethods.UndoStack.Push(redostate);
-                redostate.Restore(GetCurrentTextBoxes());
-            }
-        }
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             PictureBox logo = new PictureBox();
@@ -63,7 +34,7 @@ namespace AlgoView
             this.Controls.Add(logo);
 
             ComboBox algorithmSelector = new ComboBox();
-            algorithmSelector.DropDownStyle = ComboBoxStyle.DropDown;
+            algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             algorithmSelector.Size = new Size(360, 50);
             algorithmSelector.Items.Add("Select Algorithm");
             algorithmSelector.Items.Add("Bubble Sort");
@@ -119,7 +90,21 @@ namespace AlgoView
                         }
                         else
                         {
-                            ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text));
+                            steps.Clear();
+                            ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), steps);
+                            currentStep = 0;
+
+                            if (steps.Count > 0)
+                            {
+                                steps[currentStep].Restore(numbers);
+                                stepforwardbutton.Enabled = true;
+                                stepbackbutton.Enabled = false;
+                                currentBoxes = numbers;
+                            }
+                            else
+                            {
+                                MessageBox.Show("No steps were generated.");
+                            }
                         }
                     });
                 }
@@ -161,9 +146,45 @@ namespace AlgoView
             };
         }
 
-        
-        private Button undobutton;
-        private Button redobutton;
+
+        private TextBox[] GetCurrentTextBoxes()
+        {
+            return this.Controls.OfType<TextBox>()
+                .Where(numbox => numbox.Width == 50 && numbox.Height == 50)
+                .OrderBy(numbox => numbox.Left)
+                .ToArray();
+        }
+
+        private void StepBackClick(object sender, EventArgs e)
+        {
+            if (currentStep > 0)
+            {
+                currentStep--;
+                steps[currentStep].Restore(currentBoxes);
+                stepforwardbutton.Enabled = true;
+                stepbackbutton.Enabled = currentStep > 0;
+            }
+        }
+
+        private void StepForwardClick(object sender, EventArgs e)
+        {
+            if (currentStep < steps.Count - 1)
+            {
+                currentStep++;
+                steps[currentStep].Restore(currentBoxes);
+                stepbackbutton.Enabled = true;
+                stepforwardbutton.Enabled = currentStep < steps.Count - 1;
+            }
+        }
+
+        private List<ListSnapshot> steps = new List<ListSnapshot>();
+        private int currentStep = -1;
+        private TextBox[] currentBoxes;
+
+        private Button stepbackbutton;
+        private Button stepforwardbutton;
+
+
         private void SetUpListUI(string inputquestion,string buttonname, Action<TextBox[]> onListCreated)
         {
             Label userinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
@@ -232,37 +253,29 @@ namespace AlgoView
 
                 Application.DoEvents();
 
-                this.BeginInvoke((MethodInvoker)(() =>
+                if (stepbackbutton == null)
                 {
-                    onListCreated(boxlist);
-                }));
-
-
-                if (undobutton == null)
-                {
-                    undobutton = ButtonMaker.MakeNewButton("Undo", 100, 50);
-                    PositionInListUI(undobutton, 625, -150);
-                    undobutton.Click += UndoClick;
+                    stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
+                    PositionInListUI(stepbackbutton, 625, -300);
+                    stepbackbutton.Click += StepBackClick;
                 }
                 else
                 {
-                    undobutton.Show();
+                    stepbackbutton.Show();
                 }
 
-                if (redobutton == null)
+                if (stepforwardbutton == null)
                 {
-                    redobutton = ButtonMaker.MakeNewButton("Redo", 100, 50);
-                    PositionInListUI(redobutton, 625, 150);
-                    redobutton.Click += RedoClick;
+                    stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
+                    PositionInListUI(stepforwardbutton, 625, 300);
+                    stepforwardbutton.Click += StepForwardClick;
                 }
                 else
                 {
-                    redobutton.Show();
+                    stepforwardbutton.Show();
                 }
 
-                ListMethods.UndoStack.Clear();
-                ListMethods.RedoStack.Clear();
-                ListMethods.UndoStack.Push(new ListSnapshot(boxlist));
+                
 
                 Application.DoEvents();
 
@@ -375,23 +388,26 @@ namespace AlgoView
 
     public class ListMethods
     {
-        public static Stack<ListSnapshot> UndoStack = new Stack<ListSnapshot>();
-        public static Stack<ListSnapshot> RedoStack = new Stack<ListSnapshot>();
+        
 
-        public static void BinarySearch(TextBox[] list, int numtofind) 
+        public static void BinarySearch(TextBox[] list, int numtofind, List<ListSnapshot> steps) 
         {
             int left = 0;
             int right = list.Length - 1;
             bool found = false;
-            
-            TextBox stepcount = BoxMaker.MakeNewBox("Step: ", 70);
-            while(left <= right)
-            {
-                UndoStack.Push(new ListSnapshot(list));
-                RedoStack.Clear();
 
+            steps.Add(new ListSnapshot(list));
+
+            while (left <= right)
+            {
                 int mid = (left + right) / 2;
-                Thread.Sleep(1000);
+
+                for (int i = 0; i < list.Length; i++)
+                {
+                    list[i].BackColor = Color.Black;
+                    list[i].ForeColor = Color.Turquoise;
+                }
+
                 list[mid].BackColor = Color.Turquoise;
                 list[mid].ForeColor = Color.Black;
 
@@ -401,39 +417,26 @@ namespace AlgoView
                 list[right].BackColor = Color.Blue;
                 list[right].ForeColor = Color.Black;
 
-                Application.DoEvents();
+                steps.Add(new ListSnapshot(list));
 
-                if (Convert.ToInt32(list[mid].Text) < numtofind)
+                int midVal = Convert.ToInt32(list[mid].Text);
+                if (midVal < numtofind)
                 {
-                    list[left].BackColor = Color.Black;
-                    list[left].ForeColor = Color.Turquoise;
-
-                    left = mid+1;
-
-                    list[mid].BackColor = Color.Black;
-                    list[mid].ForeColor = Color.Turquoise;
+                    left = mid + 1;
                 }
-                else if(Convert.ToInt32(list[mid].Text) > numtofind)
+                else if (midVal > numtofind)
                 {
-                    list[right].BackColor = Color.Black;
-                    list[right].ForeColor = Color.Turquoise;
-
-                    right = mid-1;
-
-                    list[mid].BackColor = Color.Black;
-                    list[mid].ForeColor = Color.Turquoise;
+                    right = mid - 1;
                 }
-                else if(Convert.ToInt32(list[mid].Text) == numtofind)
+                else
                 {
-                    Thread.Sleep(1500);
                     MessageBox.Show(numtofind + " found at index " + mid);
                     found = true;
                     break;
                 }
             }
 
-
-            if(!found)
+            if (!found)
             {
                 Thread.Sleep(1500);
                 MessageBox.Show("Number not found in array");
