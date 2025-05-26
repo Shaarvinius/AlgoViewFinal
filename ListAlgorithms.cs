@@ -38,6 +38,7 @@ public class ListMethods
             steps.Add(new ListSnapshot(list));
 
             int midVal = Convert.ToInt32(list[mid].Text);
+
             if (midVal < numtofind)
             {
                 left = mid + 1;

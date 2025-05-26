@@ -15,7 +15,7 @@ public class ListMaker
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
-            list[i].Size = new Size(50, 50);
+            list[i].Size = new Size(35, 35);
             list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;

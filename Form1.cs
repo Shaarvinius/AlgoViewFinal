@@ -40,7 +40,7 @@ namespace AlgoView
         private TextBox[] GetCurrentTextBoxes()
         {
             return this.Controls.OfType<TextBox>()
-                .Where(numbox => numbox.Width == 50 && numbox.Height == 50)
+                .Where(numbox => numbox.Width == 35 && numbox.Height == 35)
                 .OrderBy(numbox => numbox.Left)
                 .ToArray();
         }
@@ -115,17 +115,21 @@ namespace AlgoView
                 ListMaker maker = new ListMaker();
                 TextBox[] boxlist = maker.MakeList(firstnum.Text, lastnum.Text);
 
+                int spacing = 50;
+
                 for (int i = 0; i < boxlist.Length; i++)
                 {
                     if (int.TryParse(boxlist[i].Text, out int result))
                     {
-                        PositionInListUI(boxlist[i], 553, (i * 100 - 100 * (boxlist.Length / 2)));
+                        int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
+                        PositionInListUI(boxlist[i], 553, x);
 
                         this.Resize += (s, e) =>
                         {
                             for (int j = 0; j < boxlist.Length; j++)
                             {
-                                Center(boxlist[j], 553, (j * 100 - 100 * (boxlist.Length / 2)));
+                                int newX = (int)((j - (boxlist.Length - 1) / 2.0) * spacing);
+                                Center(boxlist[j], 553, newX);
                             }
                         };
                     }
