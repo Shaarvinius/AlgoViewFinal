@@ -121,6 +121,8 @@ namespace AlgoView
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
             PositionInListUI(makelist, 750, 0);
 
+            Application.DoEvents();
+
             if (inputquestion == SearchQuestion)
             {
                 makelist.Click += (sender, args) =>
@@ -219,29 +221,10 @@ namespace AlgoView
                 listType.Items.Add("Yes");
                 listType.Items.Add("No");
                 listType.SelectedIndex = 0;
-                PositionInListUI(listType, 650, 0);
+                PositionInListUI(listType, 700, 0);
 
                 SortListMaker numberlistmaker = new SortListMaker();
-                TextBox[] boxlist = numberlistmaker.MakeReverseList(firstnum.Text, lastnum.Text);
-
-                listType.SelectedIndexChanged += (s, e) =>
-                {
-                    string listType_reverse= listType.SelectedItem.ToString();
-                    
-                    if(listType_reverse == "Yes")
-                    {
-                        listType.Enabled = false;
-                    }
-                    else if(listType_reverse == "No")
-                    {
-                        listType.Enabled = false;
-                        if(boxlist.Length > 0)
-                        {
-                            boxlist = Array.Empty<TextBox>();
-
-                        }
-                    }
-                };
+                TextBox[] boxlist = Array.Empty<TextBox>();
 
 
                 makelist.Click += (sender, args) =>
@@ -259,6 +242,23 @@ namespace AlgoView
                         firstnum.Clear();
                         lastnum.Clear();
                         return;
+                    }
+                    
+                    string listType_reverse = listType.SelectedItem.ToString();
+
+                    foreach (TextBox box in boxlist)
+                    {
+                        this.Controls.Remove(box);
+                        box.Dispose();
+                    }
+
+                    if (listType_reverse == "Yes")
+                    {
+                        boxlist = numberlistmaker.MakeReverseList(firstnum.Text, lastnum.Text);
+                    }
+                    else if (listType_reverse == "No")
+                    {
+                        boxlist = numberlistmaker.MakeNormalList(firstnum.Text, lastnum.Text);
                     }
 
                     int spacing = 50;
