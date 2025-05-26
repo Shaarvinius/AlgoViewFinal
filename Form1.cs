@@ -43,7 +43,7 @@ namespace AlgoView
         }
 
 
-        private void PositionInListUI(Control element, int topoffset, int midoffset)
+        private void PositionInUI(Control element, int topoffset, int midoffset)
         {
             this.Controls.Add(element);
             Center(element, topoffset, midoffset);
@@ -62,7 +62,7 @@ namespace AlgoView
         }
 
 
-        private List<ListSnapshot> steps = new List<ListSnapshot>();
+        private List<ListSnapshot> AlgorithmSteps = new List<ListSnapshot>();
         private int currentStep = -1;
         private TextBox[] currentBoxes;
 
@@ -79,7 +79,7 @@ namespace AlgoView
             if (currentStep > 0)
             {
                 currentStep--;
-                steps[currentStep].Restore(currentBoxes);
+                AlgorithmSteps[currentStep].Restore(currentBoxes);
                 stepforwardbutton.Enabled = true;
                 stepbackbutton.Enabled = currentStep > 0;
                 UpdateStepCount();
@@ -89,34 +89,34 @@ namespace AlgoView
 
         private void StepForwardClick(object sender, EventArgs e)
         {
-            if (currentStep < steps.Count - 1)
+            if (currentStep < AlgorithmSteps.Count - 1)
             {
                 currentStep++;
-                steps[currentStep].Restore(currentBoxes);
+                AlgorithmSteps[currentStep].Restore(currentBoxes);
                 stepbackbutton.Enabled = true;
-                stepforwardbutton.Enabled = currentStep < steps.Count - 1;
+                stepforwardbutton.Enabled = currentStep < AlgorithmSteps.Count - 1;
                 UpdateStepCount();
             }
         }
 
 
-        private void SetUpListUI(string inputquestion, string buttonname, Action<TextBox[]> onListCreated)
+        private void SetUpSearchUI(string inputquestion, string buttonname, Action<TextBox[]> onListCreated)
         {
             Label userinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
-            PositionInListUI(userinput, 444, 0);
+            PositionInUI(userinput, 444, 0);
 
             Panel labeloutline = PanelMaker.MakeNewPanel("", 610, 60);
-            PositionInListUI(labeloutline, 439, 0);
+            PositionInUI(labeloutline, 439, 0);
             labeloutline.SendToBack();
 
             TextBox firstnum = BoxMaker.MakeNewBox("", 30);
-            PositionInListUI(firstnum, 550, -50);
+            PositionInUI(firstnum, 550, -50);
 
             TextBox lastnum = BoxMaker.MakeNewBox("", 30);
-            PositionInListUI(lastnum, 550, 50);
+            PositionInUI(lastnum, 550, 50);
 
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
-            PositionInListUI(makelist, 750, 0);
+            PositionInUI(makelist, 750, 0);
 
             makelist.Click += (sender, args) =>
             {
@@ -145,7 +145,7 @@ namespace AlgoView
                     if (int.TryParse(boxlist[i].Text, out int result))
                     {
                         int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
-                        PositionInListUI(boxlist[i], 553, x);
+                        PositionInUI(boxlist[i], 553, x);
 
                         this.Resize += (s, e) =>
                         {
@@ -175,7 +175,7 @@ namespace AlgoView
                 if (stepbackbutton == null)
                 {
                     stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
-                    PositionInListUI(stepbackbutton, 625, -400);
+                    PositionInUI(stepbackbutton, 625, -400);
                     stepbackbutton.Click += StepBackClick;
                 }
                 else
@@ -186,7 +186,7 @@ namespace AlgoView
                 if (stepforwardbutton == null)
                 {
                     stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
-                    PositionInListUI(stepforwardbutton, 625, 400);
+                    PositionInUI(stepforwardbutton, 625, 400);
                     stepforwardbutton.Click += StepForwardClick;
                 }
                 else
@@ -210,11 +210,11 @@ namespace AlgoView
         {
             PictureBox logo = new PictureBox();
             logo.Size = new Size(610,245);
-            PositionInListUI(logo, 39,0);
+            PositionInUI(logo, 39,0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
             this.Controls.Add(logo);
 
-            PositionInListUI(home, 15, -820);
+            PositionInUI(home, 15, -820);
             home.Click += ClickHomeButton;
 
             ComboBox algorithmSelector = new ComboBox();
@@ -232,7 +232,7 @@ namespace AlgoView
             algorithmSelector.Items.Add("Depth first search");
             algorithmSelector.Items.Add("Merge sort");
             algorithmSelector.SelectedIndex = 0;
-            PositionInListUI(algorithmSelector, 333, 0);
+            PositionInUI(algorithmSelector, 333, 0);
 
             
 
@@ -242,7 +242,7 @@ namespace AlgoView
 
                 if (selectedAlgorithm == "Bubble Sort")
                 {
-                    SetUpListUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    SetUpSearchUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
                     {
                         
                     });
@@ -250,41 +250,41 @@ namespace AlgoView
                 else if (selectedAlgorithm == "Binary Search")
                 {
                     Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 385, 30);
-                    PositionInListUI(numtofind, 625, 0);
+                    PositionInUI(numtofind, 625, 0);
 
                     TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(input, 690, 0);
+                    PositionInUI(input, 690, 0);
 
                     Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
-                    PositionInListUI(left, 825, -150);
+                    PositionInUI(left, 825, -150);
                     left.BackColor = Color.LimeGreen;
                     left.ForeColor = Color.Black;
 
                     Label right = LabelMaker.MakeNewLabel("Right", 90, 30);
-                    PositionInListUI(right, 825, 150);
+                    PositionInUI(right, 825, 150);
                     right.BackColor = Color.Blue;
                     right.ForeColor = Color.Black;
 
                     Label mid = LabelMaker.MakeNewLabel("Middle", 90, 30);
-                    PositionInListUI(mid, 825, 0);
+                    PositionInUI(mid, 825, 0);
                     mid.BackColor = Color.Turquoise;
                     mid.ForeColor = Color.Black;
 
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
                         if(int.TryParse(input.Text, out int result))
                         {
                             numtofind.Show();
-                            steps.Clear();
-                            ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), steps);
+                            AlgorithmSteps.Clear();
+                            ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
                             currentStep = 0;
-                            PositionInListUI(stepcount, 500, 0);
+                            PositionInUI(stepcount, 500, 0);
                             stepcount.Hide();
 
-                            if (steps.Count > 0)
+                            if (AlgorithmSteps.Count > 0)
                             {
                                 stepcount.Show();
-                                steps[currentStep].Restore(numbers);
+                                AlgorithmSteps[currentStep].Restore(numbers);
                                 stepforwardbutton.Enabled = true;
                                 stepbackbutton.Enabled = false;
                                 currentBoxes = numbers;
@@ -311,10 +311,10 @@ namespace AlgoView
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
                     Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 385, 30);
-                    PositionInListUI(numtofind, 625, 0);
+                    PositionInUI(numtofind, 625, 0);
 
                     TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(input, 690, 0);
+                    PositionInUI(input, 690, 0);
 
                     /*Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
                     PositionInListUI(left, 825, -150);
@@ -331,17 +331,17 @@ namespace AlgoView
                     mid.BackColor = Color.Turquoise;
                     mid.ForeColor = Color.Black;*/
 
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
                         if (int.TryParse(input.Text, out int result))
                         {
                             numtofind.Show();
-                            steps.Clear();
+                            AlgorithmSteps.Clear();
                             //ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), steps);
                             currentStep = 0;
-                            if (steps.Count > 0)
+                            if (AlgorithmSteps.Count > 0)
                             {
-                                steps[currentStep].Restore(numbers);
+                                AlgorithmSteps[currentStep].Restore(numbers);
                                 stepforwardbutton.Enabled = true;
                                 stepbackbutton.Enabled = false;
                                 currentBoxes = numbers;
@@ -366,28 +366,28 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Exponential Search")
                 {
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Merge sort")
                 {
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Depth first search")
                 {
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Breadth first search")
                 {
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
