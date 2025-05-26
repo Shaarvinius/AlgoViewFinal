@@ -209,16 +209,40 @@ namespace AlgoView
             }
             else if(inputquestion == SortQuestion)
             {
-                ComboBox algorithmSelector = new ComboBox();
-                algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
-                algorithmSelector.Size = new Size(100, 50);
-                algorithmSelector.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
-                algorithmSelector.BackColor = Color.Black;
-                algorithmSelector.ForeColor = Color.Turquoise;
-                algorithmSelector.Items.Add("Yes");
-                algorithmSelector.Items.Add("No");
-                algorithmSelector.SelectedIndex = 0;
-                PositionInListUI(algorithmSelector, 333, 0);
+                ComboBox listType= new ComboBox();
+                listType.DropDownStyle = ComboBoxStyle.DropDownList;
+                listType.Size = new Size(375, 50);
+                listType.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+                listType.BackColor = Color.Black;
+                listType.ForeColor = Color.Turquoise;
+                listType.Items.Add("Completely reverse List?");
+                listType.Items.Add("Yes");
+                listType.Items.Add("No");
+                listType.SelectedIndex = 0;
+                PositionInListUI(listType, 650, 0);
+
+                SortListMaker numberlistmaker = new SortListMaker();
+                TextBox[] boxlist = numberlistmaker.MakeReverseList(firstnum.Text, lastnum.Text);
+
+                listType.SelectedIndexChanged += (s, e) =>
+                {
+                    string listType_reverse= listType.SelectedItem.ToString();
+                    
+                    if(listType_reverse == "Yes")
+                    {
+                        listType.Enabled = false;
+                    }
+                    else if(listType_reverse == "No")
+                    {
+                        listType.Enabled = false;
+                        if(boxlist.Length > 0)
+                        {
+                            boxlist = Array.Empty<TextBox>();
+
+                        }
+                    }
+                };
+
 
                 makelist.Click += (sender, args) =>
                 {
@@ -236,9 +260,6 @@ namespace AlgoView
                         lastnum.Clear();
                         return;
                     }
-
-                    SortListMaker numberlistmaker = new SortListMaker();
-                    TextBox[] boxlist = numberlistmaker.MakeReverseList(firstnum.Text, lastnum.Text);
 
                     int spacing = 50;
 
