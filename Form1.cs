@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.ComponentModel.DataAnnotations;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Xml.Serialization;
 
 
 
@@ -68,6 +69,11 @@ namespace AlgoView
         private Button stepbackbutton;
         private Button stepforwardbutton;
 
+        private Label stepcount = LabelMaker.MakeNewLabel("", 150, 30);
+        void UpdateStepCount()
+        {
+            stepcount.Text = "Step: " + Convert.ToString(currentStep);
+        }
         private void StepBackClick(object sender, EventArgs e)
         {
             if (currentStep > 0)
@@ -76,6 +82,7 @@ namespace AlgoView
                 steps[currentStep].Restore(currentBoxes);
                 stepforwardbutton.Enabled = true;
                 stepbackbutton.Enabled = currentStep > 0;
+                UpdateStepCount();
             }
         }
 
@@ -88,6 +95,7 @@ namespace AlgoView
                 steps[currentStep].Restore(currentBoxes);
                 stepbackbutton.Enabled = true;
                 stepforwardbutton.Enabled = currentStep < steps.Count - 1;
+                UpdateStepCount();
             }
         }
 
@@ -196,6 +204,8 @@ namespace AlgoView
         }
 
 
+        
+
         private void Form1_Load(object sender, EventArgs e)
         {
             PictureBox logo = new PictureBox();
@@ -223,6 +233,8 @@ namespace AlgoView
             algorithmSelector.Items.Add("Merge sort");
             algorithmSelector.SelectedIndex = 0;
             PositionInListUI(algorithmSelector, 333, 0);
+
+            
 
             algorithmSelector.SelectedIndexChanged += (s, e) =>
             {
@@ -266,9 +278,12 @@ namespace AlgoView
                             steps.Clear();
                             ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), steps);
                             currentStep = 0;
+                            PositionInListUI(stepcount, 500, 0);
+                            stepcount.Hide();
 
                             if (steps.Count > 0)
                             {
+                                stepcount.Show();
                                 steps[currentStep].Restore(numbers);
                                 stepforwardbutton.Enabled = true;
                                 stepbackbutton.Enabled = false;
@@ -288,15 +303,65 @@ namespace AlgoView
                             }
                             stepbackbutton.Hide();
                             stepforwardbutton.Hide();
+                            stepcount.Hide();
                             input.Clear();
                         }
                     });
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
+                    Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 385, 30);
+                    PositionInListUI(numtofind, 625, 0);
+
+                    TextBox input = BoxMaker.MakeNewBox("", 30);
+                    PositionInListUI(input, 690, 0);
+
+                    /*Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
+                    PositionInListUI(left, 825, -150);
+                    left.BackColor = Color.LimeGreen;
+                    left.ForeColor = Color.Black;
+
+                    Label right = LabelMaker.MakeNewLabel("Right", 90, 30);
+                    PositionInListUI(right, 825, 150);
+                    right.BackColor = Color.Blue;
+                    right.ForeColor = Color.Black;
+
+                    Label mid = LabelMaker.MakeNewLabel("Middle", 90, 30);
+                    PositionInListUI(mid, 825, 0);
+                    mid.BackColor = Color.Turquoise;
+                    mid.ForeColor = Color.Black;*/
+
                     SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
-
+                        if (int.TryParse(input.Text, out int result))
+                        {
+                            numtofind.Show();
+                            steps.Clear();
+                            //ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), steps);
+                            currentStep = 0;
+                            if (steps.Count > 0)
+                            {
+                                steps[currentStep].Restore(numbers);
+                                stepforwardbutton.Enabled = true;
+                                stepbackbutton.Enabled = false;
+                                currentBoxes = numbers;
+                            }
+                            else
+                            {
+                                MessageBox.Show("No steps were generated.");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid character entered");
+                            foreach (TextBox numberbox in numbers)
+                            {
+                                numberbox.Hide();
+                            }
+                            stepbackbutton.Hide();
+                            stepforwardbutton.Hide();
+                            input.Clear();
+                        }
                     });
                 }
                 else if (selectedAlgorithm == "Exponential Search")
