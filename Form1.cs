@@ -16,10 +16,23 @@ namespace AlgoView
 
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
             this.BackColor = Color.Black;
+        }
+
+        private Button home = ButtonMaker.MakeNewButton("Back to Home", 265, 50);
+        private void ClickHomeButton(object sender, EventArgs e)
+        {
+            foreach (Control controls in this.Controls)
+            {
+                if (controls.Text != "Back to Home" && !(controls is PictureBox) && !(controls is ComboBox && controls.Width == 360))
+                {
+                    controls.Hide();
+                }
+            }
         }
 
         public void Center(Control ctrl, int topoffset, int midoffset)
@@ -35,6 +48,8 @@ namespace AlgoView
             Center(element, topoffset, midoffset);
             this.Resize += (s, e) => Center(element, topoffset, midoffset);
         }
+
+        
 
 
         private TextBox[] GetCurrentTextBoxes()
@@ -188,6 +203,9 @@ namespace AlgoView
             PositionInListUI(logo, 39,0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
             this.Controls.Add(logo);
+
+            PositionInListUI(home, 15, -820);
+            home.Click += ClickHomeButton;
 
             ComboBox algorithmSelector = new ComboBox();
             algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
