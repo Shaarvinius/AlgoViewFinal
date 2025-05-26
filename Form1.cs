@@ -43,7 +43,7 @@ namespace AlgoView
         }
 
 
-        private void PositionInUI(Control element, int topoffset, int midoffset)
+        private void PositionInListUI(Control element, int topoffset, int midoffset)
         {
             this.Controls.Add(element);
             Center(element, topoffset, midoffset);
@@ -100,107 +100,210 @@ namespace AlgoView
         }
 
 
-        private void SetUpSearchUI(string inputquestion, string buttonname, Action<TextBox[]> onListCreated)
+        private const string SearchQuestion = "Enter the first number in the left box and the last in the right box: ";
+        private const string SortQuestion = "Enter the first number in the left box and the last in the right box(sort): ";
+
+        private void SetUpListUI(string inputquestion, string buttonname, Action<TextBox[]> onListCreated)
         {
-            Label userinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
-            PositionInUI(userinput, 444, 0);
+            Label askuserinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
+            PositionInListUI(askuserinput, 444, 0);
 
             Panel labeloutline = PanelMaker.MakeNewPanel("", 610, 60);
-            PositionInUI(labeloutline, 439, 0);
+            PositionInListUI(labeloutline, 439, 0);
             labeloutline.SendToBack();
 
             TextBox firstnum = BoxMaker.MakeNewBox("", 30);
-            PositionInUI(firstnum, 550, -50);
+            PositionInListUI(firstnum, 550, -50);
 
             TextBox lastnum = BoxMaker.MakeNewBox("", 30);
-            PositionInUI(lastnum, 550, 50);
+            PositionInListUI(lastnum, 550, 50);
 
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
-            PositionInUI(makelist, 750, 0);
+            PositionInListUI(makelist, 750, 0);
 
-            makelist.Click += (sender, args) =>
+            if (inputquestion == SearchQuestion)
             {
-                if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last))
+                makelist.Click += (sender, args) =>
                 {
-                    MessageBox.Show("Invalid character inputted. Please enter integers.");
-                    firstnum.Clear();
-                    lastnum.Clear();
-                    return;
-                }
-                if (first >= last)
-                {
-                    MessageBox.Show("First number should be less than the last.");
-                    firstnum.Clear();
-                    lastnum.Clear();
-                    return;
-                }
-
-                ListMaker maker = new ListMaker();
-                TextBox[] boxlist = maker.MakeList(firstnum.Text, lastnum.Text);
-
-                int spacing = 50;
-
-                for (int i = 0; i < boxlist.Length; i++)
-                {
-                    if (int.TryParse(boxlist[i].Text, out int result))
+                    if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last))
                     {
-                        int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
-                        PositionInUI(boxlist[i], 553, x);
+                        MessageBox.Show("Invalid character inputted. Please enter integers.");
+                        firstnum.Clear();
+                        lastnum.Clear();
+                        return;
+                    }
+                    if (first >= last)
+                    {
+                        MessageBox.Show("First number should be less than the last.");
+                        firstnum.Clear();
+                        lastnum.Clear();
+                        return;
+                    }
 
-                        this.Resize += (s, e) =>
+                    SearchListMaker numberlistmaker = new SearchListMaker();
+                    TextBox[] boxlist = numberlistmaker.MakeList(firstnum.Text, lastnum.Text);
+
+                    int spacing = 50;
+
+                    for (int i = 0; i < boxlist.Length; i++)
+                    {
+                        if (int.TryParse(boxlist[i].Text, out int result))
                         {
-                            for (int j = 0; j < boxlist.Length; j++)
+                            int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
+                            PositionInListUI(boxlist[i], 553, x);
+
+                            this.Resize += (s, e) =>
                             {
-                                int newX = (int)((j - (boxlist.Length - 1) / 2.0) * spacing);
-                                Center(boxlist[j], 553, newX);
-                            }
-                        };
+                                for (int j = 0; j < boxlist.Length; j++)
+                                {
+                                    int newX = (int)((j - (boxlist.Length - 1) / 2.0) * spacing);
+                                    Center(boxlist[j], 553, newX);
+                                }
+                            };
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid Character entered. Please enter only integers.");
+                            firstnum.Clear();
+                            lastnum.Clear();
+                            break;
+                        }
+                    }
+
+                    askuserinput.Hide();
+                    firstnum.Hide();
+                    lastnum.Hide();
+                    labeloutline.Hide();
+
+                    Application.DoEvents();
+
+                    if (stepbackbutton == null)
+                    {
+                        stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
+                        PositionInListUI(stepbackbutton, 625, -400);
+                        stepbackbutton.Click += StepBackClick;
                     }
                     else
                     {
-                        MessageBox.Show("Invalid Character entered. Please enter only integers.");
+                        stepbackbutton.Show();
+                    }
+
+                    if (stepforwardbutton == null)
+                    {
+                        stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
+                        PositionInListUI(stepforwardbutton, 625, 400);
+                        stepforwardbutton.Click += StepForwardClick;
+                    }
+                    else
+                    {
+                        stepforwardbutton.Show();
+                    }
+
+                    Application.DoEvents();
+
+                    this.BeginInvoke((MethodInvoker)(() =>
+                    {
+                        onListCreated(boxlist);
+                    }));
+                };
+            }
+            else if(inputquestion == SortQuestion)
+            {
+                ComboBox algorithmSelector = new ComboBox();
+                algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
+                algorithmSelector.Size = new Size(100, 50);
+                algorithmSelector.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+                algorithmSelector.BackColor = Color.Black;
+                algorithmSelector.ForeColor = Color.Turquoise;
+                algorithmSelector.Items.Add("Yes");
+                algorithmSelector.Items.Add("No");
+                algorithmSelector.SelectedIndex = 0;
+                PositionInListUI(algorithmSelector, 333, 0);
+
+                makelist.Click += (sender, args) =>
+                {
+                    if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last))
+                    {
+                        MessageBox.Show("Invalid character inputted. Please enter integers.");
                         firstnum.Clear();
                         lastnum.Clear();
-                        break;
+                        return;
                     }
-                }
+                    if (first >= last)
+                    {
+                        MessageBox.Show("First number should be less than the last.");
+                        firstnum.Clear();
+                        lastnum.Clear();
+                        return;
+                    }
 
-                userinput.Hide();
-                firstnum.Hide();
-                lastnum.Hide();
-                labeloutline.Hide();
+                    SortListMaker numberlistmaker = new SortListMaker();
+                    TextBox[] boxlist = numberlistmaker.MakeReverseList(firstnum.Text, lastnum.Text);
 
-                Application.DoEvents();
+                    int spacing = 50;
 
-                if (stepbackbutton == null)
-                {
-                    stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
-                    PositionInUI(stepbackbutton, 625, -400);
-                    stepbackbutton.Click += StepBackClick;
-                }
-                else
-                {
-                    stepbackbutton.Show();
-                }
+                    for (int i = 0; i < boxlist.Length; i++)
+                    {
+                        if (int.TryParse(boxlist[i].Text, out int result))
+                        {
+                            int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
+                            PositionInListUI(boxlist[i], 553, x);
 
-                if (stepforwardbutton == null)
-                {
-                    stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
-                    PositionInUI(stepforwardbutton, 625, 400);
-                    stepforwardbutton.Click += StepForwardClick;
-                }
-                else
-                {
-                    stepforwardbutton.Show();
-                }
+                            this.Resize += (s, e) =>
+                            {
+                                for (int j = 0; j < boxlist.Length; j++)
+                                {
+                                    int newX = (int)((j - (boxlist.Length - 1) / 2.0) * spacing);
+                                    Center(boxlist[j], 553, newX);
+                                }
+                            };
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid Character entered. Please enter only integers.");
+                            firstnum.Clear();
+                            lastnum.Clear();
+                            break;
+                        }
+                    }
 
-                Application.DoEvents();
+                    askuserinput.Hide();
+                    firstnum.Hide();
+                    lastnum.Hide();
+                    labeloutline.Hide();
 
-                this.BeginInvoke((MethodInvoker)(() =>
-                {
-                    onListCreated(boxlist);
-                }));
-            };
+                    Application.DoEvents();
+
+                    if (stepbackbutton == null)
+                    {
+                        stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
+                        PositionInListUI(stepbackbutton, 625, -400);
+                        stepbackbutton.Click += StepBackClick;
+                    }
+                    else
+                    {
+                        stepbackbutton.Show();
+                    }
+
+                    if (stepforwardbutton == null)
+                    {
+                        stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
+                        PositionInListUI(stepforwardbutton, 625, 400);
+                        stepforwardbutton.Click += StepForwardClick;
+                    }
+                    else
+                    {
+                        stepforwardbutton.Show();
+                    }
+
+                    Application.DoEvents();
+
+                    this.BeginInvoke((MethodInvoker)(() =>
+                    {
+                        onListCreated(boxlist);
+                    }));
+                };
+            }
         }
 
 
@@ -210,11 +313,11 @@ namespace AlgoView
         {
             PictureBox logo = new PictureBox();
             logo.Size = new Size(610,245);
-            PositionInUI(logo, 39,0);
+            PositionInListUI(logo, 39,0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
             this.Controls.Add(logo);
 
-            PositionInUI(home, 15, -820);
+            PositionInListUI(home, 15, -820);
             home.Click += ClickHomeButton;
 
             ComboBox algorithmSelector = new ComboBox();
@@ -232,7 +335,7 @@ namespace AlgoView
             algorithmSelector.Items.Add("Depth first search");
             algorithmSelector.Items.Add("Merge sort");
             algorithmSelector.SelectedIndex = 0;
-            PositionInUI(algorithmSelector, 333, 0);
+            PositionInListUI(algorithmSelector, 333, 0);
 
             
 
@@ -242,7 +345,7 @@ namespace AlgoView
 
                 if (selectedAlgorithm == "Bubble Sort")
                 {
-                    SetUpSearchUI("Enter a list of numbers separated by spaces: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
                         
                     });
@@ -250,27 +353,27 @@ namespace AlgoView
                 else if (selectedAlgorithm == "Binary Search")
                 {
                     Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 385, 30);
-                    PositionInUI(numtofind, 625, 0);
+                    PositionInListUI(numtofind, 625, 0);
 
                     TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInUI(input, 690, 0);
+                    PositionInListUI(input, 690, 0);
 
                     Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
-                    PositionInUI(left, 825, -150);
+                    PositionInListUI(left, 825, -150);
                     left.BackColor = Color.LimeGreen;
                     left.ForeColor = Color.Black;
 
                     Label right = LabelMaker.MakeNewLabel("Right", 90, 30);
-                    PositionInUI(right, 825, 150);
+                    PositionInListUI(right, 825, 150);
                     right.BackColor = Color.Blue;
                     right.ForeColor = Color.Black;
 
                     Label mid = LabelMaker.MakeNewLabel("Middle", 90, 30);
-                    PositionInUI(mid, 825, 0);
+                    PositionInListUI(mid, 825, 0);
                     mid.BackColor = Color.Turquoise;
                     mid.ForeColor = Color.Black;
 
-                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI(SearchQuestion, "Enter", (TextBox[] numbers) =>
                     {
                         if(int.TryParse(input.Text, out int result))
                         {
@@ -278,7 +381,7 @@ namespace AlgoView
                             AlgorithmSteps.Clear();
                             ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
                             currentStep = 0;
-                            PositionInUI(stepcount, 500, 0);
+                            PositionInListUI(stepcount, 500, 0);
                             stepcount.Hide();
 
                             if (AlgorithmSteps.Count > 0)
@@ -310,30 +413,9 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
-                    Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 385, 30);
-                    PositionInUI(numtofind, 625, 0);
-
-                    TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInUI(input, 690, 0);
-
-                    /*Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
-                    PositionInListUI(left, 825, -150);
-                    left.BackColor = Color.LimeGreen;
-                    left.ForeColor = Color.Black;
-
-                    Label right = LabelMaker.MakeNewLabel("Right", 90, 30);
-                    PositionInListUI(right, 825, 150);
-                    right.BackColor = Color.Blue;
-                    right.ForeColor = Color.Black;
-
-                    Label mid = LabelMaker.MakeNewLabel("Middle", 90, 30);
-                    PositionInListUI(mid, 825, 0);
-                    mid.BackColor = Color.Turquoise;
-                    mid.ForeColor = Color.Black;*/
-
-                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        if (int.TryParse(input.Text, out int result))
+                        /*if (int.TryParse(input.Text, out int result))
                         {
                             numtofind.Show();
                             AlgorithmSteps.Clear();
@@ -361,33 +443,33 @@ namespace AlgoView
                             stepbackbutton.Hide();
                             stepforwardbutton.Hide();
                             input.Clear();
-                        }
+                        }*/
                     });
                 }
                 else if (selectedAlgorithm == "Exponential Search")
                 {
-                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI(SearchQuestion, "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Merge sort")
                 {
-                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Depth first search")
                 {
-                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
                 }
                 else if (selectedAlgorithm == "Breadth first search")
                 {
-                    SetUpSearchUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
                     });
