@@ -61,4 +61,36 @@ public class ListMethods
             MessageBox.Show("Number not found in array");
         }
     }
+
+
+    public static void BubbleSort(TextBox[] list, List<ListSnapshot> sortingsteps)
+    {
+        int temp;
+        int currentval;
+        int nextval;
+        int length = list.Length;
+        bool swapped = true;
+
+        while(length > 0 && swapped)
+        {
+            swapped = false;
+            length--;
+            for(int i = 0; i < length; i++)
+            {
+                currentval = Convert.ToInt32(list[i].Text);
+                nextval = Convert.ToInt32((list[i+1].Text));
+                if(currentval > nextval)
+                {
+                    temp = nextval;
+                    nextval = currentval;
+                    currentval = temp;
+
+                    sortingsteps.Add(new ListSnapshot(list));
+                    list[i].Text = Convert.ToString(currentval);
+                    list[i + 1].Text = Convert.ToString(nextval);
+                    swapped = true;
+                }
+            }
+        }
+    }
 }

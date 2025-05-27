@@ -243,6 +243,11 @@ namespace AlgoView
                     {
                         boxlist = numberlistmaker.MakeRandomList(firstnum.Text, lastnum.Text);
                     }
+                    else
+                    {
+                        makelist.Enabled = false;
+                        MessageBox.Show("Please make choice about reversing list");
+                    }
 
                     int spacing = 50;
 
@@ -351,7 +356,27 @@ namespace AlgoView
                     algorithmSelector.Enabled = false;
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        
+                        stepforwardbutton.Show();
+                        stepbackbutton.Show();
+                        AlgorithmSteps.Clear();
+                        ListMethods.BubbleSort(numbers, AlgorithmSteps);
+                        currentStep = 0;
+
+                        if (AlgorithmSteps.Count > 0)
+                        {
+                            stepcount.Show();
+                            AlgorithmSteps[currentStep].Restore(numbers);
+                            stepforwardbutton.Enabled = true;
+                            stepbackbutton.Enabled = false;
+                            currentBoxes = numbers;
+
+                            stepforwardbutton.Show();
+                            stepbackbutton.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No steps were generated.");
+                        }
                     });
                 }
                 else if (selectedAlgorithm == "Binary Search")
@@ -426,7 +451,8 @@ namespace AlgoView
 
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        
+                        stepforwardbutton.Show();
+                        stepbackbutton.Show();
                     });
                 }
                 else if (selectedAlgorithm == "Exponential Search")
@@ -435,7 +461,8 @@ namespace AlgoView
 
                     SetUpListUI(SearchQuestion, "Enter", (TextBox[] numbers) =>
                     {
-
+                        stepforwardbutton.Show();
+                        stepbackbutton.Show();
                     });
                 }
                 else if (selectedAlgorithm == "Merge sort")
@@ -444,7 +471,8 @@ namespace AlgoView
 
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
-
+                        stepforwardbutton.Show();
+                        stepbackbutton.Show();
                     });
                 }
                 else if (selectedAlgorithm == "Depth first search")
