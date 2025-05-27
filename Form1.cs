@@ -372,6 +372,7 @@ namespace AlgoView
                         stepbackbutton.Show();
                         AlgorithmSteps.Clear();
                         ListMethods.BubbleSort(numbers, AlgorithmSteps);
+                        PositionInListUI(stepcount, 500, 0);
                         currentStep = 0;
 
                         if (AlgorithmSteps.Count > 0)
