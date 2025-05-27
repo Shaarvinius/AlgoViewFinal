@@ -35,7 +35,6 @@ namespace AlgoView
                 }
             }
 
-
             algorithmSelector.SelectedIndex = 0;
             algorithmSelector.Enabled = true;
         }
@@ -382,7 +381,6 @@ namespace AlgoView
                             stepforwardbutton.Enabled = true;
                             stepbackbutton.Enabled = false;
                             currentBoxes = numbers;
-
                             stepforwardbutton.Show();
                             stepbackbutton.Show();
                         }
@@ -466,6 +464,25 @@ namespace AlgoView
                     {
                         stepforwardbutton.Show();
                         stepbackbutton.Show();
+                        AlgorithmSteps.Clear();
+                        ListMethods.BubbleSort(numbers, AlgorithmSteps);
+                        PositionInListUI(stepcount, 500, 0);
+                        currentStep = 0;
+
+                        if (AlgorithmSteps.Count > 0)
+                        {
+                            stepcount.Show();
+                            AlgorithmSteps[currentStep].Restore(numbers);
+                            stepforwardbutton.Enabled = true;
+                            stepbackbutton.Enabled = false;
+                            currentBoxes = numbers;
+                            stepforwardbutton.Show();
+                            stepbackbutton.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No steps were generated.");
+                        }
                     });
                 }
                 else if (selectedAlgorithm == "Exponential Search")
@@ -486,6 +503,25 @@ namespace AlgoView
                     {
                         stepforwardbutton.Show();
                         stepbackbutton.Show();
+                        AlgorithmSteps.Clear();
+                        ListMethods.BubbleSort(numbers, AlgorithmSteps);
+                        PositionInListUI(stepcount, 500, 0);
+                        currentStep = 0;
+
+                        if (AlgorithmSteps.Count > 0)
+                        {
+                            stepcount.Show();
+                            AlgorithmSteps[currentStep].Restore(numbers);
+                            stepforwardbutton.Enabled = true;
+                            stepbackbutton.Enabled = false;
+                            currentBoxes = numbers;
+                            stepforwardbutton.Show();
+                            stepbackbutton.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No steps were generated.");
+                        }
                     });
                 }
                 else if (selectedAlgorithm == "Depth first search")

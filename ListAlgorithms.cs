@@ -79,18 +79,45 @@ public class ListMethods
             {
                 currentval = Convert.ToInt32(list[i].Text);
                 nextval = Convert.ToInt32((list[i+1].Text));
+
+                sortingsteps.Add(new ListSnapshot(list));
+                list[i].ForeColor = Color.White;
+                list[i + 1].ForeColor = Color.White;
+                if (currentval > nextval)
+                {
+
+                    list[i + 1].BackColor = Color.DarkRed;
+                    list[i].BackColor = Color.Blue;
+                }
+                else
+                {
+                    list[i].BackColor = Color.DarkRed;
+                    list[i+1].BackColor = Color.Blue;
+                }
+
                 if(currentval > nextval)
                 {
                     temp = nextval;
                     nextval = currentval;
                     currentval = temp;
 
-                    sortingsteps.Add(new ListSnapshot(list));
-
                     list[i].Text = Convert.ToString(currentval);
                     list[i + 1].Text = Convert.ToString(nextval);
-                    sortingsteps.Add(new ListSnapshot(list));
                     swapped = true;
+
+                    sortingsteps.Add(new ListSnapshot(list));
+                    list[i].BackColor = Color.Black;
+                    list[i+1].BackColor = Color.Black;
+                    list[i].ForeColor = Color.Turquoise;
+                    list[i+1].ForeColor = Color.Turquoise;
+                }
+                else
+                {
+                    sortingsteps.Add(new ListSnapshot(list));
+                    list[i + 1].BackColor = Color.Black;
+                    list[i].BackColor = Color.Black;
+                    list[i].ForeColor = Color.Turquoise;
+                    list[i + 1].ForeColor = Color.Turquoise;
                 }
             }
         }
