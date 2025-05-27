@@ -85,7 +85,6 @@ public class ListMethods
                 list[i + 1].ForeColor = Color.White;
                 if (currentval > nextval)
                 {
-
                     list[i + 1].BackColor = Color.DarkRed;
                     list[i].BackColor = Color.Blue;
                 }
@@ -111,8 +110,71 @@ public class ListMethods
                     list[i + 1].Text = Convert.ToString(nextval);
                     swapped = true;
                 }
+                else
+                {
+                    list[i].BackColor = Color.Black;
+                    list[i + 1].BackColor = Color.Black;
+                    list[i].ForeColor = Color.Turquoise;
+                    list[i + 1].ForeColor = Color.Turquoise;
+                }
             }
         }
         sortingsteps.Add(new ListSnapshot(list));
+    }
+
+    public static void BubbleSortAuto(TextBox[] list)
+    {
+        int length = list.Length;
+        bool swapped = true;
+
+        while (length > 0 && swapped)
+        {
+            swapped = false;
+            length--;
+
+            for (int i = 0; i < length; i++)
+            {
+                int currentVal = Convert.ToInt32(list[i].Text);
+                int nextVal = Convert.ToInt32(list[i + 1].Text);
+
+                if (currentVal > nextVal)
+                {
+                    list[i].BackColor = Color.Blue;
+                    list[i + 1].BackColor = Color.DarkRed;
+                }
+                else
+                {
+                    list[i].BackColor = Color.DarkRed;
+                    list[i + 1].BackColor = Color.Blue;
+                }
+                list[i].ForeColor = Color.White;
+                list[i + 1].ForeColor = Color.White;
+
+                list[i].Refresh();
+                list[i + 1].Refresh();
+                Thread.Sleep(25);
+
+                if (currentVal > nextVal)
+                {
+                    string tempText = list[i].Text;
+                    list[i].Text = list[i + 1].Text;
+                    list[i + 1].Text = tempText;
+                    swapped = true;
+
+                    list[i].Refresh();
+                    list[i + 1].Refresh();
+                    Thread.Sleep(25);
+                }
+
+                list[i].BackColor = Color.Black;
+                list[i + 1].BackColor = Color.Black;
+                list[i].ForeColor = Color.Turquoise;
+                list[i + 1].ForeColor = Color.Turquoise;
+
+                list[i].Refresh();
+                list[i + 1].Refresh();
+                Thread.Sleep(25);
+            }
+        }
     }
 }
