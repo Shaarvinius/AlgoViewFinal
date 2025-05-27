@@ -210,6 +210,21 @@ namespace AlgoView
                 SortListMaker numberlistmaker = new SortListMaker();
                 TextBox[] boxlist = Array.Empty<TextBox>();
 
+                string listType_reverse = listType.SelectedItem.ToString();
+                makelist.Enabled = false;
+                listType.SelectedIndexChanged += (object sender, EventArgs e)=>
+                {
+                    listType_reverse = listType.SelectedItem.ToString();
+                    if (listType_reverse == "Yes")
+                    {
+                        makelist.Enabled = true;
+                    }
+                    else if (listType_reverse == "No")
+                    {
+                        makelist.Enabled = true;
+                    }
+                };
+
                 makelist.Click += (sender, args) =>
                 {
                     if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last))
@@ -226,8 +241,6 @@ namespace AlgoView
                         lastnum.Clear();
                         return;
                     }
-                    
-                    string listType_reverse = listType.SelectedItem.ToString();
 
                     foreach (TextBox box in boxlist)
                     {
@@ -243,11 +256,8 @@ namespace AlgoView
                     {
                         boxlist = numberlistmaker.MakeRandomList(firstnum.Text, lastnum.Text);
                     }
-                    else
-                    {
-                        makelist.Enabled = false;
-                        MessageBox.Show("Please make choice about reversing list");
-                    }
+
+                    listType.Enabled = false;
 
                     int spacing = 50;
 
@@ -317,6 +327,8 @@ namespace AlgoView
 
         private ComboBox algorithmSelector;
         
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {

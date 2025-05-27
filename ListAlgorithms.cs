@@ -86,8 +86,10 @@ public class ListMethods
                     currentval = temp;
 
                     sortingsteps.Add(new ListSnapshot(list));
+
                     list[i].Text = Convert.ToString(currentval);
                     list[i + 1].Text = Convert.ToString(nextval);
+                    sortingsteps.Add(new ListSnapshot(list));
                     swapped = true;
                 }
             }
