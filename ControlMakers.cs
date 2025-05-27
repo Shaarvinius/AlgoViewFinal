@@ -37,7 +37,7 @@ public class SortListMaker
 
         Random randomnum = new Random();
         int listelement;
-
+        
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
