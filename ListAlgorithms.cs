@@ -101,25 +101,18 @@ public class ListMethods
                     nextval = currentval;
                     currentval = temp;
 
-                    list[i].Text = Convert.ToString(currentval);
-                    list[i + 1].Text = Convert.ToString(nextval);
-                    swapped = true;
-
                     sortingsteps.Add(new ListSnapshot(list));
                     list[i].BackColor = Color.Black;
                     list[i+1].BackColor = Color.Black;
                     list[i].ForeColor = Color.Turquoise;
                     list[i+1].ForeColor = Color.Turquoise;
-                }
-                else
-                {
-                    sortingsteps.Add(new ListSnapshot(list));
-                    list[i + 1].BackColor = Color.Black;
-                    list[i].BackColor = Color.Black;
-                    list[i].ForeColor = Color.Turquoise;
-                    list[i + 1].ForeColor = Color.Turquoise;
+
+                    list[i].Text = Convert.ToString(currentval);
+                    list[i + 1].Text = Convert.ToString(nextval);
+                    swapped = true;
                 }
             }
         }
+        sortingsteps.Add(new ListSnapshot(list));
     }
 }
