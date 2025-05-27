@@ -127,6 +127,7 @@ namespace AlgoView
 
             Application.DoEvents();
 
+            bool listmade = false;
             if (inputquestion == SearchQuestion)
             {
                 makelist.Click += (sender, args) =>
@@ -183,29 +184,8 @@ namespace AlgoView
 
                     Application.DoEvents();
 
-                    if (stepbackbutton == null)
-                    {
-                        stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
-                        PositionInListUI(stepbackbutton, 625, -400);
-                        stepbackbutton.Click += StepBackClick;
-                    }
-                    else
-                    {
-                        stepbackbutton.Show();
-                    }
+                    
 
-                    if (stepforwardbutton == null)
-                    {
-                        stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
-                        PositionInListUI(stepforwardbutton, 625, 400);
-                        stepforwardbutton.Click += StepForwardClick;
-                    }
-                    else
-                    {
-                        stepforwardbutton.Show();
-                    }
-
-                    Application.DoEvents();
 
                     this.BeginInvoke((MethodInvoker)(() =>
                     {
@@ -298,35 +278,35 @@ namespace AlgoView
 
                     Application.DoEvents();
 
-                    if (stepbackbutton == null)
-                    {
-                        stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
-                        PositionInListUI(stepbackbutton, 625, -400);
-                        stepbackbutton.Click += StepBackClick;
-                    }
-                    else
-                    {
-                        stepbackbutton.Show();
-                    }
-
-                    if (stepforwardbutton == null)
-                    {
-                        stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
-                        PositionInListUI(stepforwardbutton, 625, 400);
-                        stepforwardbutton.Click += StepForwardClick;
-                    }
-                    else
-                    {
-                        stepforwardbutton.Show();
-                    }
-
-                    Application.DoEvents();
-
                     this.BeginInvoke((MethodInvoker)(() =>
                     {
                         onListCreated(boxlist);
                     }));
                 };
+            }
+
+            if (stepbackbutton == null)
+            {
+                stepbackbutton = ButtonMaker.MakeNewButton("Step back", 250, 50);
+                PositionInListUI(stepbackbutton, 625, -400);
+                stepbackbutton.Click += StepBackClick;
+                stepbackbutton.Hide();
+            }
+            else
+            {
+                stepbackbutton.Hide();
+            }
+
+            if (stepforwardbutton == null)
+            {
+                stepforwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
+                PositionInListUI(stepforwardbutton, 625, 400);
+                stepforwardbutton.Click += StepForwardClick;
+                stepforwardbutton.Hide();
+            }
+            else
+            {
+                stepforwardbutton.Hide();
             }
         }
 
@@ -417,6 +397,9 @@ namespace AlgoView
                                 stepforwardbutton.Enabled = true;
                                 stepbackbutton.Enabled = false;
                                 currentBoxes = numbers;
+
+                                stepforwardbutton.Show();
+                                stepbackbutton.Show();
                             }
                             else
                             {
@@ -443,35 +426,7 @@ namespace AlgoView
 
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        /*if (int.TryParse(input.Text, out int result))
-                        {
-                            numtofind.Show();
-                            AlgorithmSteps.Clear();
-                            //ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), steps);
-                            currentStep = 0;
-                            if (AlgorithmSteps.Count > 0)
-                            {
-                                AlgorithmSteps[currentStep].Restore(numbers);
-                                stepforwardbutton.Enabled = true;
-                                stepbackbutton.Enabled = false;
-                                currentBoxes = numbers;
-                            }
-                            else
-                            {
-                                MessageBox.Show("No steps were generated.");
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Invalid character entered");
-                            foreach (TextBox numberbox in numbers)
-                            {
-                                numberbox.Hide();
-                            }
-                            stepbackbutton.Hide();
-                            stepforwardbutton.Hide();
-                            input.Clear();
-                        }*/
+                        
                     });
                 }
                 else if (selectedAlgorithm == "Exponential Search")
