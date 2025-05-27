@@ -34,6 +34,10 @@ namespace AlgoView
                     controls.Hide();
                 }
             }
+
+
+            algorithmSelector.SelectedIndex = 0;
+            algorithmSelector.Enabled = true;
         }
 
         public void Center(Control ctrl, int topoffset, int midoffset)
@@ -226,7 +230,6 @@ namespace AlgoView
                 SortListMaker numberlistmaker = new SortListMaker();
                 TextBox[] boxlist = Array.Empty<TextBox>();
 
-
                 makelist.Click += (sender, args) =>
                 {
                     if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last))
@@ -258,7 +261,7 @@ namespace AlgoView
                     }
                     else if (listType_reverse == "No")
                     {
-                        boxlist = numberlistmaker.MakeNormalList(firstnum.Text, lastnum.Text);
+                        boxlist = numberlistmaker.MakeRandomList(firstnum.Text, lastnum.Text);
                     }
 
                     int spacing = 50;
@@ -327,7 +330,7 @@ namespace AlgoView
             }
         }
 
-
+        private ComboBox algorithmSelector;
         
 
         private void Form1_Load(object sender, EventArgs e)
@@ -341,7 +344,7 @@ namespace AlgoView
             PositionInListUI(home, 15, -820);
             home.Click += ClickHomeButton;
 
-            ComboBox algorithmSelector = new ComboBox();
+            algorithmSelector = new ComboBox();
             algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             algorithmSelector.Size = new Size(360, 50);
             algorithmSelector.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
@@ -355,10 +358,9 @@ namespace AlgoView
             algorithmSelector.Items.Add("Breadth first search");
             algorithmSelector.Items.Add("Depth first search");
             algorithmSelector.Items.Add("Merge sort");
-            algorithmSelector.SelectedIndex = 0;
             PositionInListUI(algorithmSelector, 333, 0);
 
-            
+
 
             algorithmSelector.SelectedIndexChanged += (s, e) =>
             {
@@ -366,6 +368,7 @@ namespace AlgoView
 
                 if (selectedAlgorithm == "Bubble Sort")
                 {
+                    algorithmSelector.Enabled = false;
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
                         
@@ -373,6 +376,8 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Binary Search")
                 {
+                    algorithmSelector.Enabled = false;
+
                     Label numtofind = LabelMaker.MakeNewLabel("input number to search for", 385, 30);
                     PositionInListUI(numtofind, 625, 0);
 
@@ -434,6 +439,8 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
                 {
+                    algorithmSelector.Enabled = false;
+
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
                         /*if (int.TryParse(input.Text, out int result))
@@ -469,6 +476,8 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Exponential Search")
                 {
+                    algorithmSelector.Enabled = false;
+
                     SetUpListUI(SearchQuestion, "Enter", (TextBox[] numbers) =>
                     {
 
@@ -476,6 +485,8 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Merge sort")
                 {
+                    algorithmSelector.Enabled = false;
+
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
 
@@ -483,6 +494,7 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Depth first search")
                 {
+                    algorithmSelector.Enabled = false;
                     SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 
@@ -490,6 +502,7 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Breadth first search")
                 {
+                    algorithmSelector.Enabled = false;
                     SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
 

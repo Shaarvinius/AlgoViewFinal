@@ -30,16 +30,22 @@ public class SearchListMaker
 
 public class SortListMaker
 {
-    public TextBox[] MakeNormalList(string firstnum, string lastnum)
+    public TextBox[] MakeRandomList(string firstnum, string lastnum)
     {
         int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
         TextBox[] list = new TextBox[length];
+
+        Random randomnum = new Random();
+        int listelement;
 
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
             list[i].Size = new Size(35, 35);
-            list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
+
+            listelement = randomnum.Next(Convert.ToInt32(firstnum), Convert.ToInt32(lastnum) + 1);
+            list[i].Text = Convert.ToString(listelement);
+
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
