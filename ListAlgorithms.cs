@@ -124,61 +124,72 @@ public class ListMethods
     }
 
 
-    public static void BubbleSortAuto(TextBox[] list)
+    public static void BubbleSortAuto(TextBox[] list, Form parentform, CancellationToken cancelsort)
     {
-        int length = list.Length;
-        bool swapped = true;
-
-        while(length > 0)
+        Task.Run(() =>
         {
-            swapped = false;
-            length--;
+            int length = list.Length;
+            bool swapped = true;
 
-            for(int i = 0; i < length; i++)
+            while (length > 0)
             {
-                int currentVal = Convert.ToInt32(list[i].Text); 
-                int nextVal = Convert.ToInt32(list[i+1].Text);
+                swapped = false;
+                length--;
 
-                if(currentVal < nextVal)
+                for (int i = 0; i < length; i++)
                 {
-                    list[i].BackColor = Color.CornflowerBlue;
-                    list[i + 1].BackColor = Color.Crimson;
-                }
-                else
-                {
-                    list[i + 1].BackColor = Color.CornflowerBlue;
-                    list[i].BackColor = Color.Crimson;
-                }
-                list[i].ForeColor = Color.White;
-                list[i+1].ForeColor = Color.White;
+                    if (cancelsort.IsCancellationRequested)
+                    {
+                        return;
+                    }
 
-                list[i].Refresh();
-                list[i + 1].Refresh();
-                Thread.Sleep(30);
+                    int currentVal = Convert.ToInt32(list[i].Text);
+                    int nextVal = Convert.ToInt32(list[i + 1].Text);
 
-                if(currentVal > nextVal)
-                {
-                    string temp = list[i].Text;
-                    list[i].Text = list[i + 1].Text;
-                    list[i + 1].Text = temp;
-                    swapped = true;
+                    parentform.Invoke(() =>
+                    {
 
-                    list[i].Refresh();
-                    list[i + 1].Refresh();
+                        if (currentVal < nextVal)
+                        {
+                            list[i].BackColor = Color.CornflowerBlue;
+                            list[i + 1].BackColor = Color.Crimson;
+                        }
+                        else
+                        {
+                            list[i + 1].BackColor = Color.CornflowerBlue;
+                            list[i].BackColor = Color.Crimson;
+                        }
+                        list[i].ForeColor = Color.White;
+                        list[i + 1].ForeColor = Color.White;
+                    });
+
+                    Thread.Sleep(30);
+
+                    if (currentVal > nextVal)
+                    {
+                        parentform.Invoke(() =>
+                        {
+
+                            string temp = list[i].Text;
+                            list[i].Text = list[i + 1].Text;
+                            list[i + 1].Text = temp;
+                        });
+
+                        swapped = true;
+                        Thread.Sleep(30);
+                    }
+
+                    parentform.Invoke(() =>
+                    {
+                        list[i].BackColor = Color.Black;
+                        list[i + 1].BackColor = Color.Black;
+                        list[i].ForeColor = Color.Turquoise;
+                        list[i + 1].ForeColor = Color.Turquoise;
+                    });
+
                     Thread.Sleep(30);
                 }
-
-                list[i].BackColor = Color.Black;
-                list[i + 1].BackColor = Color.Black;
-                list[i].ForeColor = Color.Turquoise;
-                list[i + 1].ForeColor = Color.Turquoise;
-
-                list[i].Refresh();
-                list[i + 1].Refresh();
-                Thread.Sleep(30);
             }
-
-            
-        }
+        }, cancelsort);
     }
 }

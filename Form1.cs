@@ -354,7 +354,6 @@ namespace AlgoView
             PositionInListUI(algorithmSelector, 333, 0);
 
 
-
             algorithmSelector.SelectedIndexChanged += (s, e) =>
             {
                 string selectedAlgorithm = algorithmSelector.SelectedItem.ToString();
@@ -368,7 +367,7 @@ namespace AlgoView
 
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        if (sortmode.Checked = false)
+                        if(sortmode.Checked == false)
                         {
                             StepForwardbutton.Show();
                             StepBackButton.Show();
