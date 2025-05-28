@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -170,6 +171,60 @@ public class ListMethods
                 list[i + 1].ForeColor = Color.Turquoise;
                 await Task.Delay(30);
             }
+        }
+    }
+
+
+    public void ExponentialSearch(TextBox[] list, int target)
+    {
+        int item;
+        int upperbound = 1;
+        int lowerbound = 0;
+        while (upperbound < list.Length)
+        {
+            item = Convert.ToInt32(list[upperbound].Text);
+            if (item < target)
+            {
+                upperbound = upperbound * 2;
+            }
+            else
+            {
+                lowerbound = upperbound / 2;
+                break;
+            }
+        }
+
+        if(upperbound >= list.Length)
+        {
+            upperbound = list.Length - 1;
+        }
+
+        int midVal;
+        bool numfound = false;
+        while (lowerbound <= upperbound)
+        {
+            int mid = (lowerbound + upperbound) / 2;
+            midVal = Convert.ToInt32(list[mid].Text);
+
+            if (midVal < target)
+            {
+                lowerbound = mid + 1;
+            }
+            else if (midVal > target)
+            {
+                upperbound = mid - 1;
+            }
+            else
+            {
+                MessageBox.Show(target + " found at index " + mid);
+                numfound = true;
+                break;
+            }
+        }
+
+        if (!numfound)
+        {
+            MessageBox.Show("Number not found in array");
         }
     }
 }
