@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -125,50 +126,46 @@ public class ListMethods
 
     public static void BubbleSortAuto(TextBox[] list)
     {
-
-    }
-    /*public static void BubbleSortAuto(TextBox[] list)
-    {
         int length = list.Length;
         bool swapped = true;
 
-        while (length > 0 && swapped)
+        while(length > 0)
         {
             swapped = false;
             length--;
 
-            for (int i = 0; i < length; i++)
+            for(int i = 0; i < length; i++)
             {
-                int currentVal = Convert.ToInt32(list[i].Text);
-                int nextVal = Convert.ToInt32(list[i + 1].Text);
+                int currentVal = Convert.ToInt32(list[i].Text); 
+                int nextVal = Convert.ToInt32(list[i+1].Text);
 
-                if (currentVal > nextVal)
+                if(currentVal < nextVal)
                 {
-                    list[i].BackColor = Color.Blue;
-                    list[i + 1].BackColor = Color.DarkRed;
+                    list[i].BackColor = Color.CornflowerBlue;
+                    list[i + 1].BackColor = Color.Crimson;
                 }
                 else
                 {
-                    list[i].BackColor = Color.DarkRed;
-                    list[i + 1].BackColor = Color.Blue;
+                    list[i + 1].BackColor = Color.CornflowerBlue;
+                    list[i].BackColor = Color.Crimson;
                 }
                 list[i].ForeColor = Color.White;
-                list[i + 1].ForeColor = Color.White;
+                list[i+1].ForeColor = Color.White;
 
                 list[i].Refresh();
                 list[i + 1].Refresh();
-                Thread.Sleep(25);
+                Thread.Sleep(30);
 
-                if (currentVal > nextVal)
+                if(currentVal > nextVal)
                 {
-                    string tempText = list[i].Text;
+                    string temp = list[i].Text;
                     list[i].Text = list[i + 1].Text;
-                    list[i + 1].Text = tempText;
+                    list[i + 1].Text = temp;
                     swapped = true;
 
                     list[i].Refresh();
                     list[i + 1].Refresh();
-                    Thread.Sleep(25);
+                    Thread.Sleep(30);
                 }
 
                 list[i].BackColor = Color.Black;
@@ -178,8 +175,10 @@ public class ListMethods
 
                 list[i].Refresh();
                 list[i + 1].Refresh();
-                Thread.Sleep(25);
+                Thread.Sleep(30);
             }
+
+            
         }
-    }*/
+    }
 }

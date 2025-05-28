@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Xml.Serialization;
+using CheckBox = System.Windows.Forms.CheckBox;
 
 
 
@@ -360,29 +361,41 @@ namespace AlgoView
 
                 if (selectedAlgorithm == "Bubble Sort")
                 {
+                    CheckBox sortmode = CheckBoxMaker.MakeNewCheckBox("Auto-Sort");
+                    PositionInListUI(sortmode, 900, 0);
+
                     algorithmSelector.Enabled = false;
+
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        StepForwardbutton.Show();
-                        StepBackButton.Show();
-                        AlgorithmSteps.Clear();
-                        ListMethods.BubbleSort(numbers, AlgorithmSteps);
-                        PositionInListUI(stepcount, 500, 0);
-                        currentStep = 0;
-
-                        if (AlgorithmSteps.Count > 0)
+                        if (sortmode.Checked = false)
                         {
-                            stepcount.Show();
-                            AlgorithmSteps[currentStep].Restore(numbers);
-                            StepForwardbutton.Enabled = true;
-                            StepBackButton.Enabled = false;
-                            currentBoxes = numbers;
                             StepForwardbutton.Show();
                             StepBackButton.Show();
+                            AlgorithmSteps.Clear();
+                            ListMethods.BubbleSort(numbers, AlgorithmSteps);
+                            PositionInListUI(stepcount, 500, 0);
+                            currentStep = 0;
+
+                            if (AlgorithmSteps.Count > 0)
+                            {
+                                stepcount.Show();
+                                AlgorithmSteps[currentStep].Restore(numbers);
+                                StepForwardbutton.Enabled = true;
+                                StepBackButton.Enabled = false;
+                                currentBoxes = numbers;
+                                StepForwardbutton.Show();
+                                StepBackButton.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("No steps were generated.");
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("No steps were generated.");
+                            sortmode.Enabled = false;
+                            ListMethods.BubbleSortAuto(numbers);
                         }
                     });
                 }

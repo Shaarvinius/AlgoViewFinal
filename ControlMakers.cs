@@ -139,3 +139,19 @@ public static class LabelMaker
         return label;
     }
 }
+
+public static class CheckBoxMaker
+{
+    public static CheckBox MakeNewCheckBox(string condition)
+    {
+        CheckBox checkbox = new CheckBox();
+        checkbox.Text = "Auto-Sort";
+        checkbox.Checked = false;
+        checkbox.AutoSize = true;
+        checkbox.ForeColor = Color.Turquoise;
+        checkbox.BackColor = Color.Black;
+        checkbox.TextAlign = ContentAlignment.MiddleCenter;
+
+        return checkbox;
+    }
+}
