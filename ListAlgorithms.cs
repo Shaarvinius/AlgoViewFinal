@@ -124,72 +124,52 @@ public class ListMethods
     }
 
 
-    public static void BubbleSortAuto(TextBox[] list, Form parentform, CancellationToken cancelsort)
+    public static async Task BubbleSortAuto(TextBox[] list)
     {
-        Task.Run(() =>
+        int length = list.Length;
+        bool swapped = true;
+
+        while (length > 0)
         {
-            int length = list.Length;
-            bool swapped = true;
+            swapped = false;
+            length--;
 
-            while (length > 0)
+            for (int i = 0; i < length; i++)
             {
-                swapped = false;
-                length--;
+                int currentVal = Convert.ToInt32(list[i].Text);
+                int nextVal = Convert.ToInt32(list[i + 1].Text);
 
-                for (int i = 0; i < length; i++)
+                if (currentVal < nextVal)
                 {
-                    if (cancelsort.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    int currentVal = Convert.ToInt32(list[i].Text);
-                    int nextVal = Convert.ToInt32(list[i + 1].Text);
-
-                    parentform.Invoke(() =>
-                    {
-
-                        if (currentVal < nextVal)
-                        {
-                            list[i].BackColor = Color.CornflowerBlue;
-                            list[i + 1].BackColor = Color.Crimson;
-                        }
-                        else
-                        {
-                            list[i + 1].BackColor = Color.CornflowerBlue;
-                            list[i].BackColor = Color.Crimson;
-                        }
-                        list[i].ForeColor = Color.White;
-                        list[i + 1].ForeColor = Color.White;
-                    });
-
-                    Thread.Sleep(30);
-
-                    if (currentVal > nextVal)
-                    {
-                        parentform.Invoke(() =>
-                        {
-
-                            string temp = list[i].Text;
-                            list[i].Text = list[i + 1].Text;
-                            list[i + 1].Text = temp;
-                        });
-
-                        swapped = true;
-                        Thread.Sleep(30);
-                    }
-
-                    parentform.Invoke(() =>
-                    {
-                        list[i].BackColor = Color.Black;
-                        list[i + 1].BackColor = Color.Black;
-                        list[i].ForeColor = Color.Turquoise;
-                        list[i + 1].ForeColor = Color.Turquoise;
-                    });
-
-                    Thread.Sleep(30);
+                    list[i].BackColor = Color.CornflowerBlue;
+                    list[i + 1].BackColor = Color.Crimson;
                 }
+                else
+                {
+                    list[i + 1].BackColor = Color.CornflowerBlue;
+                    list[i].BackColor = Color.Crimson;
+                }
+                list[i].ForeColor = Color.White;
+                list[i + 1].ForeColor = Color.White;
+
+                await Task.Delay(30);
+
+                if (currentVal > nextVal)
+                {
+                    string temp = list[i].Text;
+                    list[i].Text = list[i + 1].Text;
+                    list[i + 1].Text = temp;
+
+                    swapped = true;
+                    await Task.Delay(30);
+                }
+
+                list[i].BackColor = Color.Black;
+                list[i + 1].BackColor = Color.Black;
+                list[i].ForeColor = Color.Turquoise;
+                list[i + 1].ForeColor = Color.Turquoise;
+                await Task.Delay(30);
             }
-        }, cancelsort);
+        }
     }
 }

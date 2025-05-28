@@ -106,6 +106,38 @@ namespace AlgoView
         private const string SearchQuestion = "Enter the first number in the left box and the last in the right box: ";
         private const string SortQuestion = "Enter the first number in the left box and the last in the right box(sort): ";
 
+
+        private void DrawList(TextBox[] boxlist, TextBox firstnum, TextBox lastnum)
+        {
+            int spacing = 50;
+
+            for (int i = 0; i < boxlist.Length; i++)
+            {
+                if (int.TryParse(boxlist[i].Text, out int result))
+                {
+                    int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
+                    PositionInListUI(boxlist[i], 553, x);
+
+                    this.Resize += (s, e) =>
+                    {
+                        for (int j = 0; j < boxlist.Length; j++)
+                        {
+                            int newX = (int)((j - (boxlist.Length - 1) / 2.0) * spacing);
+                            Center(boxlist[j], 553, newX);
+                        }
+                    };
+                }
+                else
+                {
+                    MessageBox.Show("Invalid Character entered. Please enter only integers.");
+                    firstnum.Clear();
+                    lastnum.Clear();
+                    break;
+                }
+            }
+        }
+
+
         private void SetUpListUI(string inputquestion, string buttonname, Action<TextBox[]> onListCreated)
         {
             Label askuserinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
@@ -126,7 +158,6 @@ namespace AlgoView
 
             Application.DoEvents();
 
-            bool listmade = false;
             if (inputquestion == SearchQuestion)
             {
                 makelist.Click += (sender, args) =>
@@ -149,32 +180,7 @@ namespace AlgoView
                     SearchListMaker numberlistmaker = new SearchListMaker();
                     TextBox[] boxlist = numberlistmaker.MakeList(firstnum.Text, lastnum.Text);
 
-                    int spacing = 50;
-
-                    for (int i = 0; i < boxlist.Length; i++)
-                    {
-                        if (int.TryParse(boxlist[i].Text, out int result))
-                        {
-                            int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
-                            PositionInListUI(boxlist[i], 553, x);
-
-                            this.Resize += (s, e) =>
-                            {
-                                for (int j = 0; j < boxlist.Length; j++)
-                                {
-                                    int newX = (int)((j - (boxlist.Length - 1) / 2.0) * spacing);
-                                    Center(boxlist[j], 553, newX);
-                                }
-                            };
-                        }
-                        else
-                        {
-                            MessageBox.Show("Invalid Character entered. Please enter only integers.");
-                            firstnum.Clear();
-                            lastnum.Clear();
-                            break;
-                        }
-                    }
+                    DrawList(boxlist, firstnum, lastnum);
 
                     askuserinput.Hide();
                     firstnum.Hide();
@@ -255,32 +261,7 @@ namespace AlgoView
 
                     listType.Enabled = false;
 
-                    int spacing = 50;
-
-                    for (int i = 0; i < boxlist.Length; i++)
-                    {
-                        if (int.TryParse(boxlist[i].Text, out int result))
-                        {
-                            int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
-                            PositionInListUI(boxlist[i], 553, x);
-
-                            this.Resize += (s, e) =>
-                            {
-                                for (int j = 0; j < boxlist.Length; j++)
-                                {
-                                    int newX = (int)((j - (boxlist.Length - 1) / 2.0) * spacing);
-                                    Center(boxlist[j], 553, newX);
-                                }
-                            };
-                        }
-                        else
-                        {
-                            MessageBox.Show("Invalid Character entered. Please enter only integers.");
-                            firstnum.Clear();
-                            lastnum.Clear();
-                            break;
-                        }
-                    }
+                    DrawList(boxlist, firstnum, lastnum);
 
                     askuserinput.Hide();
                     firstnum.Hide();
@@ -321,11 +302,10 @@ namespace AlgoView
             }
         }
 
+
+
+
         private ComboBox algorithmSelector;
-        
-
-
-
         private void Form1_Load(object sender, EventArgs e)
         {
             PictureBox logo = new PictureBox();
@@ -394,7 +374,7 @@ namespace AlgoView
                         else
                         {
                             sortmode.Enabled = false;
-                            ListMethods.BubbleSortAuto(numbers);
+                            Task autosort = ListMethods.BubbleSortAuto(numbers);
                         }
                     });
                 }
