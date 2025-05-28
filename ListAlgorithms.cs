@@ -122,7 +122,12 @@ public class ListMethods
         sortingsteps.Add(new ListSnapshot(list));
     }
 
+
     public static void BubbleSortAuto(TextBox[] list)
+    {
+
+    }
+    /*public static void BubbleSortAuto(TextBox[] list)
     {
         int length = list.Length;
         bool swapped = true;
@@ -176,5 +181,5 @@ public class ListMethods
                 Thread.Sleep(25);
             }
         }
-    }
+    }*/
 }
