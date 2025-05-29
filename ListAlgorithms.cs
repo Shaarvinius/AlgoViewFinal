@@ -31,7 +31,7 @@ public class ListMethods
             list[mid].BackColor = Color.Turquoise;
             list[mid].ForeColor = Color.Black;
 
-            list[left].BackColor = Color.LimeGreen;
+            list[left].BackColor = Color.Crimson;
             list[left].ForeColor = Color.Black;
 
             list[right].BackColor = Color.Blue;
@@ -175,7 +175,7 @@ public class ListMethods
     }
 
 
-    public void ExponentialSearch(TextBox[] list, int target)
+    public static void ExponentialSearch(TextBox[] list, int target, List<ListSnapshot> steps)
     {
         int item;
         int upperbound = 1;
