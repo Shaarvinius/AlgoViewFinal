@@ -180,67 +180,72 @@ public class ListMethods
         int item;
         int upperbound = 1;
         int lowerbound = 0;
+        int lastupperbound = 0;
+
         while (upperbound < list.Length)
         {
-            steps.Add(new ListSnapshot(list));
-
             item = Convert.ToInt32(list[upperbound].Text);
+
+            for (int i = 0; i <= upperbound; i++)
+            {
+                list[i].BackColor = Color.DarkBlue;
+                list[i].ForeColor = Color.White;
+            }
+
+            steps.Add(new ListSnapshot(list));
             if (item < target)
             {
-                /*for(int i = lowerbound; i <= upperbound; i++)
-                {
-                    list[i].BackColor = Color.DarkBlue;
-                    list[i].ForeColor = Color.White;
-                }*/
-
+                lastupperbound = upperbound;
                 upperbound = upperbound * 2;
             }
             else
             {
-                lowerbound = upperbound / 2;
-
-                /*for(int i = 0; i < lowerbound; i++)
-                {
-                    list[i].BackColor = Color.Black;
-                    list[i].ForeColor = Color.Turquoise;
-                }*/
-
                 break;
             }
         }
 
+        lowerbound = lastupperbound + 1;
+
         if(upperbound >= list.Length)
         {
             upperbound = list.Length - 1;
-            /*for (int i = lowerbound; i <= upperbound; i++)
-            {
-                list[i].BackColor = Color.DarkBlue;
-                list[i].ForeColor = Color.White;
-            }*/
         }
+
+        for (int i = lowerbound; i <= upperbound; i++)
+        {
+            list[i].BackColor = Color.DarkBlue;
+            list[i].ForeColor = Color.White;
+        }
+
+        steps.Add(new ListSnapshot(list));
 
         int midVal;
         bool numfound = false;
 
         steps.Add(new ListSnapshot(list));
+
+        
+
         while (lowerbound <= upperbound)
         {
-            int mid = (lowerbound + upperbound) / 2;
-
-            /*for (int i = 0; i <= lowerbound / 2; i++)
+            for (int i = 0; i < lowerbound; i++)
             {
                 list[i].BackColor = Color.Black;
                 list[i].ForeColor = Color.Turquoise;
-            }*/
+            }
 
-           // list[mid].BackColor = Color.Turquoise;
-           // list[mid].ForeColor = Color.Black;
+            int mid = (lowerbound + upperbound) / 2;
 
-            //list[lowerbound].BackColor = Color.Crimson;
-            //list[lowerbound].ForeColor = Color.Black;
 
-            //list[upperbound].BackColor = Color.Blue;
-           // list[upperbound].ForeColor = Color.Black;
+            list[lowerbound].BackColor = Color.Crimson;
+            list[lowerbound].ForeColor = Color.White;
+
+            list[upperbound].BackColor = Color.Purple;
+            list[upperbound].ForeColor = Color.White;
+
+
+            list[mid].BackColor = Color.Turquoise;
+            list[mid].ForeColor = Color.Black;
 
             steps.Add(new ListSnapshot(list));
 
@@ -259,6 +264,17 @@ public class ListMethods
                 MessageBox.Show(target + " found at index " + mid);
                 numfound = true;
                 break;
+            }
+
+            for (int i = 0; i < lowerbound; i++)
+            {
+                list[i].BackColor = Color.Black;
+                list[i].ForeColor = Color.Turquoise;
+            }
+            for(int i = upperbound+1; i <list.Length; i++)
+            {
+                list[i].BackColor = Color.Black;
+                list[i].ForeColor = Color.Turquoise;
             }
         }
 
