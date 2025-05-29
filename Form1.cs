@@ -9,6 +9,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Xml.Serialization;
 using CheckBox = System.Windows.Forms.CheckBox;
+using System.Numerics;
 
 
 
@@ -25,7 +26,7 @@ namespace AlgoView
             this.BackColor = Color.Black;
         }
 
-        private Button home = ButtonMaker.MakeNewButton("Back to Home", 265, 50);
+        private Button HomeButton = ButtonMaker.MakeNewButton("Back to Home", 265, 50);
         private void ClickHomeButton(object sender, EventArgs e)
         {
             foreach (Control controls in this.Controls)
@@ -53,7 +54,6 @@ namespace AlgoView
             Center(element, topoffset, midoffset);
             this.Resize += (s, e) => Center(element, topoffset, midoffset);
         }
-
         
 
         private TextBox[] GetCurrentTextBoxes()
@@ -66,8 +66,8 @@ namespace AlgoView
 
 
         private List<ListSnapshot> AlgorithmSteps = new List<ListSnapshot>();
-        private int currentStep = -1;
-        private TextBox[] currentBoxes;
+        private int CurrentStep = -1;
+        private TextBox[] CurrentBoxes;
 
         private Button StepBackButton;
         private Button StepForwardbutton;
@@ -75,16 +75,16 @@ namespace AlgoView
         private Label stepcount = LabelMaker.MakeNewLabel("", 150, 30);
         void UpdateStepCount()
         {
-            stepcount.Text = "Step: " + Convert.ToString(currentStep);
+            stepcount.Text = "Step: " + Convert.ToString(CurrentStep);
         }
         private void StepBackClick(object sender, EventArgs e)
         {
-            if (currentStep > 0)
+            if (CurrentStep > 0)
             {
-                currentStep--;
-                AlgorithmSteps[currentStep].Restore(currentBoxes);
+                CurrentStep--;
+                AlgorithmSteps[CurrentStep].Restore(CurrentBoxes);
                 StepForwardbutton.Enabled = true;
-                StepBackButton.Enabled = currentStep > 0;
+                StepBackButton.Enabled = CurrentStep > 0;
                 UpdateStepCount();
             }
         }
@@ -92,12 +92,12 @@ namespace AlgoView
 
         private void StepForwardClick(object sender, EventArgs e)
         {
-            if (currentStep < AlgorithmSteps.Count - 1)
+            if (CurrentStep < AlgorithmSteps.Count - 1)
             {
-                currentStep++;
-                AlgorithmSteps[currentStep].Restore(currentBoxes);
+                CurrentStep++;
+                AlgorithmSteps[CurrentStep].Restore(CurrentBoxes);
                 StepBackButton.Enabled = true;
-                StepForwardbutton.Enabled = currentStep < AlgorithmSteps.Count - 1;
+                StepForwardbutton.Enabled = CurrentStep < AlgorithmSteps.Count - 1;
                 UpdateStepCount();
             }
         }
@@ -135,6 +135,17 @@ namespace AlgoView
                     break;
                 }
             }
+        }
+
+        public void NewStepStack(TextBox[] numbers)
+        {
+            stepcount.Show();
+            AlgorithmSteps[CurrentStep].Restore(numbers);
+            StepForwardbutton.Enabled = true;
+            StepBackButton.Enabled = false;
+            CurrentBoxes = numbers;
+            StepForwardbutton.Show();
+            StepBackButton.Show();
         }
 
 
@@ -314,8 +325,8 @@ namespace AlgoView
             logo.Image = Image.FromFile("AlgoViewLogo.png");
             this.Controls.Add(logo);
 
-            PositionInListUI(home, 15, -820);
-            home.Click += ClickHomeButton;
+            PositionInListUI(HomeButton, 15, -820);
+            HomeButton.Click += ClickHomeButton;
 
             algorithmSelector = new ComboBox();
             algorithmSelector.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -354,17 +365,11 @@ namespace AlgoView
                             AlgorithmSteps.Clear();
                             ListMethods.BubbleSort(numbers, AlgorithmSteps);
                             PositionInListUI(stepcount, 325, 0);
-                            currentStep = 0;
+                            CurrentStep = 0;
 
                             if (AlgorithmSteps.Count > 0)
                             {
-                                stepcount.Show();
-                                AlgorithmSteps[currentStep].Restore(numbers);
-                                StepForwardbutton.Enabled = true;
-                                StepBackButton.Enabled = false;
-                                currentBoxes = numbers;
-                                StepForwardbutton.Show();
-                                StepBackButton.Show();
+                                NewStepStack(numbers);
                             }
                             else
                             {
@@ -410,20 +415,13 @@ namespace AlgoView
                             numtofind.Show();
                             AlgorithmSteps.Clear();
                             ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
-                            currentStep = 0;
+                            CurrentStep = 0;
                             PositionInListUI(stepcount, 325, 0);
                             stepcount.Hide();
 
                             if (AlgorithmSteps.Count > 0)
                             {
-                                stepcount.Show();
-                                AlgorithmSteps[currentStep].Restore(numbers);
-                                StepForwardbutton.Enabled = true;
-                                StepBackButton.Enabled = false;
-                                currentBoxes = numbers;
-
-                                StepForwardbutton.Show();
-                                StepBackButton.Show();
+                                NewStepStack(numbers);
                             }
                             else
                             {
@@ -456,17 +454,11 @@ namespace AlgoView
                         AlgorithmSteps.Clear();
                         ListMethods.BubbleSort(numbers, AlgorithmSteps);
                         PositionInListUI(stepcount, 325, 0);
-                        currentStep = 0;
+                        CurrentStep = 0;
 
                         if (AlgorithmSteps.Count > 0)
                         {
-                            stepcount.Show();
-                            AlgorithmSteps[currentStep].Restore(numbers);
-                            StepForwardbutton.Enabled = true;
-                            StepBackButton.Enabled = false;
-                            currentBoxes = numbers;
-                            StepForwardbutton.Show();
-                            StepBackButton.Show();
+                            NewStepStack(numbers);
                         }
                         else
                         {
@@ -506,20 +498,13 @@ namespace AlgoView
                             numtofind.Show();
                             AlgorithmSteps.Clear();
                             ListMethods.ExponentialSearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
-                            currentStep = 0;
+                            CurrentStep = 0;
                             PositionInListUI(stepcount, 325, 0);
                             stepcount.Hide();
 
                             if (AlgorithmSteps.Count > 0)
                             {
-                                stepcount.Show();
-                                AlgorithmSteps[currentStep].Restore(numbers);
-                                StepForwardbutton.Enabled = true;
-                                StepBackButton.Enabled = false;
-                                currentBoxes = numbers;
-
-                                StepForwardbutton.Show();
-                                StepBackButton.Show();
+                                NewStepStack(numbers);
                             }
                             else
                             {
@@ -552,17 +537,11 @@ namespace AlgoView
                         AlgorithmSteps.Clear();
                         ListMethods.BubbleSort(numbers, AlgorithmSteps);
                         PositionInListUI(stepcount, 325, 0);
-                        currentStep = 0;
+                        CurrentStep = 0;
 
                         if (AlgorithmSteps.Count > 0)
                         {
-                            stepcount.Show();
-                            AlgorithmSteps[currentStep].Restore(numbers);
-                            StepForwardbutton.Enabled = true;
-                            StepBackButton.Enabled = false;
-                            currentBoxes = numbers;
-                            StepForwardbutton.Show();
-                            StepBackButton.Show();
+                            NewStepStack(numbers);
                         }
                         else
                         {
