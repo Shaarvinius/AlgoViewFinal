@@ -240,9 +240,8 @@ public class ListMethods
             list[lowerbound].BackColor = Color.Crimson;
             list[lowerbound].ForeColor = Color.White;
 
-            list[upperbound].BackColor = Color.Purple;
+            list[upperbound].BackColor = Color.Orchid;
             list[upperbound].ForeColor = Color.White;
-
 
             list[mid].BackColor = Color.Turquoise;
             list[mid].ForeColor = Color.Black;
