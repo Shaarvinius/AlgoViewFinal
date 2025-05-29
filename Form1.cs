@@ -505,7 +505,7 @@ namespace AlgoView
                         {
                             numtofind.Show();
                             AlgorithmSteps.Clear();
-                            ListMethods.ExponentialSearch(numbers, Convert.ToInt32(input.Text));
+                            ListMethods.ExponentialSearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
                             currentStep = 0;
                             PositionInListUI(stepcount, 325, 0);
                             stepcount.Hide();

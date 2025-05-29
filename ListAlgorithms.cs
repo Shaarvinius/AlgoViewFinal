@@ -182,14 +182,29 @@ public class ListMethods
         int lowerbound = 0;
         while (upperbound < list.Length)
         {
+            steps.Add(new ListSnapshot(list));
+
             item = Convert.ToInt32(list[upperbound].Text);
             if (item < target)
             {
+                /*for(int i = lowerbound; i <= upperbound; i++)
+                {
+                    list[i].BackColor = Color.DarkBlue;
+                    list[i].ForeColor = Color.White;
+                }*/
+
                 upperbound = upperbound * 2;
             }
             else
             {
                 lowerbound = upperbound / 2;
+
+                /*for(int i = 0; i < lowerbound; i++)
+                {
+                    list[i].BackColor = Color.Black;
+                    list[i].ForeColor = Color.Turquoise;
+                }*/
+
                 break;
             }
         }
@@ -197,13 +212,38 @@ public class ListMethods
         if(upperbound >= list.Length)
         {
             upperbound = list.Length - 1;
+            /*for (int i = lowerbound; i <= upperbound; i++)
+            {
+                list[i].BackColor = Color.DarkBlue;
+                list[i].ForeColor = Color.White;
+            }*/
         }
 
         int midVal;
         bool numfound = false;
+
+        steps.Add(new ListSnapshot(list));
         while (lowerbound <= upperbound)
         {
             int mid = (lowerbound + upperbound) / 2;
+
+            /*for (int i = 0; i <= lowerbound / 2; i++)
+            {
+                list[i].BackColor = Color.Black;
+                list[i].ForeColor = Color.Turquoise;
+            }*/
+
+           // list[mid].BackColor = Color.Turquoise;
+           // list[mid].ForeColor = Color.Black;
+
+            //list[lowerbound].BackColor = Color.Crimson;
+            //list[lowerbound].ForeColor = Color.Black;
+
+            //list[upperbound].BackColor = Color.Blue;
+           // list[upperbound].ForeColor = Color.Black;
+
+            steps.Add(new ListSnapshot(list));
+
             midVal = Convert.ToInt32(list[mid].Text);
 
             if (midVal < target)
