@@ -101,6 +101,7 @@ namespace AlgoView
                 UpdateStepCount();
             }
         }
+        
 
 
         private const string SearchQuestion = "Enter the first number in the left box and the last in the right box: ";

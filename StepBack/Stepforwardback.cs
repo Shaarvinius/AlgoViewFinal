@@ -77,3 +77,24 @@ public class ListStack
         statelist.Clear();
     }
 }
+
+
+public class PlayBack
+{
+    private ManualResetEventSlim pauseEvent = new ManualResetEventSlim(true);
+    private CancellationTokenSource cts = new CancellationTokenSource();
+
+    public CancellationToken Token => cts.Token;
+
+    public void Pause()
+    {
+        pauseEvent.Reset();
+    }
+    public void Resume()
+    {
+        pauseEvent.Set();
+    }
+
+    public bool IsPaused => !pauseEvent.IsSet;
+
+}
