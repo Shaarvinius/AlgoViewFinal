@@ -11,7 +11,6 @@ public class ListMethods
 {
     public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps)
     {
-
         sortingsteps.Add(new ListSnapshot(list));
         int content;
         int index;

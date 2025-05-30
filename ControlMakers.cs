@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +70,42 @@ public class SortListMaker
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
+        }
+
+        return list;
+    }
+
+
+    public TextBox[] RandomListNoRepeats(string firstnum, string lastnum)
+    {
+        int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
+        TextBox[] list = new TextBox[length];
+        List<int> numbers = new List<int>();
+
+        for (int i = 0 ; i < length; i++)
+        {
+            numbers.Add(Convert.ToInt32(firstnum) + i);
+        }
+
+        Random rng = new Random();
+        //Fisher-Yates shuffle
+        for(int i = length - 1; i > 0; i--)
+        {
+            int randomindex = rng.Next(i+1);
+            int temp = numbers[i];
+            numbers[i] = numbers[randomindex]; 
+            numbers[randomindex] = temp;
+        }
+
+        for (int i = 0; i < length; i++)
+        {
+            list[i] = new TextBox();
+            list[i].Size = new Size(35, 35);
+            list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+            list[i].ForeColor = Color.Turquoise;
+            list[i].BackColor = Color.Black;
+            list[i].TextAlign = HorizontalAlignment.Center;
+            list[i].Text = numbers[i].ToString();
         }
 
         return list;
