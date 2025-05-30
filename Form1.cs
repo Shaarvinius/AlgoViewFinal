@@ -72,10 +72,10 @@ namespace AlgoView
         private Button StepBackButton;
         private Button StepForwardbutton;
 
-        private Label stepcount = LabelMaker.MakeNewLabel("", 150, 30);
+        private Label StepCount = LabelMaker.MakeNewLabel("", 150, 30);
         void UpdateStepCount()
         {
-            stepcount.Text = "Step: " + Convert.ToString(CurrentStep);
+            StepCount.Text = "Step: " + Convert.ToString(CurrentStep);
         }
         private void StepBackClick(object sender, EventArgs e)
         {
@@ -139,7 +139,7 @@ namespace AlgoView
 
         public void NewStepStack(TextBox[] numbers)
         {
-            stepcount.Show();
+            StepCount.Show();
             AlgorithmSteps[CurrentStep].Restore(numbers);
             StepForwardbutton.Enabled = true;
             StepBackButton.Enabled = false;
@@ -364,7 +364,7 @@ namespace AlgoView
                             StepBackButton.Show();
                             AlgorithmSteps.Clear();
                             ListMethods.BubbleSort(numbers, AlgorithmSteps);
-                            PositionInListUI(stepcount, 325, 0);
+                            PositionInListUI(StepCount, 325, 0);
                             CurrentStep = 0;
 
                             if (AlgorithmSteps.Count > 0)
@@ -416,8 +416,8 @@ namespace AlgoView
                             AlgorithmSteps.Clear();
                             ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
                             CurrentStep = 0;
-                            PositionInListUI(stepcount, 325, 0);
-                            stepcount.Hide();
+                            PositionInListUI(StepCount, 325, 0);
+                            StepCount.Hide();
 
                             if (AlgorithmSteps.Count > 0)
                             {
@@ -438,7 +438,7 @@ namespace AlgoView
 
                             StepBackButton.Hide();
                             StepForwardbutton.Hide();
-                            stepcount.Hide();
+                            StepCount.Hide();
                             input.Clear();
                         }
                     });
@@ -453,7 +453,7 @@ namespace AlgoView
                         StepBackButton.Show();
                         AlgorithmSteps.Clear();
                         ListMethods.BubbleSort(numbers, AlgorithmSteps);
-                        PositionInListUI(stepcount, 325, 0);
+                        PositionInListUI(StepCount, 325, 0);
                         CurrentStep = 0;
 
                         if (AlgorithmSteps.Count > 0)
@@ -499,8 +499,8 @@ namespace AlgoView
                             AlgorithmSteps.Clear();
                             ListMethods.ExponentialSearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
                             CurrentStep = 0;
-                            PositionInListUI(stepcount, 325, 0);
-                            stepcount.Hide();
+                            PositionInListUI(StepCount, 325, 0);
+                            StepCount.Hide();
 
                             if (AlgorithmSteps.Count > 0)
                             {
@@ -521,7 +521,7 @@ namespace AlgoView
 
                             StepBackButton.Hide();
                             StepForwardbutton.Hide();
-                            stepcount.Hide();
+                            StepCount.Hide();
                             input.Clear();
                         }
                     });
@@ -536,7 +536,7 @@ namespace AlgoView
                         StepBackButton.Show();
                         AlgorithmSteps.Clear();
                         ListMethods.BubbleSort(numbers, AlgorithmSteps);
-                        PositionInListUI(stepcount, 325, 0);
+                        PositionInListUI(StepCount, 325, 0);
                         CurrentStep = 0;
 
                         if (AlgorithmSteps.Count > 0)

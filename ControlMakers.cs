@@ -145,7 +145,7 @@ public static class CheckBoxMaker
     public static CheckBox MakeNewCheckBox(string condition)
     {
         CheckBox checkbox = new CheckBox();
-        checkbox.Text = "Auto-Sort";
+        checkbox.Text = condition;
         checkbox.Checked = false;
         checkbox.AutoSize = true;
         checkbox.ForeColor = Color.Turquoise;

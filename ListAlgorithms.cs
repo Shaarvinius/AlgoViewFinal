@@ -153,7 +153,7 @@ public class ListMethods
                 list[i].ForeColor = Color.White;
                 list[i + 1].ForeColor = Color.White;
 
-                await Task.Delay(30);
+                await Task.Delay(50);
 
                 if (currentVal > nextVal)
                 {
@@ -162,14 +162,14 @@ public class ListMethods
                     list[i + 1].Text = temp;
 
                     swapped = true;
-                    await Task.Delay(30);
+                    await Task.Delay(50);
                 }
 
                 list[i].BackColor = Color.Black;
                 list[i + 1].BackColor = Color.Black;
                 list[i].ForeColor = Color.Turquoise;
                 list[i + 1].ForeColor = Color.Turquoise;
-                await Task.Delay(30);
+                await Task.Delay(50);
             }
         }
     }
