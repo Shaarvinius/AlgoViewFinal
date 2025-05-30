@@ -214,9 +214,9 @@ namespace AlgoView
                 listType.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
                 listType.BackColor = Color.Black;
                 listType.ForeColor = Color.Turquoise;
-                listType.Items.Add("Completely reverse List?");
-                listType.Items.Add("Yes");
-                listType.Items.Add("No");
+                listType.Items.Add("List type?");
+                listType.Items.Add("Randomised");
+                listType.Items.Add("Reversed");
                 listType.SelectedIndex = 0;
                 PositionInListUI(listType, 600, 0);
 
@@ -228,11 +228,11 @@ namespace AlgoView
                 listType.SelectedIndexChanged += (object sender, EventArgs e)=>
                 {
                     listType_reverse = listType.SelectedItem.ToString();
-                    if (listType_reverse == "Yes")
+                    if (listType_reverse == "Randomised")
                     {
                         makelist.Enabled = true;
                     }
-                    else if (listType_reverse == "No")
+                    else if (listType_reverse == "Reversed")
                     {
                         makelist.Enabled = true;
                     }
@@ -261,11 +261,11 @@ namespace AlgoView
                         box.Dispose();
                     }
 
-                    if (listType_reverse == "Yes")
+                    if (listType_reverse == "Reversed")
                     {
                         boxlist = numberlistmaker.MakeReverseList(firstnum.Text, lastnum.Text);
                     }
-                    else if (listType_reverse == "No")
+                    else if (listType_reverse == "Randomised")
                     {
                         boxlist = numberlistmaker.MakeRandomList(firstnum.Text, lastnum.Text);
                     }

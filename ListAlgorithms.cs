@@ -22,6 +22,8 @@ public class ListMethods
 
             while (index > 0 && Convert.ToInt32(list[index - 1].Text) > content)
             {
+                list[index].BackColor = Color.Aquamarine;
+                list[index].ForeColor = Color.Black;
                 list[index].Text = list[index - 1].Text;
                 index--;
             }
@@ -30,6 +32,10 @@ public class ListMethods
 
             sortingsteps.Add(new ListSnapshot(list));
         }
+
+        list[0].BackColor = Color.Aquamarine;
+        list[0].ForeColor = Color.Black;
+        sortingsteps.Add(new ListSnapshot(list));
     }
 
 
@@ -121,7 +127,7 @@ public class ListMethods
                 list[i].ForeColor = Color.White;
                 list[i + 1].ForeColor = Color.White;
 
-                await Task.Delay(50);
+                await Task.Delay(100);
 
                 if (currentVal > nextVal)
                 {
@@ -130,14 +136,14 @@ public class ListMethods
                     list[i + 1].Text = temp;
 
                     swapped = true;
-                    await Task.Delay(50);
+                    await Task.Delay(100);
                 }
 
                 list[i].BackColor = Color.Black;
                 list[i + 1].BackColor = Color.Black;
                 list[i].ForeColor = Color.Turquoise;
                 list[i + 1].ForeColor = Color.Turquoise;
-                await Task.Delay(50);
+                await Task.Delay(100);
             }
         }
     }
