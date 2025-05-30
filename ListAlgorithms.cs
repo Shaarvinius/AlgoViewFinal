@@ -9,23 +9,26 @@ using System.Threading.Tasks;
 
 public class ListMethods
 {
-    public static void InsertionSort(TextBox[] list)
+    public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps)
     {
-        Thread.Sleep(1000);
         int content;
         int index;
         for(int i = 1; i < list.Length; i++)
         {
             content = Convert.ToInt32(list[i].Text);
-            index = i; 
+            index = i;
 
-            while(index > 0 && Convert.ToInt32(list[index - 1].Text) > content)
+            sortingsteps.Add(new ListSnapshot(list));
+            while (index > 0 && Convert.ToInt32(list[index - 1].Text) > content)
             {
                 list[index].Text = list[index - 1].Text;
                 index--;
+
+                sortingsteps.Add(new ListSnapshot(list));
             }
 
             list[index].Text = content.ToString();
+            sortingsteps.Add(new ListSnapshot(list));
         }
     }
 

@@ -449,7 +449,21 @@ namespace AlgoView
 
                     SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        ListMethods.InsertionSort(numbers);
+                        StepForwardbutton.Show();
+                        StepBackButton.Show();
+                        AlgorithmSteps.Clear();
+                        ListMethods.InsertionSort(numbers, AlgorithmSteps);
+                        PositionInListUI(StepCount, 325, 0);
+                        CurrentStep = 0;
+
+                        if (AlgorithmSteps.Count > 0)
+                        {
+                            NewStepStack(numbers);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No steps were generated.");
+                        }
                     });
                 }
                 else if (selectedAlgorithm == "Exponential Search")
