@@ -217,6 +217,7 @@ namespace AlgoView
                 listType.Items.Add("List type?");
                 listType.Items.Add("Randomised");
                 listType.Items.Add("Reversed");
+                listType.Items.Add("Random no repeats");
                 listType.SelectedIndex = 0;
                 PositionInListUI(listType, 600, 0);
 
@@ -233,6 +234,10 @@ namespace AlgoView
                         makelist.Enabled = true;
                     }
                     else if (listType_reverse == "Reversed")
+                    {
+                        makelist.Enabled = true;
+                    }
+                    else if (listType_reverse == "Random no repeats")
                     {
                         makelist.Enabled = true;
                     }
@@ -268,6 +273,10 @@ namespace AlgoView
                     else if (listType_reverse == "Randomised")
                     {
                         boxlist = numberlistmaker.MakeRandomList(firstnum.Text, lastnum.Text);
+                    }
+                    else if(listType_reverse == "Random no repeats")
+                    {
+                        boxlist = numberlistmaker.RandomListNoRepeats(firstnum.Text, lastnum.Text);
                     }
 
                     listType.Enabled = false;
