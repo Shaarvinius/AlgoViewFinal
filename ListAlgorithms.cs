@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -8,59 +9,23 @@ using System.Threading.Tasks;
 
 public class ListMethods
 {
-
-
-    public static void BinarySearch(TextBox[] list, int numtofind, List<ListSnapshot> steps)
+    public static void InsertionSort(TextBox[] list)
     {
-        int left = 0;
-        int right = list.Length - 1;
-        bool found = false;
-
-        steps.Add(new ListSnapshot(list));
-
-        while (left <= right)
+        Thread.Sleep(1000);
+        int content;
+        int index;
+        for(int i = 1; i < list.Length; i++)
         {
-            int mid = (left + right) / 2;
+            content = Convert.ToInt32(list[i].Text);
+            index = i; 
 
-            for (int i = 0; i < list.Length; i++)
+            while(index > 0 && Convert.ToInt32(list[index - 1].Text) > content)
             {
-                list[i].BackColor = Color.Black;
-                list[i].ForeColor = Color.Turquoise;
+                list[index].Text = list[index - 1].Text;
+                index--;
             }
 
-            list[mid].BackColor = Color.Turquoise;
-            list[mid].ForeColor = Color.Black;
-
-            list[left].BackColor = Color.Crimson;
-            list[left].ForeColor = Color.Black;
-
-            list[right].BackColor = Color.Blue;
-            list[right].ForeColor = Color.Black;
-
-            steps.Add(new ListSnapshot(list));
-
-            int midVal = Convert.ToInt32(list[mid].Text);
-
-            if (midVal < numtofind)
-            {
-                left = mid + 1;
-            }
-            else if (midVal > numtofind)
-            {
-                right = mid - 1;
-            }
-            else
-            {
-                MessageBox.Show(numtofind + " found at index " + mid);
-                found = true;
-                break;
-            }
-        }
-
-        if (!found)
-        {
-            Thread.Sleep(1500);
-            MessageBox.Show("Number not found in array");
+            list[index].Text = content.ToString();
         }
     }
 
@@ -171,6 +136,61 @@ public class ListMethods
                 list[i + 1].ForeColor = Color.Turquoise;
                 await Task.Delay(50);
             }
+        }
+    }
+
+
+    public static void BinarySearch(TextBox[] list, int numtofind, List<ListSnapshot> steps)
+    {
+        int left = 0;
+        int right = list.Length - 1;
+        bool found = false;
+
+        steps.Add(new ListSnapshot(list));
+
+        while (left <= right)
+        {
+            int mid = (left + right) / 2;
+
+            for (int i = 0; i < list.Length; i++)
+            {
+                list[i].BackColor = Color.Black;
+                list[i].ForeColor = Color.Turquoise;
+            }
+
+            list[mid].BackColor = Color.Turquoise;
+            list[mid].ForeColor = Color.Black;
+
+            list[left].BackColor = Color.Crimson;
+            list[left].ForeColor = Color.Black;
+
+            list[right].BackColor = Color.Blue;
+            list[right].ForeColor = Color.Black;
+
+            steps.Add(new ListSnapshot(list));
+
+            int midVal = Convert.ToInt32(list[mid].Text);
+
+            if (midVal < numtofind)
+            {
+                left = mid + 1;
+            }
+            else if (midVal > numtofind)
+            {
+                right = mid - 1;
+            }
+            else
+            {
+                MessageBox.Show(numtofind + " found at index " + mid);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            Thread.Sleep(1500);
+            MessageBox.Show("Number not found in array");
         }
     }
 
