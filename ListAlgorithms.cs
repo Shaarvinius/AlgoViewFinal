@@ -11,6 +11,8 @@ public class ListMethods
 {
     public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps)
     {
+
+        sortingsteps.Add(new ListSnapshot(list));
         int content;
         int index;
         for(int i = 1; i < list.Length; i++)
@@ -18,16 +20,14 @@ public class ListMethods
             content = Convert.ToInt32(list[i].Text);
             index = i;
 
-            sortingsteps.Add(new ListSnapshot(list));
             while (index > 0 && Convert.ToInt32(list[index - 1].Text) > content)
             {
                 list[index].Text = list[index - 1].Text;
                 index--;
-
-                sortingsteps.Add(new ListSnapshot(list));
             }
 
             list[index].Text = content.ToString();
+
             sortingsteps.Add(new ListSnapshot(list));
         }
     }
