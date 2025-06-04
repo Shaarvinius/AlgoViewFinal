@@ -79,22 +79,25 @@ public class ListStack
 }
 
 
-public class PlayBack
+public class PlayBack 
 {
-    private ManualResetEventSlim pauseEvent = new ManualResetEventSlim(true);
-    private CancellationTokenSource cts = new CancellationTokenSource();
-
-    public CancellationToken Token => cts.Token;
+    private bool paused = false;
+    public async Task WaitIfPaused()
+    {
+        while (paused)
+        {
+            await Task.Delay(100);
+        }
+    }
 
     public void Pause()
     {
-        pauseEvent.Reset();
+        paused = true;
     }
     public void Resume()
     {
-        pauseEvent.Set();
+        paused = false;
     }
 
-    public bool IsPaused => !pauseEvent.IsSet;
-
+    public bool IsPaused => paused;
 }

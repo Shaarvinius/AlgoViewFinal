@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Threading;    
@@ -77,6 +77,20 @@ namespace AlgoView
         {
             StepCount.Text = "Step: " + Convert.ToString(CurrentStep);
         }
+
+
+        private PlayBack PauseControl = new PlayBack();    
+
+        private void PauseButtonClick(object sender, EventArgs e)
+        {
+            PauseControl.Pause();
+        }
+        private void ResumeButtonClick(object sender, EventArgs e)
+        {
+            PauseControl.Resume();
+        }
+        
+
         private void StepBackClick(object sender, EventArgs e)
         {
             if (CurrentStep > 0)
@@ -366,7 +380,7 @@ namespace AlgoView
 
                     algorithmSelector.Enabled = false;
 
-                    SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
+                    SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
                     {
                         if(sortmode.Checked == false)
                         {
@@ -389,7 +403,30 @@ namespace AlgoView
                         else
                         {
                             sortmode.Enabled = false;
-                            Task autosort = ListMethods.BubbleSortAuto(numbers);
+
+                            Button pausebutton = ButtonMaker.MakeNewButton("||", 150, 40);
+                            PositionInListUI(pausebutton, 400,0);
+                            Button resumebutton = ButtonMaker.MakeNewButton("▶︎", 150, 40);
+                            PositionInListUI(resumebutton, 400,0);
+
+                            pausebutton.Click += (object sender, EventArgs e) =>
+                            {
+                                PauseControl.Pause();
+                                pausebutton.Enabled = false;
+                                pausebutton.Hide();
+                                resumebutton.Enabled = true;
+                                resumebutton.Show();
+                            }; 
+                            resumebutton.Click += (object sender, EventArgs e) =>
+                            {
+                                PauseControl.Resume();
+                                resumebutton.Enabled = false;
+                                resumebutton.Hide();
+                                pausebutton.Enabled = true;
+                                pausebutton.Show();
+                            };
+
+                            await ListMethods.BubbleSortAuto(numbers, PauseControl);
                         }
                     });
                 }

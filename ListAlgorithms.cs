@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 public class ListMethods
 {
+
+    public static void MergeSort(TextBox[] list)
+    {
+
+    }
+
+
     public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps)
     {
         sortingsteps.Add(new ListSnapshot(list));
@@ -98,7 +105,7 @@ public class ListMethods
     }
 
 
-    public static async Task BubbleSortAuto(TextBox[] list)
+    public static async Task BubbleSortAuto(TextBox[] list, PlayBack pausebtn)
     {
         int length = list.Length;
         bool swapped = true;
@@ -110,6 +117,8 @@ public class ListMethods
 
             for (int i = 0; i < length; i++)
             {
+                await pausebtn.WaitIfPaused();
+
                 int currentVal = Convert.ToInt32(list[i].Text);
                 int nextVal = Convert.ToInt32(list[i + 1].Text);
 
@@ -126,7 +135,8 @@ public class ListMethods
                 list[i].ForeColor = Color.White;
                 list[i + 1].ForeColor = Color.White;
 
-                await Task.Delay(100);
+                await Task.Delay(230);
+                await pausebtn.WaitIfPaused();
 
                 if (currentVal > nextVal)
                 {
@@ -135,14 +145,16 @@ public class ListMethods
                     list[i + 1].Text = temp;
 
                     swapped = true;
-                    await Task.Delay(100);
+                    await Task.Delay(230);
+                    await pausebtn.WaitIfPaused();
                 }
 
                 list[i].BackColor = Color.Black;
                 list[i + 1].BackColor = Color.Black;
                 list[i].ForeColor = Color.Turquoise;
                 list[i + 1].ForeColor = Color.Turquoise;
-                await Task.Delay(100);
+                await Task.Delay(230);
+                await pausebtn.WaitIfPaused();
             }
         }
     }
