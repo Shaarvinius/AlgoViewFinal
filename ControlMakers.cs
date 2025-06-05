@@ -76,6 +76,25 @@ public class SortListMaker
     }
 
 
+    public TextBox[] MakeNewList(string firstnum, string lastnum)
+    {
+        int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
+        TextBox[] list = new TextBox[length];
+
+        for (int i = (length - 1); i > -1; i--)
+        {
+            list[i] = new TextBox();
+            list[i].Size = new Size(35, 35);
+            list[i].Text = Convert.ToString(Convert.ToInt32(lastnum) - i);
+            list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+            list[i].ForeColor = Color.Turquoise;
+            list[i].BackColor = Color.Black;
+            list[i].TextAlign = HorizontalAlignment.Center;
+        }
+
+        return list;
+    }
+
     public TextBox[] RandomListNoRepeats(string firstnum, string lastnum)
     {
         int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
