@@ -16,7 +16,8 @@ public class SearchListMaker
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
-            list[i].Size = new Size(35, 35);
+            list[i].Multiline = true;
+            list[i].Size = new Size(35, 35 + length + i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;

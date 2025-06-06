@@ -180,7 +180,7 @@ namespace AlgoView
             PositionInListUI(lastnum, 500, 50);
 
             Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
-            PositionInListUI(makelist, 750, 0);
+            PositionInListUI(makelist, 900, 0);
 
             Application.DoEvents();
 
@@ -234,7 +234,7 @@ namespace AlgoView
                 listType.Items.Add("Reversed");
                 listType.Items.Add("Random no repeats");
                 listType.SelectedIndex = 0;
-                PositionInListUI(listType, 600, 0);
+                PositionInListUI(listType, 750, 0);
 
                 SortListMaker numberlistmaker = new SortListMaker();
                 TextBox[] boxlist = Array.Empty<TextBox>();
@@ -315,7 +315,7 @@ namespace AlgoView
             if (StepBackButton == null)
             {
                 StepBackButton = ButtonMaker.MakeNewButton("Step back", 250, 50);
-                PositionInListUI(StepBackButton, 700, -400);
+                PositionInListUI(StepBackButton, 750, -400);
                 StepBackButton.Click += StepBackClick;
                 StepBackButton.Hide();
             }
@@ -327,7 +327,7 @@ namespace AlgoView
             if (StepForwardbutton == null)
             {
                 StepForwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
-                PositionInListUI(StepForwardbutton, 700, 400);
+                PositionInListUI(StepForwardbutton, 750, 400);
                 StepForwardbutton.Click += StepForwardClick;
                 StepForwardbutton.Hide();
             }
@@ -435,10 +435,10 @@ namespace AlgoView
                     algorithmSelector.Enabled = false;
 
                     Label numtofind = LabelMaker.MakeNewLabel("input number to search for:", 385, 30);
-                    PositionInListUI(numtofind, 540, 0);
+                    PositionInListUI(numtofind, 350, 0);
 
                     TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(input, 540, 210);
+                    PositionInListUI(input, 350, 210);
 
                     Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
                     PositionInListUI(left, 675, -150);
