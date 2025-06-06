@@ -8,6 +8,7 @@ public class ListSnapshot
     public int[] Values;
     public Color[] BackColours;
     public Color[] ForeColours;
+    public Size[] Heights;
 
     public ListSnapshot(TextBox[] NumBoxes)
     {
@@ -15,12 +16,14 @@ public class ListSnapshot
         Values = new int[length];
         BackColours = new Color[length];
         ForeColours = new Color[length];
+        Heights = new Size[length];
 
         for (int i = 0; i < length; i++)
         {
             int.TryParse(NumBoxes[i].Text, out Values[i]);
             BackColours[i] = NumBoxes[i].BackColor;
             ForeColours[i] = NumBoxes[i].ForeColor;
+            Heights[i] = NumBoxes[i].Size;
         }
     }
 
@@ -31,6 +34,7 @@ public class ListSnapshot
             NumBoxes[i].Text = Values[i].ToString();
             NumBoxes[i].BackColor = BackColours[i];
             NumBoxes[i].ForeColor = ForeColours[i];
+            NumBoxes[i].Size = Heights[i]; 
         }
     }
 }

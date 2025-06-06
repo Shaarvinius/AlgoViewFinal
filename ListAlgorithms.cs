@@ -31,6 +31,11 @@ public class ListMethods
                 list[index].BackColor = Color.Aquamarine;
                 list[index].ForeColor = Color.Black;
                 list[index].Text = list[index - 1].Text;
+
+                Size tempsize = list[index].Size;
+                list[index].Size = list[index-1].Size;
+                list[index-1].Size = tempsize;
+
                 index--;
             }
 
@@ -55,7 +60,6 @@ public class ListMethods
 
         while(length > 0 && swapped)
         {
-            swapped = false;
             length--;
             for(int i = 0; i < length; i++)
             {
@@ -83,14 +87,17 @@ public class ListMethods
                     currentval = temp;
 
                     sortingsteps.Add(new ListSnapshot(list));
+
                     list[i].BackColor = Color.Black;
                     list[i+1].BackColor = Color.Black;
                     list[i].ForeColor = Color.Turquoise;
                     list[i+1].ForeColor = Color.Turquoise;
+                    Size tempsize = list[i+1].Size;
+                    list[i + 1].Size = list[i].Size;
+                    list[i].Size = tempsize;
 
                     list[i].Text = Convert.ToString(currentval);
                     list[i + 1].Text = Convert.ToString(nextval);
-                    swapped = true;
                 }
                 else
                 {
@@ -135,7 +142,7 @@ public class ListMethods
                 list[i].ForeColor = Color.White;
                 list[i + 1].ForeColor = Color.White;
 
-                await Task.Delay(230);
+                await Task.Delay(50);
                 await pausebtn.WaitIfPaused();
 
                 if (currentVal > nextVal)
@@ -144,8 +151,12 @@ public class ListMethods
                     list[i].Text = list[i + 1].Text;
                     list[i + 1].Text = temp;
 
+                    Size tempsize = list[i + 1].Size;
+                    list[i + 1].Size = list[i].Size;
+                    list[i].Size = tempsize;
+
                     swapped = true;
-                    await Task.Delay(230);
+                    await Task.Delay(50);
                     await pausebtn.WaitIfPaused();
                 }
 
@@ -153,7 +164,7 @@ public class ListMethods
                 list[i + 1].BackColor = Color.Black;
                 list[i].ForeColor = Color.Turquoise;
                 list[i + 1].ForeColor = Color.Turquoise;
-                await Task.Delay(230);
+                await Task.Delay(50);
                 await pausebtn.WaitIfPaused();
             }
         }

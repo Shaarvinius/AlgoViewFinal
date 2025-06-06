@@ -131,14 +131,14 @@ namespace AlgoView
                 if (int.TryParse(boxlist[i].Text, out int result))
                 {
                     int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
-                    PositionInListUI(boxlist[i], 365, x);
+                    PositionInListUI(boxlist[i], 400, x);
 
                     this.Resize += (s, e) =>
                     {
                         for (int j = 0; j < boxlist.Length; j++)
                         {
                             int newX = (int)((j - (boxlist.Length - 1) / 2.0) * spacing);
-                            Center(boxlist[j], 365, newX);
+                            Center(boxlist[j], 400, newX);
                         }
                     };
                 }
@@ -315,7 +315,7 @@ namespace AlgoView
             if (StepBackButton == null)
             {
                 StepBackButton = ButtonMaker.MakeNewButton("Step back", 250, 50);
-                PositionInListUI(StepBackButton, 585, -400);
+                PositionInListUI(StepBackButton, 700, -400);
                 StepBackButton.Click += StepBackClick;
                 StepBackButton.Hide();
             }
@@ -327,7 +327,7 @@ namespace AlgoView
             if (StepForwardbutton == null)
             {
                 StepForwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
-                PositionInListUI(StepForwardbutton, 585, 400);
+                PositionInListUI(StepForwardbutton, 700, 400);
                 StepForwardbutton.Click += StepForwardClick;
                 StepForwardbutton.Hide();
             }
@@ -405,9 +405,9 @@ namespace AlgoView
                             sortmode.Enabled = false;
 
                             Button pausebutton = ButtonMaker.MakeNewButton("||", 150, 40);
-                            PositionInListUI(pausebutton, 400,0);
+                            PositionInListUI(pausebutton, 350,0);
                             Button resumebutton = ButtonMaker.MakeNewButton("▶︎", 150, 40);
-                            PositionInListUI(resumebutton, 400,0);
+                            PositionInListUI(resumebutton, 350,0);
 
                             pausebutton.Click += (object sender, EventArgs e) =>
                             {
