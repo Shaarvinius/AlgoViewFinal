@@ -40,7 +40,7 @@ public class SortListMaker
         Random randomnum = new Random();
         int listelement;
 
-        
+         
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
@@ -102,12 +102,21 @@ public class SortListMaker
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
-            list[i].Size = new Size(35, 35);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
             list[i].Text = numbers[i].ToString();
+            list[i].Multiline = true;
+            list[i].Size = new Size(35, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
+        }
+
+        int biggestnum;
+        int smallestnum;
+
+        for(int i = 0; i < length; i++)
+        {
+            
         }
 
         return list;
