@@ -36,6 +36,12 @@ public class SortListMaker
     {
         int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
         TextBox[] list = new TextBox[length];
+        List<int> numbers = new List<int>();
+
+        for (int i = 0; i < length; i++)
+        {
+            numbers.Add(Convert.ToInt32(firstnum) + i);
+        }
 
         Random randomnum = new Random();
         int listelement;
@@ -53,6 +59,8 @@ public class SortListMaker
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
+            list[i].Multiline = true;
+            list[i].Size = new Size(35, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
         }
 
         return list;

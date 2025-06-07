@@ -405,9 +405,9 @@ namespace AlgoView
                             sortmode.Enabled = false;
 
                             Button pausebutton = ButtonMaker.MakeNewButton("||", 150, 40);
-                            PositionInListUI(pausebutton, 350,0);
+                            PositionInListUI(pausebutton, 357,0);
                             Button resumebutton = ButtonMaker.MakeNewButton("▶︎", 150, 40);
-                            PositionInListUI(resumebutton, 350,0);
+                            PositionInListUI(resumebutton, 357,0);
 
                             pausebutton.Click += (object sender, EventArgs e) =>
                             {
