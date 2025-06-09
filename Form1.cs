@@ -202,13 +202,13 @@ namespace AlgoView
                         lastnum.Clear();
                         return;
                     }
-                    /*if(last - first > 38)
+                    if(last - first > 49)
                     {
                         MessageBox.Show("Range of numbers is 38 - otherwise won't fit on screen");
                         lastnum.Clear();
                         firstnum.Clear();
                         return;
-                    }*/
+                    }
 
                     SearchListMaker numberlistmaker = new SearchListMaker();
                     TextBox[] boxlist = numberlistmaker.MakeList(firstnum.Text, lastnum.Text);
@@ -279,6 +279,13 @@ namespace AlgoView
                         MessageBox.Show("First number should be less than the last.");
                         firstnum.Clear();
                         lastnum.Clear();
+                        return;
+                    }
+                    if (last - first > 49)
+                    {
+                        MessageBox.Show("Max range of numbers is 50 - otherwise won't fit on screen");
+                        lastnum.Clear();
+                        firstnum.Clear();
                         return;
                     }
 
