@@ -226,6 +226,8 @@ namespace AlgoView
                     {
                         onListCreated(boxlist);
                     }));
+
+                    makelist.Enabled = false;
                 };
             }
             else if(inputquestion == SortQuestion)
@@ -323,6 +325,7 @@ namespace AlgoView
                     {
                         onListCreated(boxlist);
                     }));
+                    makelist.Enabled = false;
                 };
             }
 
@@ -442,6 +445,9 @@ namespace AlgoView
 
                             await ListMethods.BubbleSortAuto(numbers, PauseControl);
                         }
+
+                        sortmode.Enabled = false;
+                        sortmode.Hide();
                     });
                 }
 
