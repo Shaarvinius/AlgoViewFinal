@@ -54,7 +54,6 @@ public class SortListMaker
 
             listelement = randomnum.Next(Convert.ToInt32(firstnum), Convert.ToInt32(lastnum) + 1);
             list[i].Text = Convert.ToString(listelement);
-
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
