@@ -456,10 +456,10 @@ namespace AlgoView
                     algorithmSelector.Enabled = false;
 
                     Label numtofind = LabelMaker.MakeNewLabel("input number to search for:", 385, 30);
-                    PositionInListUI(numtofind, 350, 0);
+                    PositionInListUI(numtofind, 750, 0);
 
                     TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(input, 350, 210);
+                    PositionInListUI(input, 750, 210);
 
                     Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
                     PositionInListUI(left, 675, -150);
@@ -539,10 +539,10 @@ namespace AlgoView
                     algorithmSelector.Enabled = false;
 
                     Label numtofind = LabelMaker.MakeNewLabel("input number to search for:", 385, 30);
-                    PositionInListUI(numtofind, 350, 0);
+                    PositionInListUI(numtofind, 750, 0);
 
                     TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(input, 350, 210);
+                    PositionInListUI(input, 750, 210);
 
                     Label left = LabelMaker.MakeNewLabel("Lower Bound", 225, 30);
                     PositionInListUI(left, 675, -300);
