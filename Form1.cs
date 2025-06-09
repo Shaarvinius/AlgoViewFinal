@@ -124,7 +124,7 @@ namespace AlgoView
 
         private void DrawList(TextBox[] boxlist, TextBox firstnum, TextBox lastnum)
         {
-            int spacing = 50;
+            int spacing = 38;
 
             for (int i = 0; i < boxlist.Length; i++)
             {
@@ -202,6 +202,13 @@ namespace AlgoView
                         lastnum.Clear();
                         return;
                     }
+                    /*if(last - first > 38)
+                    {
+                        MessageBox.Show("Range of numbers is 38 - otherwise won't fit on screen");
+                        lastnum.Clear();
+                        firstnum.Clear();
+                        return;
+                    }*/
 
                     SearchListMaker numberlistmaker = new SearchListMaker();
                     TextBox[] boxlist = numberlistmaker.MakeList(firstnum.Text, lastnum.Text);

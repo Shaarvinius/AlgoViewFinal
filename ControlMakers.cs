@@ -17,7 +17,7 @@ public class SearchListMaker
         {
             list[i] = new TextBox();
             list[i].Multiline = true;
-            list[i].Size = new Size(35, 35 + length + i * 8);
+            list[i].Size = new Size(30, 30 + length + i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
@@ -50,7 +50,7 @@ public class SortListMaker
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
-            list[i].Size = new Size(35, 35);
+            list[i].Size = new Size(30, 30);
 
             listelement = randomnum.Next(Convert.ToInt32(firstnum), Convert.ToInt32(lastnum) + 1);
             list[i].Text = Convert.ToString(listelement);
@@ -59,7 +59,7 @@ public class SortListMaker
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
             list[i].Multiline = true;
-            list[i].Size = new Size(35, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
+            list[i].Size = new Size(30, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
         }
 
         return list;
@@ -74,7 +74,7 @@ public class SortListMaker
         {
             list[i] = new TextBox();
             list[i].Multiline = true;
-            list[i].Size = new Size(35, 35 + 8 * length - i * 8);
+            list[i].Size = new Size(30, 30 + 8 * length - i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(lastnum) - i);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
@@ -115,7 +115,7 @@ public class SortListMaker
             list[i].TextAlign = HorizontalAlignment.Center;
             list[i].Text = numbers[i].ToString();
             list[i].Multiline = true;
-            list[i].Size = new Size(35, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
+            list[i].Size = new Size(30, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
         }
 
         int biggestnum;
