@@ -51,7 +51,6 @@ public class ListMethods
                 {
                     numbers[k] = rightArray[j];
                     j++; 
-                    k++;
                 }
             }
 
