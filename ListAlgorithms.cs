@@ -43,12 +43,30 @@ public class ListMethods
             {
                 if (leftArray[i] <= rightArray[j])
                 {
-                    numbers[k] = numbers[i];
+                    numbers[k] = leftArray[i];
                     i++;
+                    k++;
+                }
+                else
+                {
+                    numbers[k] = rightArray[j];
+                    j++; 
                     k++;
                 }
             }
 
+            while(i < leftsize)
+            {
+                numbers[k] = leftArray[i];
+                i++;
+                k++;
+            }
+            while(j < rightsize)
+            {
+                numbers[k] = rightArray[j];
+                i++;
+                k++;
+            }
         }
     }
 
