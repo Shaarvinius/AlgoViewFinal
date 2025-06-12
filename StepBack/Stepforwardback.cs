@@ -14,18 +14,13 @@ public class ListSnapshot
     public Color[] BackColours;
     public Color[] ForeColours;
     public Size[] Heights;
-    public Label Explaination = LabelMaker.MakeNewLabel("", 200, 30);
-    public List<Label> Explainations;
-    public ListSnapshot(TextBox[] NumBoxes, string stepexplained)
+    public ListSnapshot(TextBox[] NumBoxes)
     {
         int length = NumBoxes.Length;
         Values = new int[length];
         BackColours = new Color[length];
         ForeColours = new Color[length];
         Heights = new Size[length];
-
-        Explaination.Text = stepexplained;
-        Explainations.Add(Explaination);
 
         for (int i = 0; i < length; i++)
         {
@@ -44,11 +39,6 @@ public class ListSnapshot
             NumBoxes[i].BackColor = BackColours[i];
             NumBoxes[i].ForeColor = ForeColours[i];
             NumBoxes[i].Size = Heights[i];
-        }
-
-        for(int i = 0;i < Explainations.Count; i++)
-        {
-            Explainations[i] = 
         }
     }
 }

@@ -10,9 +10,46 @@ using System.Threading.Tasks;
 public class ListMethods
 {
 
-    public static void MergeSort(TextBox[] list)
+    public static void MergeSort(int[] numbers)
     {
+        if (numbers == null || numbers.Length <= 1)
+        {
+            return;
+        }
 
+        void Merge(int left, int middle, int right)
+        {
+            int leftsize = middle - left + 1;
+            int rightsize = right - middle;
+
+            int[] leftArray = new int[leftsize];
+            int[] rightArray = new int[rightsize];
+
+            for(int a = 0; a < leftsize; a++)
+            {
+                leftArray[a] = numbers[left + a];
+            }
+
+            for(int b = 0; b < rightsize; b++)
+            {
+                rightArray[b] = numbers[middle + 1 + b];
+            }
+
+            int i = 0;
+            int j = 0;
+            int k = left;
+
+            while(i < leftsize && j < rightsize)
+            {
+                if (leftArray[i] <= rightArray[j])
+                {
+                    numbers[k] = numbers[i];
+                    i++;
+                    k++;
+                }
+            }
+
+        }
     }
 
 
