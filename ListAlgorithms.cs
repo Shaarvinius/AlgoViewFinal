@@ -51,6 +51,7 @@ public class ListMethods
                 {
                     numbers[k] = rightArray[j];
                     j++; 
+                    k++;
                 }
             }
 
@@ -67,6 +68,20 @@ public class ListMethods
                 k++;
             }
         }
+
+
+        void Sort(int left, int right)
+        {
+            if(left < right)
+            {
+                int middle = (left + right) / 2;
+                Sort(left, middle);
+                Sort(middle + 1, right);
+                Merge(left, middle, right);
+            }
+        }
+
+        Sort(0, numbers.Length - 1);
     }
 
 
