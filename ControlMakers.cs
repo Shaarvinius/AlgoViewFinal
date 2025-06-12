@@ -60,6 +60,7 @@ public class SortListMaker
             list[i].TextAlign = HorizontalAlignment.Center;
             list[i].Multiline = true;
             list[i].Size = new Size(30, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
+            list[i].ReadOnly = true;
         }
 
         return list;
@@ -80,6 +81,7 @@ public class SortListMaker
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
+            list[i].ReadOnly = true;
         }
 
         return list;
@@ -116,6 +118,7 @@ public class SortListMaker
             list[i].Text = numbers[i].ToString();
             list[i].Multiline = true;
             list[i].Size = new Size(30, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
+            list[i].ReadOnly = true;
         }
 
         int biggestnum;

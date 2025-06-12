@@ -204,7 +204,7 @@ namespace AlgoView
                     }
                     if(last - first > 49)
                     {
-                        MessageBox.Show("Range of numbers is 38 - otherwise won't fit on screen");
+                        MessageBox.Show("Range of numbers is 50 - otherwise won't fit on screen");
                         lastnum.Clear();
                         firstnum.Clear();
                         return;
