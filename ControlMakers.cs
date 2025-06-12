@@ -51,7 +51,6 @@ public class SortListMaker
         {
             list[i] = new TextBox();
             list[i].Size = new Size(30, 30);
-
             listelement = randomnum.Next(Convert.ToInt32(firstnum), Convert.ToInt32(lastnum) + 1);
             list[i].Text = Convert.ToString(listelement);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);

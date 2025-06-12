@@ -57,8 +57,8 @@ public class ListMethods
         int nextval;
         int length = list.Length;
         bool swapped = true;
-
-        while(length > 0 && swapped)
+        Label explainstep = LabelMaker.MakeNewLabel("", 225, 30);
+        while (length > 0 && swapped)
         {
             length--;
             for(int i = 0; i < length; i++)
@@ -71,11 +71,13 @@ public class ListMethods
                 list[i + 1].ForeColor = Color.White;
                 if (currentval > nextval)
                 {
+                    explainstep = LabelMaker.MakeNewLabel(currentval + " > " + nextval , 200, 30);
                     list[i + 1].BackColor = Color.DarkRed;
                     list[i].BackColor = Color.Blue;
                 }
                 else
                 {
+                    explainstep.Text = currentval + " <= " + nextval;
                     list[i].BackColor = Color.DarkRed;
                     list[i+1].BackColor = Color.Blue;
                 }
