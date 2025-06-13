@@ -19,7 +19,7 @@ public class SearchListMaker
             list[i].Multiline = true;
             list[i].Size = new Size(30, 30 + length + i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
-            list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+            list[i].Font = new Font("Arial", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;

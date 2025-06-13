@@ -361,7 +361,7 @@ namespace AlgoView
         private void Form1_Load(object sender, EventArgs e)
         {
             PictureBox logo = new PictureBox();
-            logo.Size = new Size(610,245);
+            logo.Size = new Size(250,236);
             PositionInListUI(logo, 14,0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
             this.Controls.Add(logo);
