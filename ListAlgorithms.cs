@@ -119,56 +119,66 @@ public class ListMethods
     }
 
 
-    public static void BubbleSort(TextBox[] list, List<ListSnapshot> sortingsteps)
+    public static void BubbleSort(TextBox[] list, List<ListSnapshot> sortingsteps, List<string> StepLabels)
     {
         int temp;
         int currentval;
         int nextval;
         int length = list.Length;
         bool swapped = true;
-        Label explainstep = LabelMaker.MakeNewLabel("", 225, 30);
+
         while (length > 0 && swapped)
         {
+            swapped = false;
             length--;
-            for(int i = 0; i < length; i++)
+
+            for (int i = 0; i < length; i++)
             {
                 currentval = Convert.ToInt32(list[i].Text);
-                nextval = Convert.ToInt32((list[i+1].Text));
+                nextval = Convert.ToInt32(list[i + 1].Text);
 
+                StepLabels.Add("Comparing " + currentval + " and " + nextval);
                 sortingsteps.Add(new ListSnapshot(list));
+
                 list[i].ForeColor = Color.White;
                 list[i + 1].ForeColor = Color.White;
+
                 if (currentval > nextval)
                 {
-                    explainstep = LabelMaker.MakeNewLabel(currentval + " > " + nextval , 200, 30);
-                    list[i + 1].BackColor = Color.DarkRed;
                     list[i].BackColor = Color.Blue;
+                    list[i + 1].BackColor = Color.DarkRed;
+                    StepLabels.Add(currentval + " > " + nextval);
                 }
                 else
                 {
-                    explainstep.Text = currentval + " <= " + nextval;
                     list[i].BackColor = Color.DarkRed;
-                    list[i+1].BackColor = Color.Blue;
+                    list[i + 1].BackColor = Color.Blue;
+                    StepLabels.Add(currentval + " <= " + nextval);
                 }
+                sortingsteps.Add(new ListSnapshot(list));
 
-                if(currentval > nextval)
+                if (currentval > nextval)
                 {
                     temp = nextval;
                     nextval = currentval;
                     currentval = temp;
 
-                    sortingsteps.Add(new ListSnapshot(list));
+                    list[i].Text = currentval.ToString();
+                    list[i + 1].Text = nextval.ToString();
 
-                    list[i].BackColor = Color.Black;
-                    list[i+1].BackColor = Color.Black;
-                    list[i].ForeColor = Color.Turquoise;
-                    list[i+1].ForeColor = Color.Turquoise;
-                    Size tempsize = list[i+1].Size;
+                    Size tempsize = list[i + 1].Size;
                     list[i + 1].Size = list[i].Size;
                     list[i].Size = tempsize;
 
-                    list[i].Text = Convert.ToString(currentval);
-                    list[i + 1].Text = Convert.ToString(nextval);
+                    list[i].BackColor = Color.Black;
+                    list[i + 1].BackColor = Color.Black;
+                    list[i].ForeColor = Color.Turquoise;
+                    list[i + 1].ForeColor = Color.Turquoise;
+
+                    StepLabels.Add("Swapped " + list[i + 1].Text + " and " + list[i].Text);
+                    sortingsteps.Add(new ListSnapshot(list));
+
+                    swapped = true;
                 }
                 else
                 {
@@ -176,10 +186,15 @@ public class ListMethods
                     list[i + 1].BackColor = Color.Black;
                     list[i].ForeColor = Color.Turquoise;
                     list[i + 1].ForeColor = Color.Turquoise;
+
+                    StepLabels.Add("No swap needed");
+                    sortingsteps.Add(new ListSnapshot(list));
                 }
             }
         }
+
         sortingsteps.Add(new ListSnapshot(list));
+        StepLabels.Add("Sorting done");
     }
 
 

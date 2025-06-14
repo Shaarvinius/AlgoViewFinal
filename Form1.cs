@@ -66,6 +66,10 @@ namespace AlgoView
 
 
         private List<ListSnapshot> AlgorithmSteps = new List<ListSnapshot>();
+
+        private List<string> StepExplainations = new List<string>();
+        private Label StepLabel = LabelMaker.MakeNewLabel("",300, 30);
+
         private int CurrentStep = -1;
         private TextBox[] CurrentBoxes;
 
@@ -100,6 +104,7 @@ namespace AlgoView
                 StepForwardbutton.Enabled = true;
                 StepBackButton.Enabled = CurrentStep > 0;
                 UpdateStepCount();
+                StepLabel.Text = StepExplainations[CurrentStep];
             }
         }
 
@@ -113,6 +118,7 @@ namespace AlgoView
                 StepBackButton.Enabled = true;
                 StepForwardbutton.Enabled = CurrentStep < AlgorithmSteps.Count - 1;
                 UpdateStepCount();
+                StepLabel.Text = StepExplainations[CurrentStep];
             }
         }
         
@@ -161,6 +167,7 @@ namespace AlgoView
             CurrentBoxes = numbers;
             StepForwardbutton.Show();
             StepBackButton.Show();
+            StepLabel.Text = StepExplainations[0];
         }
 
 
@@ -404,9 +411,11 @@ namespace AlgoView
                             StepForwardbutton.Show();
                             StepBackButton.Show();
                             AlgorithmSteps.Clear();
-                            ListMethods.BubbleSort(numbers, AlgorithmSteps);
-                            PositionInListUI(StepCount, 325, 0);
+                            StepExplainations.Clear();
                             CurrentStep = 0;
+                            ListMethods.BubbleSort(numbers, AlgorithmSteps, StepExplainations);
+                            PositionInListUI(StepCount, 325, 0);
+                            PositionInListUI(StepLabel, 300, 400);
 
                             if (AlgorithmSteps.Count > 0)
                             {
@@ -597,24 +606,9 @@ namespace AlgoView
                 else if (selectedAlgorithm == "Merge sort")
                 {
                     algorithmSelector.Enabled = false;
-
-                    SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
+                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
-                        StepForwardbutton.Show();
-                        StepBackButton.Show();
-                        AlgorithmSteps.Clear();
-                        ListMethods.BubbleSort(numbers, AlgorithmSteps);
-                        PositionInListUI(StepCount, 325, 0);
-                        CurrentStep = 0;
 
-                        if (AlgorithmSteps.Count > 0)
-                        {
-                            NewStepStack(numbers);
-                        }
-                        else
-                        {
-                            MessageBox.Show("No steps were generated.");
-                        }
                     });
                 }
                 else if (selectedAlgorithm == "Depth first search")

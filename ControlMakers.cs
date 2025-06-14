@@ -19,7 +19,7 @@ public class SearchListMaker
             list[i].Multiline = true;
             list[i].Size = new Size(30, 30 + length + i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
-            list[i].Font = new Font("Arial", 10, FontStyle.Regular);
+            list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
@@ -189,7 +189,7 @@ public static class LabelMaker
         Label label = new Label();
         label.Size = new Size(width, height);
         label.Text = labelname;
-        label.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+        label.Font = new Font("OCR A Extended", 11, FontStyle.Regular);
         label.ForeColor = Color.Turquoise;
         label.TextAlign = ContentAlignment.MiddleCenter;
 

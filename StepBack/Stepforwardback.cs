@@ -4,10 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 
 
-public class ExplainSteps
-{
-    public Label[] Steps;
-}
+
+
 public class ListSnapshot
 {
     public int[] Values;
