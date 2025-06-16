@@ -340,7 +340,7 @@ namespace AlgoView
                 StepBackButton = ButtonMaker.MakeNewButton("Step back", 250, 50);
                 PositionInListUI(StepBackButton, 750, -400);
                 StepBackButton.Click += StepBackClick;
-                StepBackButton.Hide();
+                StepBackButton.Hide(); 
             }
             else
             {
