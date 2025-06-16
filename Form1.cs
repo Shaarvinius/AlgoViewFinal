@@ -36,7 +36,6 @@ namespace AlgoView
                     controls.Hide();
                 }
             }
-
             algorithmSelector.SelectedIndex = 0;
             algorithmSelector.Enabled = true;
         }
@@ -416,6 +415,10 @@ namespace AlgoView
                             ListMethods.BubbleSort(numbers, AlgorithmSteps, StepExplainations);
                             PositionInListUI(StepCount, 325, 0);
                             PositionInListUI(StepLabel, 300, 400);
+                            if (!this.Controls.Contains(StepLabel))
+                                this.Controls.Add(StepLabel);
+
+                            StepLabel.Show();
 
                             if (AlgorithmSteps.Count > 0)
                             {
