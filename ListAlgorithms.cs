@@ -99,23 +99,23 @@ public class ListMethods
             {
                 int leftVal = Convert.ToInt32(list[index - 1].Text);
 
+
+                sortingsteps.Add(new ListSnapshot(list));
+
                 list[index].BackColor = Color.Aquamarine;
                 list[index].ForeColor = Color.Black;
                 list[index].Text = leftVal.ToString();
                 Size tempSize = list[index].Size;
                 list[index].Size = list[index - 1].Size;
                 list[index - 1].Size = tempSize;
-
+                list[index - 1].Text = content.ToString();    
+                
+                Steplabels.Add(leftVal + " > " + content);
                 index--; 
             }
 
 
             list[index].Text = content.ToString();
-            list[index].BackColor = Color.LightGreen;
-            list[index].ForeColor = Color.Black;
-
-            sortingsteps.Add(new ListSnapshot(list));
-            Steplabels.Add($"Inserted back {content}");
 
             Steplabels.Add($"{content} inserted correctly");
             sortingsteps.Add(new ListSnapshot(list));
