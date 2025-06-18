@@ -85,38 +85,48 @@ public class ListMethods
     }
 
 
-    public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps)
+    public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps, List<string> Steplabels)
     {
         sortingsteps.Add(new ListSnapshot(list));
-        int content;
-        int index;
-        for(int i = 1; i < list.Length; i++)
+        Steplabels.Add("Initial state");
+
+        for (int i = 1; i < list.Length; i++)
         {
-            content = Convert.ToInt32(list[i].Text);
-            index = i;
+            int content = Convert.ToInt32(list[i].Text);
+            int index = i;
 
             while (index > 0 && Convert.ToInt32(list[index - 1].Text) > content)
             {
+                int leftVal = Convert.ToInt32(list[index - 1].Text);
+
                 list[index].BackColor = Color.Aquamarine;
                 list[index].ForeColor = Color.Black;
-                list[index].Text = list[index - 1].Text;
-
-                Size tempsize = list[index].Size;
-                list[index].Size = list[index-1].Size;
-                list[index-1].Size = tempsize;
+                list[index].Text = leftVal.ToString();
+                Size tempSize = list[index].Size;
+                list[index].Size = list[index - 1].Size;
+                list[index - 1].Size = tempSize;
 
                 index--;
             }
 
-            list[index].Text = content.ToString();
 
+            list[index].Text = content.ToString();
+            list[index].BackColor = Color.LightGreen;
+            list[index].ForeColor = Color.Black;
+
+            sortingsteps.Add(new ListSnapshot(list));
+            Steplabels.Add($"Inserted back {content}");
+
+            Steplabels.Add($"{content} inserted correctly");
             sortingsteps.Add(new ListSnapshot(list));
         }
 
         list[0].BackColor = Color.Aquamarine;
         list[0].ForeColor = Color.Black;
         sortingsteps.Add(new ListSnapshot(list));
+        Steplabels.Add("Done");
     }
+
 
 
     public static void BubbleSort(TextBox[] list, List<ListSnapshot> sortingsteps, List<string> StepLabels)

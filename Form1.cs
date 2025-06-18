@@ -52,6 +52,7 @@ namespace AlgoView
             this.Controls.Add(element);
             Center(element, topoffset, midoffset);
             this.Resize += (s, e) => Center(element, topoffset, midoffset);
+            element.Show();
         }
         
 
@@ -415,10 +416,6 @@ namespace AlgoView
                             ListMethods.BubbleSort(numbers, AlgorithmSteps, StepExplainations);
                             PositionInListUI(StepCount, 325, 0);
                             PositionInListUI(StepLabel, 300, 400);
-                            if (!this.Controls.Contains(StepLabel))
-                                this.Controls.Add(StepLabel);
-
-                            StepLabel.Show();
 
                             if (AlgorithmSteps.Count > 0)
                             {
@@ -532,8 +529,11 @@ namespace AlgoView
                         StepForwardbutton.Show();
                         StepBackButton.Show();
                         AlgorithmSteps.Clear();
-                        ListMethods.InsertionSort(numbers, AlgorithmSteps);
+                        StepExplainations.Clear();
+                        ListMethods.InsertionSort(numbers, AlgorithmSteps, StepExplainations);
                         PositionInListUI(StepCount, 325, 0);
+                        PositionInListUI(StepLabel, 300, 400);
+
                         CurrentStep = 0;
 
                         if (AlgorithmSteps.Count > 0)
