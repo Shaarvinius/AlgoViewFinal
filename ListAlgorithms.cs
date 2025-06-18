@@ -106,7 +106,7 @@ public class ListMethods
                 list[index].Size = list[index - 1].Size;
                 list[index - 1].Size = tempSize;
 
-                index--;
+                index--; 
             }
 
 
