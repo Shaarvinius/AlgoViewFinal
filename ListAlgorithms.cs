@@ -98,7 +98,10 @@ public class ListMethods
             while (index > 0 && Convert.ToInt32(list[index - 1].Text) > content)
             {
                 int leftVal = Convert.ToInt32(list[index - 1].Text);
-
+                list[index - 1].BackColor = Color.DarkBlue;
+                list[index - 1].ForeColor = Color.White;
+                list[index].BackColor = Color.Crimson;
+                list[index].ForeColor = Color.White;
 
                 sortingsteps.Add(new ListSnapshot(list));
 

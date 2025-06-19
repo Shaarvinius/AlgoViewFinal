@@ -371,7 +371,12 @@ namespace AlgoView
             logo.Size = new Size(250,236);
             PositionInListUI(logo, 14,0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
-            this.Controls.Add(logo);
+
+            Label AppName = LabelMaker.MakeNewLabel("AlgoView", 275, 55);
+            AppName.Font = new Font("OCR A Extended", 25, FontStyle.Bold);
+            AppName.ForeColor = Color.DeepSkyBlue;
+            PositionInListUI(AppName, 910, -825);
+
 
             PositionInListUI(HomeButton, 15, -820);
             HomeButton.Click += ClickHomeButton;
