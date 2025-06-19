@@ -267,13 +267,14 @@ public class ListMethods
     }
 
 
-    public static void BinarySearch(TextBox[] list, int numtofind, List<ListSnapshot> steps)
+    public static void BinarySearch(TextBox[] list, int numtofind, List<ListSnapshot> steps, List<string> StepLabels)
     {
         int left = 0;
         int right = list.Length - 1;
         bool found = false;
 
         steps.Add(new ListSnapshot(list));
+        StepLabels.Add("Initial state");
 
         while (left <= right)
         {
@@ -295,19 +296,26 @@ public class ListMethods
             list[right].ForeColor = Color.Black;
 
             steps.Add(new ListSnapshot(list));
+            StepLabels.Add("L: " + list[left].Text + "  M: " + list[mid].Text + "  R: " + list[right].Text);
 
             int midVal = Convert.ToInt32(list[mid].Text);
 
             if (midVal < numtofind)
             {
+                steps.Add(new ListSnapshot(list));
+                StepLabels.Add(midVal + " < " + numtofind);
                 left = mid + 1;
             }
             else if (midVal > numtofind)
             {
+                steps.Add(new ListSnapshot(list));
+                StepLabels.Add(midVal + " > " + numtofind);
                 right = mid - 1;
             }
             else
             {
+                steps.Add(new ListSnapshot(list));
+                StepLabels.Add("Found " + numtofind);
                 MessageBox.Show(numtofind + " found at index " + mid);
                 found = true;
                 break;
@@ -371,8 +379,6 @@ public class ListMethods
 
         steps.Add(new ListSnapshot(list));
 
-        
-
         while (lowerbound <= upperbound)
         {
             for (int i = 0; i < lowerbound; i++)
@@ -382,7 +388,6 @@ public class ListMethods
             }
 
             int mid = (lowerbound + upperbound) / 2;
-
 
             list[lowerbound].BackColor = Color.Crimson;
             list[lowerbound].ForeColor = Color.White;

@@ -68,7 +68,7 @@ namespace AlgoView
         private List<ListSnapshot> AlgorithmSteps = new List<ListSnapshot>();
 
         private List<string> StepExplainations = new List<string>();
-        private Label StepLabel = LabelMaker.MakeNewLabel("",300, 30);
+        private Label StepLabel = LabelMaker.MakeNewLabel("",600, 30);
 
         private int CurrentStep = -1;
         private TextBox[] CurrentBoxes;
@@ -491,8 +491,10 @@ namespace AlgoView
                         {
                             numtofind.Show();
                             AlgorithmSteps.Clear();
-                            ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
+                            StepExplainations.Clear();
                             CurrentStep = 0;
+                            ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps, StepExplainations);
+                            PositionInListUI(StepLabel, 300, 400);
                             PositionInListUI(StepCount, 325, 0);
                             StepCount.Hide();
 
