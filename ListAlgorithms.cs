@@ -56,27 +56,28 @@ public class ListMethods
 
                 if(leftVal <= rightVal)
                 {
-                    SetTextBox(numbers[k], leftnumbers[i], rightboxsizes[i]);
+                    SetTextBox(numbers[k], leftnumbers[i], leftboxsizes[i]);
                     i++;
                 }
                 else
                 {
-                    numbers[k] = rightArray[j];
-                    j++; 
-                    k++;
+                    SetTextBox(numbers[k], rightnumbers[j], rightboxsizes[j]);
+                    j++;
                 }
+
+                k++;
             }
 
             while(i < leftsize)
             {
-                numbers[k] = leftArray[i];
+                SetTextBox(numbers[k], leftnumbers[i], rightboxsizes[i]);
                 i++;
                 k++;
             }
             while(j < rightsize)
             {
-                numbers[k] = rightArray[j];
-                i++;
+                SetTextBox(numbers[k], rightnumbers[j], rightboxsizes[j]);
+                j++;
                 k++;
             }
         }

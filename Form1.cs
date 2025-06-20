@@ -614,9 +614,10 @@ namespace AlgoView
                 else if (selectedAlgorithm == "Merge sort")
                 {
                     algorithmSelector.Enabled = false;
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
-                    {
 
+                    SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
+                    {
+                        ListMethods.MergeSort(numbers);
                     });
                 }
                 else if (selectedAlgorithm == "Depth first search")
