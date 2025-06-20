@@ -10,11 +10,17 @@ using System.Threading.Tasks;
 public class ListMethods
 {
 
-    public static void MergeSort(int[] numbers)
+    public static void MergeSort(TextBox[] numbers)
     {
         if (numbers == null || numbers.Length <= 1)
         {
             return;
+        }
+
+        void SetTextBox(TextBox target, string text, Size size)
+        {
+            target.Text = text;
+            target.Size = size;
         }
 
         void Merge(int left, int middle, int right)
@@ -22,17 +28,21 @@ public class ListMethods
             int leftsize = middle - left + 1;
             int rightsize = right - middle;
 
-            int[] leftArray = new int[leftsize];
-            int[] rightArray = new int[rightsize];
+            string[] leftnumbers = new string[leftsize];
+            Size[] leftboxsizes = new Size[leftsize];
+            string[] rightnumbers = new string[rightsize];
+            Size[] rightboxsizes = new Size[rightsize];
 
-            for(int a = 0; a < leftsize; a++)
+            for(int z = 0; z < leftsize; z++)
             {
-                leftArray[a] = numbers[left + a];
+                leftnumbers[z] = numbers[left+z].Text;
+                leftboxsizes[z] = numbers[left+z].Size;
             }
 
-            for(int b = 0; b < rightsize; b++)
+            for (int z = 0; z < leftsize; z++)
             {
-                rightArray[b] = numbers[middle + 1 + b];
+                rightnumbers[z] = numbers[middle + 1 + z].Text;
+                rightboxsizes[z] = numbers[middle + 1 + z].Size;
             }
 
             int i = 0;
@@ -41,11 +51,13 @@ public class ListMethods
 
             while(i < leftsize && j < rightsize)
             {
-                if (leftArray[i] <= rightArray[j])
+                int leftVal = int.Parse(leftnumbers[i]);
+                int rightVal = int.Parse(rightnumbers[j]);
+
+                if(leftVal <= rightVal)
                 {
-                    numbers[k] = leftArray[i];
+                    SetTextBox(numbers[k], leftnumbers[i], rightboxsizes[i]);
                     i++;
-                    k++;
                 }
                 else
                 {
@@ -333,7 +345,7 @@ public class ListMethods
     }
 
 
-    public static void ExponentialSearch(TextBox[] list, int target, List<ListSnapshot> steps)
+    public static void ExponentialSearch(TextBox[] list, int target, List<ListSnapshot> steps, List<string> StepLabels)
     {
         int item;
         int upperbound = 1;
@@ -350,7 +362,6 @@ public class ListMethods
                 list[i].ForeColor = Color.White;
             }
 
-            steps.Add(new ListSnapshot(list));
             if (item < target)
             {
                 lastupperbound = upperbound;
@@ -360,6 +371,9 @@ public class ListMethods
             {
                 break;
             }
+
+            steps.Add(new ListSnapshot(list));
+            StepLabels.Add(target + " > " + item + ", so double Search Range");
         }
 
         lowerbound = lastupperbound + 1;
@@ -376,11 +390,10 @@ public class ListMethods
         }
 
         steps.Add(new ListSnapshot(list));
+        StepLabels.Add("Confirming range for binary search");
 
         int midVal;
         bool numfound = false;
-
-        steps.Add(new ListSnapshot(list));
 
         while (lowerbound <= upperbound)
         {
@@ -402,19 +415,27 @@ public class ListMethods
             list[mid].ForeColor = Color.Black;
 
             steps.Add(new ListSnapshot(list));
+            StepLabels.Add("L: " + list[lowerbound].Text + "  M: " + list[mid].Text + "  R: " + list[upperbound].Text);
 
             midVal = Convert.ToInt32(list[mid].Text);
 
             if (midVal < target)
             {
                 lowerbound = mid + 1;
+                steps.Add(new ListSnapshot(list));
+                StepLabels.Add(midVal + " < " + target);
             }
             else if (midVal > target)
             {
                 upperbound = mid - 1;
+                steps.Add(new ListSnapshot(list));
+                StepLabels.Add(midVal + " > " + target);
             }
             else
             {
+
+                steps.Add(new ListSnapshot(list));
+                StepLabels.Add("Found" + target);
                 MessageBox.Show(target + " found at index " + mid);
                 numfound = true;
                 break;

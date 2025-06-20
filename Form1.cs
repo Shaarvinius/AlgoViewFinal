@@ -361,8 +361,6 @@ namespace AlgoView
             }
         }
 
-        
-
 
         private ComboBox algorithmSelector;
         private void Form1_Load(object sender, EventArgs e)
@@ -371,12 +369,10 @@ namespace AlgoView
             logo.Size = new Size(250,236);
             PositionInListUI(logo, 14,0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
-
             Label AppName = LabelMaker.MakeNewLabel("AlgoView", 275, 55);
             AppName.Font = new Font("OCR A Extended", 25, FontStyle.Bold);
-            AppName.ForeColor = Color.DeepSkyBlue;
+            AppName.ForeColor = Color.SkyBlue;
             PositionInListUI(AppName, 910, -825);
-
 
             PositionInListUI(HomeButton, 15, -820);
             HomeButton.Click += ClickHomeButton;
@@ -584,9 +580,11 @@ namespace AlgoView
                         {
                             numtofind.Show();
                             AlgorithmSteps.Clear();
-                            ListMethods.ExponentialSearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps);
                             CurrentStep = 0;
+                            StepExplainations.Clear();
+                            ListMethods.ExponentialSearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps, StepExplainations);
                             PositionInListUI(StepCount, 325, 0);
+                            PositionInListUI(StepLabel, 300, 400);
                             StepCount.Hide();
 
                             if (AlgorithmSteps.Count > 0)
