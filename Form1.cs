@@ -386,11 +386,9 @@ namespace AlgoView
             algorithmSelector.Items.Add("Select Algorithm");
             algorithmSelector.Items.Add("Bubble Sort");
             algorithmSelector.Items.Add("Insertion Sort");
+            algorithmSelector.Items.Add("Merge sort");
             algorithmSelector.Items.Add("Binary Search");
             algorithmSelector.Items.Add("Exponential Search");
-            algorithmSelector.Items.Add("Breadth first search");
-            algorithmSelector.Items.Add("Depth first search");
-            algorithmSelector.Items.Add("Merge sort");
             PositionInListUI(algorithmSelector, 290, 0);
 
 
@@ -617,7 +615,24 @@ namespace AlgoView
 
                     SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
                     {
-                        ListMethods.MergeSort(numbers);
+                        StepForwardbutton.Show();
+                        StepBackButton.Show();
+                        AlgorithmSteps.Clear();
+                        StepExplainations.Clear();
+                        ListMethods.MergeSort(numbers, AlgorithmSteps, StepExplainations);
+                        PositionInListUI(StepCount, 325, 0);
+                        PositionInListUI(StepLabel, 300, 400);
+
+                        CurrentStep = 0;
+
+                        if (AlgorithmSteps.Count > 0)
+                        {
+                            NewStepStack(numbers);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No steps were generated.");
+                        }
                     });
                 }
                 else if (selectedAlgorithm == "Depth first search")

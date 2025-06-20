@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 public class ListMethods
 {
 
-    public static void MergeSort(TextBox[] numbers)
+    public static void MergeSort(TextBox[] numbers, List<ListSnapshot> sortingsteps, List<string> Steplabels)
     {
         if (numbers == null || numbers.Length <= 1)
         {
@@ -39,7 +39,7 @@ public class ListMethods
                 leftboxsizes[z] = numbers[left+z].Size;
             }
 
-            for (int z = 0; z < leftsize; z++)
+            for (int z = 0; z < rightsize; z++)
             {
                 rightnumbers[z] = numbers[middle + 1 + z].Text;
                 rightboxsizes[z] = numbers[middle + 1 + z].Size;
@@ -56,11 +56,16 @@ public class ListMethods
 
                 if(leftVal <= rightVal)
                 {
+                    sortingsteps.Add(new ListSnapshot(numbers));
+                    Steplabels.Add("c");
                     SetTextBox(numbers[k], leftnumbers[i], leftboxsizes[i]);
                     i++;
                 }
                 else
                 {
+
+                    sortingsteps.Add(new ListSnapshot(numbers));
+                    Steplabels.Add("d");
                     SetTextBox(numbers[k], rightnumbers[j], rightboxsizes[j]);
                     j++;
                 }
@@ -70,12 +75,18 @@ public class ListMethods
 
             while(i < leftsize)
             {
-                SetTextBox(numbers[k], leftnumbers[i], rightboxsizes[i]);
+
+                sortingsteps.Add(new ListSnapshot(numbers));
+                Steplabels.Add("e");
+                SetTextBox(numbers[k], leftnumbers[i], leftboxsizes[i]);
                 i++;
                 k++;
             }
             while(j < rightsize)
             {
+
+                sortingsteps.Add(new ListSnapshot(numbers));
+                Steplabels.Add("f");
                 SetTextBox(numbers[k], rightnumbers[j], rightboxsizes[j]);
                 j++;
                 k++;
