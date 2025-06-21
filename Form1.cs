@@ -363,6 +363,13 @@ namespace AlgoView
 
 
         private ComboBox algorithmSelector;
+
+        private int sortspeed = 1;
+        private int SpeedSelect(int speedinput)
+        {
+            sortspeed = 50 * speedinput;
+            return sortspeed;
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
             PictureBox logo = new PictureBox();
@@ -403,6 +410,26 @@ namespace AlgoView
 
                     algorithmSelector.Enabled = false;
 
+                    Label speedlabel = LabelMaker.MakeNewLabel("Enter speed (1-10): ", 200, 30);
+                    PositionInListUI(speedlabel, 300, -780);
+                    TextBox speedinput = BoxMaker.MakeNewBox("", 30);
+                    PositionInListUI(speedinput, 300, -450);
+
+                    if (int.TryParse(speedinput.Text, out int result))
+                    {
+                        sortspeed = SpeedSelect(Convert.ToInt32(speedinput.Text));
+                    }
+                    else if (result < 1 || result > 10)
+                    {
+                        MessageBox.Show("Enter a numer between 1 and 10");
+                        speedinput.Clear();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Enter a valid integer");
+                        speedinput.Clear();
+                    }
+
                     SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
                     {
                         if(sortmode.Checked == false)
@@ -429,6 +456,9 @@ namespace AlgoView
                         {
                             sortmode.Enabled = false;
 
+                            speedlabel.Show();
+                            speedinput.Show();
+
                             Button pausebutton = ButtonMaker.MakeNewButton("||", 150, 40);
                             PositionInListUI(pausebutton, 357,0);
                             Button resumebutton = ButtonMaker.MakeNewButton("▶︎", 150, 40);
@@ -451,7 +481,9 @@ namespace AlgoView
                                 pausebutton.Show();
                             };
 
-                            await ListMethods.BubbleSortAuto(numbers, PauseControl);
+                            await ListMethods.BubbleSortAuto(numbers, PauseControl, sortspeed);
+                            speedlabel.Hide();
+                            speedinput.Hide();
                         }
 
                         sortmode.Enabled = false;
