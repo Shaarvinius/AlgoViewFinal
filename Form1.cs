@@ -257,6 +257,7 @@ namespace AlgoView
 
                 string listType_reverse = listType.SelectedItem.ToString();
                 makelist.Enabled = false;
+
                 listType.SelectedIndexChanged += (object sender, EventArgs e)=>
                 {
                     listType_reverse = listType.SelectedItem.ToString();
@@ -365,11 +366,7 @@ namespace AlgoView
         private ComboBox algorithmSelector;
 
         private int sortspeed = 1;
-        private int SpeedSelect(int speedinput)
-        {
-            sortspeed = 50 * speedinput;
-            return sortspeed;
-        }
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             PictureBox logo = new PictureBox();
@@ -411,24 +408,18 @@ namespace AlgoView
                     algorithmSelector.Enabled = false;
 
                     Label speedlabel = LabelMaker.MakeNewLabel("Enter speed (1-10): ", 200, 30);
-                    PositionInListUI(speedlabel, 300, -780);
                     TextBox speedinput = BoxMaker.MakeNewBox("", 30);
+                    PositionInListUI(speedlabel, 300, -780);
                     PositionInListUI(speedinput, 300, -450);
+                    speedlabel.Visible = false;
+                    speedinput.Visible = false;
+                    int speed = 1;
 
-                    if (int.TryParse(speedinput.Text, out int result))
+                    sortmode.CheckedChanged += (sender, e) =>
                     {
-                        sortspeed = SpeedSelect(Convert.ToInt32(speedinput.Text));
-                    }
-                    else if (result < 1 || result > 10)
-                    {
-                        MessageBox.Show("Enter a numer between 1 and 10");
-                        speedinput.Clear();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Enter a valid integer");
-                        speedinput.Clear();
-                    }
+                        speedlabel.Visible = sortmode.Checked;
+                        speedinput.Visible = sortmode.Checked;
+                    };
 
                     SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
                     {
@@ -456,13 +447,13 @@ namespace AlgoView
                         {
                             sortmode.Enabled = false;
 
-                            speedlabel.Show();
-                            speedinput.Show();
-
                             Button pausebutton = ButtonMaker.MakeNewButton("||", 150, 40);
                             PositionInListUI(pausebutton, 357,0);
                             Button resumebutton = ButtonMaker.MakeNewButton("▶︎", 150, 40);
                             PositionInListUI(resumebutton, 357,0);
+
+                            speedlabel.Show();
+                            speedinput.Show();
 
                             pausebutton.Click += (object sender, EventArgs e) =>
                             {
@@ -481,9 +472,17 @@ namespace AlgoView
                                 pausebutton.Show();
                             };
 
-                            await ListMethods.BubbleSortAuto(numbers, PauseControl, sortspeed);
-                            speedlabel.Hide();
-                            speedinput.Hide();
+
+                            if(!int.TryParse(speedinput.Text, out int result) || result < 1 || result > 10)
+                            {
+                                MessageBox.Show("Enyter a valid integer between 1 and 10");
+                            }
+                            else
+                            {
+                                speed = 50 * result;
+                                await ListMethods.BubbleSortAuto(numbers, PauseControl, speed);
+
+                            }
                         }
 
                         sortmode.Enabled = false;
