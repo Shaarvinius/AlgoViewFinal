@@ -19,7 +19,6 @@ namespace AlgoView
 
     public partial class Form1 : Form
     {
-
         public Form1()
         {
             InitializeComponent();
@@ -407,10 +406,10 @@ namespace AlgoView
 
                     algorithmSelector.Enabled = false;
 
-                    Label speedlabel = LabelMaker.MakeNewLabel("Enter speed (1-10): ", 200, 30);
+                    Label speedlabel = LabelMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
                     TextBox speedinput = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(speedlabel, 300, -780);
-                    PositionInListUI(speedinput, 300, -450);
+                    PositionInListUI(speedlabel, 600, 0);
+                    PositionInListUI(speedinput, 600, 150);
                     speedlabel.Visible = false;
                     speedinput.Visible = false;
                     int speed = 1;

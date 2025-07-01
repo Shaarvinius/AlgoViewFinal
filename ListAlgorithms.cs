@@ -13,21 +13,7 @@ public class ListMethods
     public static void MergeSort(TextBox[] numbers, List<ListSnapshot> sortingsteps, List<string> Steplabels)
     {
         if (numbers == null || numbers.Length <= 1)
-        {
             return;
-        }
-
-        void SetTextBox(TextBox target, string text, Size size)
-        {
-            target.Text = text;
-            target.Size = size;
-        }
-        
-        void ChangeColor(TextBox box, Color backcolor, Color textcolor)
-        {
-            box.BackColor = backcolor;
-            box.ForeColor = textcolor;
-        }
 
         void Merge(int left, int middle, int right)
         {
@@ -35,73 +21,87 @@ public class ListMethods
             int rightsize = right - middle;
 
             string[] leftnumbers = new string[leftsize];
-            Size[] leftboxsizes = new Size[leftsize];
+            Size[] leftsizes = new Size[leftsize];
             string[] rightnumbers = new string[rightsize];
-            Size[] rightboxsizes = new Size[rightsize];
+            Size[] rightsizes = new Size[rightsize];
 
-            for(int z = 0; z < leftsize; z++)
+            for (int i = 0; i < leftsize; i++)
             {
-                leftnumbers[z] = numbers[left+z].Text;
-                leftboxsizes[z] = numbers[left+z].Size;
+                leftnumbers[i] = numbers[left + i].Text;
+                leftsizes[i] = numbers[left + i].Size;
             }
 
-            for (int z = 0; z < rightsize; z++)
+            for (int i = 0; i < rightsize; i++)
             {
-                rightnumbers[z] = numbers[middle + 1 + z].Text;
-                rightboxsizes[z] = numbers[middle + 1 + z].Size;
+                rightnumbers[i] = numbers[middle + 1 + i].Text;
+                rightsizes[i] = numbers[middle + 1 + i].Size;
             }
 
-            int i = 0;
-            int j = 0;
-            int k = left;
+            int li = 0, ri = 0, k = left;
 
-            while(i < leftsize && j < rightsize)
+            while (li < leftsize && ri < rightsize)
             {
-                int leftVal = int.Parse(leftnumbers[i]);
-                int rightVal = int.Parse(rightnumbers[j]);
+                int leftVal = int.Parse(leftnumbers[li]);
+                int rightVal = int.Parse(rightnumbers[ri]);
 
-                if(leftVal <= rightVal)
+                sortingsteps.Add(new ListSnapshot(numbers));
+                Steplabels.Add($"Compare {leftVal} and {rightVal}");
+
+                if (leftVal <= rightVal)
                 {
-                    sortingsteps.Add(new ListSnapshot(numbers));
-                    Steplabels.Add("c");
-                    SetTextBox(numbers[k], leftnumbers[i], leftboxsizes[i]);
-                    i++;
+                    if (numbers[k].Text != leftnumbers[li])
+                    {
+                        numbers[k].Text = leftnumbers[li];
+                        numbers[k].Size = leftsizes[li];
+                        sortingsteps.Add(new ListSnapshot(numbers));
+                        Steplabels.Add($"Copy {leftVal} to index {k}");
+                    }
+                    li++;
                 }
                 else
                 {
-
-                    sortingsteps.Add(new ListSnapshot(numbers));
-                    Steplabels.Add("d");
-                    SetTextBox(numbers[k], rightnumbers[j], rightboxsizes[j]);
-                    j++;
+                    if (numbers[k].Text != rightnumbers[ri])
+                    {
+                        numbers[k].Text = rightnumbers[ri];
+                        numbers[k].Size = rightsizes[ri];
+                        sortingsteps.Add(new ListSnapshot(numbers));
+                        Steplabels.Add($"Copy {rightVal} to index {k}");
+                    }
+                    ri++;
                 }
-
                 k++;
             }
 
-            while(i < leftsize)
+            while (li < leftsize)
             {
-
-                sortingsteps.Add(new ListSnapshot(numbers));
-                Steplabels.Add("e");
-                SetTextBox(numbers[k], leftnumbers[i], leftboxsizes[i]);
-                i++;
+                if (numbers[k].Text != leftnumbers[li])
+                {
+                    numbers[k].Text = leftnumbers[li];
+                    numbers[k].Size = leftsizes[li];
+                    sortingsteps.Add(new ListSnapshot(numbers));
+                    Steplabels.Add($"Copy {leftnumbers[li]} to index {k}");
+                }
+                li++;
                 k++;
             }
-            while(j < rightsize)
+
+            while (ri < rightsize)
             {
-                sortingsteps.Add(new ListSnapshot(numbers));
-                Steplabels.Add("f");
-                SetTextBox(numbers[k], rightnumbers[j], rightboxsizes[j]);
-                j++;
+                if (numbers[k].Text != rightnumbers[ri])
+                {
+                    numbers[k].Text = rightnumbers[ri];
+                    numbers[k].Size = rightsizes[ri];
+                    sortingsteps.Add(new ListSnapshot(numbers));
+                    Steplabels.Add($"Copy {rightnumbers[ri]} to index {k}");
+                }
+                ri++;
                 k++;
             }
         }
-         
 
         void Sort(int left, int right)
         {
-            if(left < right)
+            if (left < right)
             {
                 int middle = (left + right) / 2;
                 Sort(left, middle);
@@ -111,6 +111,9 @@ public class ListMethods
         }
 
         Sort(0, numbers.Length - 1);
+
+        sortingsteps.Add(new ListSnapshot(numbers));
+        Steplabels.Add("Done");
     }
 
 
