@@ -81,7 +81,7 @@ public class ListMethods
                     sortingsteps.Add(new ListSnapshot(numbers));
                     Steplabels.Add($"Copy {leftnumbers[li]} to index {k}");
                 }
-                li++;
+                li++; 
                 k++;
             }
 
