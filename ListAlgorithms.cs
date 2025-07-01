@@ -82,7 +82,7 @@ public class ListMethods
                     Steplabels.Add($"Copy {leftnumbers[li]} to index {k}");
                 }
                 li++;  
-                k++;
+                k++; 
             }
 
             while (ri < rightsize)
