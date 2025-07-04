@@ -408,8 +408,8 @@ namespace AlgoView
 
                     Label speedlabel = LabelMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
                     TextBox speedinput = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(speedlabel, 600, 0);
-                    PositionInListUI(speedinput, 600, 150);
+                    PositionInListUI(speedlabel, 780, -20);
+                    PositionInListUI(speedinput, 780, 130);
                     speedlabel.Visible = false;
                     speedinput.Visible = false;
                     int speed = 1;
@@ -474,18 +474,18 @@ namespace AlgoView
 
                             if(!int.TryParse(speedinput.Text, out int result) || result < 1 || result > 10)
                             {
-                                MessageBox.Show("Enyter a valid integer between 1 and 10");
+                                MessageBox.Show("Valid integer between 1 and 10 not inputted, executing with default speed 1");
+                                await ListMethods.BubbleSortAuto(numbers, PauseControl, 50);
                             }
                             else
                             {
                                 speed = 50 * result;
                                 await ListMethods.BubbleSortAuto(numbers, PauseControl, speed);
-
                             }
                         }
 
                         sortmode.Enabled = false;
-                        sortmode.Hide();
+                        sortmode.Visible = false;
                     });
                 }
 

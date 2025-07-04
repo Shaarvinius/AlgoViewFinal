@@ -47,6 +47,21 @@ public class ListMethods
                 sortingsteps.Add(new ListSnapshot(numbers));
                 Steplabels.Add($"Compare {leftVal} and {rightVal}");
 
+                if (leftVal > rightVal)
+                {
+                    Steplabels.Add($"{leftVal} > {rightVal}");
+                }
+                else if (leftVal < rightVal)
+                {
+                    Steplabels.Add($"{leftVal} < {rightVal}");
+                }
+                else
+                {
+                    Steplabels.Add($"{leftVal} = {rightVal}");
+                }
+
+                sortingsteps.Add(new ListSnapshot(numbers));
+
                 if (leftVal <= rightVal)
                 {
                     if (numbers[k].Text != leftnumbers[li])
