@@ -641,27 +641,47 @@ namespace AlgoView
                 }
                 else if (selectedAlgorithm == "Merge sort")
                 {
-                    algorithmSelector.Enabled = false;
+                    algorithmSelector.Enabled = false; 
+                    
+                    CheckBox sortmode = CheckBoxMaker.MakeNewCheckBox("Auto-Sort");
+                    PositionInListUI(sortmode, 700, 0);
+
+                    TextBox speedinput = BoxMaker.MakeNewBox("", 30);
+                    Label speedlabel = LabelMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
+                    PositionInListUI(speedlabel, 780, -20);
+                    PositionInListUI(speedinput, 780, 130);
+                    int speed = 1;
 
                     SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
                     {
-                        StepForwardbutton.Show();
-                        StepBackButton.Show();
-                        AlgorithmSteps.Clear();
-                        StepExplainations.Clear();
-                        ListMethods.MergeSort(numbers, AlgorithmSteps, StepExplainations);
-                        PositionInListUI(StepCount, 325, 0);
-                        PositionInListUI(StepLabel, 300, 400);
-
-                        CurrentStep = 0;
-
-                        if (AlgorithmSteps.Count > 0)
+                        if (!sortmode.Checked)
                         {
-                            NewStepStack(numbers);
+                            StepForwardbutton.Show();
+                            StepBackButton.Show();
+                            AlgorithmSteps.Clear();
+                            StepExplainations.Clear();
+                            ListMethods.MergeSort(numbers, AlgorithmSteps, StepExplainations);
+                            PositionInListUI(StepCount, 325, 0);
+                            PositionInListUI(StepLabel, 300, 400);
+
+                            CurrentStep = 0;
+
+                            if (AlgorithmSteps.Count > 0)
+                            {
+                                NewStepStack(numbers);
+                            }
+                            else
+                            {
+                                MessageBox.Show("No steps were generated.");
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("No steps were generated.");
+                            if (int.TryParse(speedinput.Text, out int result))
+                            {
+                                speed = 50 * result;
+                                await ListMethods.MergeSortAuto(numbers, speed);
+                            }
                         }
                     });
                 }

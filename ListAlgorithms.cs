@@ -131,6 +131,108 @@ public class ListMethods
         Steplabels.Add("Done");
     }
 
+    public static async Task MergeSortAuto(TextBox[] numbers, int speed)
+    {
+        if (numbers == null || numbers.Length <= 1)
+            return;
+
+        async Task Merge(int left, int middle, int right)
+        {
+            int leftsize = middle - left + 1;
+            int rightsize = right - middle;
+
+            string[] leftnumbers = new string[leftsize];
+            Size[] leftsizes = new Size[leftsize];
+            string[] rightnumbers = new string[rightsize];
+            Size[] rightsizes = new Size[rightsize];
+
+            for (int i = 0; i < leftsize; i++)
+            {
+                leftnumbers[i] = numbers[left + i].Text;
+                leftsizes[i] = numbers[left + i].Size;
+            }
+
+            for (int i = 0; i < rightsize; i++)
+            {
+                rightnumbers[i] = numbers[middle + 1 + i].Text;
+                rightsizes[i] = numbers[middle + 1 + i].Size;
+            }
+
+       
+
+            int li = 0, ri = 0, k = left;
+
+            while (li < leftsize && ri < rightsize)
+            {
+                int leftVal = int.Parse(leftnumbers[li]);
+                int rightVal = int.Parse(rightnumbers[ri]);
+
+                if (leftVal <= rightVal)
+                {
+                    if (numbers[k].Text != leftnumbers[li])
+                    {
+                        numbers[k].Text = leftnumbers[li];
+                        numbers[k].Size = leftsizes[li];
+                        await Task.Delay(speed + 25);
+                    }
+                    li++;
+                }
+                else
+                {
+                    if (numbers[k].Text != rightnumbers[ri])
+                    {
+                        numbers[k].Text = rightnumbers[ri];
+                        numbers[k].Size = rightsizes[ri];
+                        await Task.Delay(speed + 25);
+                    }
+                    ri++;
+                }
+                k++;
+            }
+
+            while (li < leftsize)
+            {
+                if (numbers[k].Text != leftnumbers[li])
+                {
+                    numbers[k].Text = leftnumbers[li];
+                    numbers[k].Size = leftsizes[li];
+                    await Task.Delay(speed + 25);
+                }
+                li++;
+                k++;
+            }
+
+            while (ri < rightsize)
+            {
+                if (numbers[k].Text != rightnumbers[ri])
+                {
+                    numbers[k].Text = rightnumbers[ri];
+                    numbers[k].Size = rightsizes[ri];
+                    await Task.Delay(speed + 25);
+                }
+                ri++;
+                k++;
+            }
+        }
+
+        async Task Sort(int left, int right)
+        {
+            if (left < right)
+            {
+                int middle = (left + right) / 2;
+
+                await Sort(left, middle);
+                await Sort(middle + 1, right);
+                await Task.Delay(speed);
+
+                await Merge(left, middle, right);
+                await Task.Delay(speed);
+            }
+        }
+
+        await Sort(0, numbers.Length - 1);
+        await Task.Delay(speed);
+    }
 
     public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps, List<string> Steplabels)
     {
@@ -215,7 +317,7 @@ public class ListMethods
                     list[i + 1].BackColor = Color.Blue;
                     StepLabels.Add(currentval + " <= " + nextval);
                 }
-                sortingsteps.Add(new ListSnapshot(list));
+                sortingsteps.Add(new ListSnapshot(list)); 
 
                 if (currentval > nextval)
                 {
@@ -258,7 +360,7 @@ public class ListMethods
     }
 
 
-    public static async Task BubbleSortAuto(TextBox[] list, PlayBack pausebtn, int speed)
+    public static async Task BubbleSortAuto(TextBox[] list, PlayBack pausectrl, int speed)
     {
         int length = list.Length;
         bool swapped = true;
@@ -270,7 +372,7 @@ public class ListMethods
 
             for (int i = 0; i < length; i++)
             {
-                await pausebtn.WaitIfPaused();
+                await pausectrl.WaitIfPaused();
 
                 int currentVal = Convert.ToInt32(list[i].Text);
                 int nextVal = Convert.ToInt32(list[i + 1].Text);
@@ -289,7 +391,7 @@ public class ListMethods
                 list[i + 1].ForeColor = Color.White;
 
                 await Task.Delay(speed);
-                await pausebtn.WaitIfPaused();
+                await pausectrl.WaitIfPaused();
 
                 if (currentVal > nextVal)
                 {
@@ -303,7 +405,7 @@ public class ListMethods
 
                     swapped = true;
                     await Task.Delay(speed);
-                    await pausebtn.WaitIfPaused();
+                    await pausectrl.WaitIfPaused();
                 }
 
                 list[i].BackColor = Color.Black;
@@ -311,7 +413,7 @@ public class ListMethods
                 list[i].ForeColor = Color.Turquoise;
                 list[i + 1].ForeColor = Color.Turquoise;
                 await Task.Delay(speed);
-                await pausebtn.WaitIfPaused();
+                await pausectrl.WaitIfPaused();
             }
         }
     }
