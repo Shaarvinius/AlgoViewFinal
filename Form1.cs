@@ -120,8 +120,6 @@ namespace AlgoView
                 StepLabel.Text = StepExplainations[CurrentStep];
             }
         }
-        
-
 
         private const string SearchQuestion = "Enter the first number in the left box and the last in the right box: ";
         private const string SortQuestion = "Enter the first number in the left box and the last in the right box(sort): ";
@@ -656,6 +654,7 @@ namespace AlgoView
                     {
                         if (!sortmode.Checked)
                         {
+                            sortmode.Enabled = false;
                             StepForwardbutton.Show();
                             StepBackButton.Show();
                             AlgorithmSteps.Clear();
@@ -677,10 +676,34 @@ namespace AlgoView
                         }
                         else
                         {
-                            if (int.TryParse(speedinput.Text, out int result))
+                            sortmode.Enabled = false;
+
+                            Button pause = ButtonMaker.MakeNewButton("||", 150, 40);
+                            PositionInListUI(pause, 357, 0);
+                            Button resume = ButtonMaker.MakeNewButton("▶︎", 150, 40);
+                            PositionInListUI(resume, 357, 0);
+
+                            pause.Click += (object sender, EventArgs e) =>
+                            {
+                                PauseControl.Pause();
+                                pause.Enabled = false;
+                                pause.Hide();
+                                resume.Enabled = true;
+                                resume.Show();
+                            };
+                            resume.Click += (object sender, EventArgs e) =>
+                            {
+                                PauseControl.Resume();
+                                resume.Enabled = false;
+                                resume.Hide();
+                                pause.Enabled = true;
+                                pause.Show();
+                            };
+
+                            if(int.TryParse(speedinput.Text, out int result))
                             {
                                 speed = 50 * result;
-                                await ListMethods.MergeSortAuto(numbers, speed);
+                                await ListMethods.MergeSortAuto(numbers, PauseControl, speed);
                             }
                         }
                     });

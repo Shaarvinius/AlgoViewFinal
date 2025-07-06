@@ -4,8 +4,6 @@ using System.Drawing;
 using System.Windows.Forms;
 
 
-
-
 public class ListSnapshot
 {
     public int[] Values;

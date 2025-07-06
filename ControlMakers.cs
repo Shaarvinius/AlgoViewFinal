@@ -159,7 +159,7 @@ public static class BoxMaker
         TextBox box = new TextBox();
         box.Size = new Size(width, 25);
         box.Text = boxname;
-        box.Font = new Font("Arial", 10, FontStyle.Regular);
+        box.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
         box.TextAlign = HorizontalAlignment.Center;
         box.ForeColor = Color.Turquoise;
         box.BackColor = Color.Black;

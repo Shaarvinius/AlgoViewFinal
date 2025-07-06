@@ -131,7 +131,7 @@ public class ListMethods
         Steplabels.Add("Done");
     }
 
-    public static async Task MergeSortAuto(TextBox[] numbers, int speed)
+    public static async Task MergeSortAuto(TextBox[] numbers,PlayBack pausectrl, int speed)
     {
         if (numbers == null || numbers.Length <= 1)
             return;
@@ -158,8 +158,6 @@ public class ListMethods
                 rightsizes[i] = numbers[middle + 1 + i].Size;
             }
 
-       
-
             int li = 0, ri = 0, k = left;
 
             while (li < leftsize && ri < rightsize)
@@ -174,6 +172,7 @@ public class ListMethods
                         numbers[k].Text = leftnumbers[li];
                         numbers[k].Size = leftsizes[li];
                         await Task.Delay(speed + 25);
+                        await pausectrl.WaitIfPaused();
                     }
                     li++;
                 }
@@ -184,6 +183,7 @@ public class ListMethods
                         numbers[k].Text = rightnumbers[ri];
                         numbers[k].Size = rightsizes[ri];
                         await Task.Delay(speed + 25);
+                        await pausectrl.WaitIfPaused();
                     }
                     ri++;
                 }
@@ -197,6 +197,7 @@ public class ListMethods
                     numbers[k].Text = leftnumbers[li];
                     numbers[k].Size = leftsizes[li];
                     await Task.Delay(speed + 25);
+                    await pausectrl.WaitIfPaused();
                 }
                 li++;
                 k++;
@@ -209,6 +210,7 @@ public class ListMethods
                     numbers[k].Text = rightnumbers[ri];
                     numbers[k].Size = rightsizes[ri];
                     await Task.Delay(speed + 25);
+                    await pausectrl.WaitIfPaused();
                 }
                 ri++;
                 k++;
@@ -224,14 +226,17 @@ public class ListMethods
                 await Sort(left, middle);
                 await Sort(middle + 1, right);
                 await Task.Delay(speed);
+                await pausectrl.WaitIfPaused();
 
                 await Merge(left, middle, right);
                 await Task.Delay(speed);
+                await pausectrl.WaitIfPaused();
             }
         }
 
         await Sort(0, numbers.Length - 1);
         await Task.Delay(speed);
+        await pausectrl.WaitIfPaused();
     }
 
     public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps, List<string> Steplabels)
@@ -372,8 +377,6 @@ public class ListMethods
 
             for (int i = 0; i < length; i++)
             {
-                await pausectrl.WaitIfPaused();
-
                 int currentVal = Convert.ToInt32(list[i].Text);
                 int nextVal = Convert.ToInt32(list[i + 1].Text);
 
