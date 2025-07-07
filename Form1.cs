@@ -26,6 +26,8 @@ namespace AlgoView
         }
 
         private Button HomeButton = ButtonMaker.MakeNewButton("Back to Home", 265, 50);
+        Label StartInstruction = LabelMaker.MakeNewLabel("Click white dropdown to select algorithm", 600, 30);
+        Label BackInstruction = LabelMaker.MakeNewLabel("Click Back to Home to select another algorithm", 650, 30);
         private void ClickHomeButton(object sender, EventArgs e)
         {
             foreach (Control controls in this.Controls)
@@ -366,6 +368,8 @@ namespace AlgoView
         
         private void Form1_Load(object sender, EventArgs e)
         {
+            PositionInListUI(StartInstruction, 75, -695);
+            PositionInListUI(BackInstruction, 110, -656);
             PictureBox logo = new PictureBox();
             logo.Size = new Size(250,236);
             PositionInListUI(logo, 14,0);
@@ -472,12 +476,12 @@ namespace AlgoView
 
                             if(!int.TryParse(speedinput.Text, out int result) || result < 1 || result > 10)
                             {
-                                MessageBox.Show("Valid integer between 1 and 10 not inputted, executing with default speed 1");
+                                MessageBox.Show("Valid integer between 1 and 10 not inputted, executing with default speed 10");
                                 await ListMethods.BubbleSortAuto(numbers, PauseControl, 50);
                             }
                             else
                             {
-                                speed = 50 * result;
+                                speed = 500 / result;
                                 await ListMethods.BubbleSortAuto(numbers, PauseControl, speed);
                             }
                         }
@@ -702,7 +706,13 @@ namespace AlgoView
 
                             if(int.TryParse(speedinput.Text, out int result))
                             {
-                                speed = 50 * result;
+                                speed = 500 / result;
+                                await ListMethods.MergeSortAuto(numbers, PauseControl, speed);
+                            }
+                            else
+                            {
+                                speed = 50;
+                                MessageBox.Show("Valid integer between 1 and 10 not inputted, executing with default speed 10");
                                 await ListMethods.MergeSortAuto(numbers, PauseControl, speed);
                             }
                         }

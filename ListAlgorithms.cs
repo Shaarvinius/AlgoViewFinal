@@ -235,8 +235,6 @@ public class ListMethods
         }
 
         await Sort(0, numbers.Length - 1);
-        await Task.Delay(speed);
-        await pausectrl.WaitIfPaused();
     }
 
     public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps, List<string> Steplabels)

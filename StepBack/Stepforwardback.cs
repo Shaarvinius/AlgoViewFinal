@@ -39,50 +39,6 @@ public class ListSnapshot
     }
 }
 
-public class ListStack
-{
-    private List<ListSnapshot> statelist = new List<ListSnapshot>();
-
-   
-    public int Count
-    {
-        get { return statelist.Count; }
-    }
-
-    public void Push(ListSnapshot liststate)
-    {
-        statelist.Add(liststate);
-    }
-
-    public ListSnapshot Pop()
-    {
-        if (statelist.Count == 0)
-        {
-            return null;
-        }
-
-        int lastindex = statelist.Count - 1;
-        ListSnapshot liststate = statelist[lastindex];
-        statelist.RemoveAt(lastindex);
-        return liststate;
-    }
-
-    public ListSnapshot Peek()
-    {
-        if (statelist.Count == 0)
-        {
-            return null;
-        }
-
-        return statelist[statelist.Count - 1];
-    }
-
-    public void Clear()
-    {
-        statelist.Clear();
-    }
-}
-
 
 public class PlayBack 
 {
