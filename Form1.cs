@@ -375,7 +375,7 @@ namespace AlgoView
             PositionInListUI(logo, 14,0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
             Label AppName = LabelMaker.MakeNewLabel("AlgoView", 275, 55);
-            AppName.Font = new Font("OCR A Extended", 25, FontStyle.Bold);
+            AppName.Font = new Font("OCR A Extended", 25, FontStyle.Bold); 
             AppName.ForeColor = Color.SkyBlue;
             PositionInListUI(AppName, 910, -825);
 
