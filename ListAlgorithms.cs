@@ -573,7 +573,7 @@ public class ListMethods
             {
 
                 steps.Add(new ListSnapshot(list));
-                StepLabels.Add("Found" + target);
+                StepLabels.Add("Found " + target);
                 MessageBox.Show(target + " found at index " + mid);
                 numfound = true;
                 break;

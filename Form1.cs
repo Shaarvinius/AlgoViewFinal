@@ -10,6 +10,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Xml.Serialization;
 using CheckBox = System.Windows.Forms.CheckBox;
 using System.Numerics;
+using System.Drawing;
 
 
 
@@ -17,7 +18,7 @@ namespace AlgoView
 {
 
 
-    public partial class Form1 : Form
+    public partial class Form1
     {
         public Form1()
         {
@@ -25,9 +26,9 @@ namespace AlgoView
             this.BackColor = Color.Black;
         }
 
-        private Button HomeButton = ButtonMaker.MakeNewButton("Back to Home", 265, 50);
-        Label StartInstruction = LabelMaker.MakeNewLabel("Click white dropdown to select algorithm", 600, 30);
-        Label BackInstruction = LabelMaker.MakeNewLabel("Click Back to Home to select another algorithm", 650, 30);
+        private Button HomeButton = ControlMaker.MakeNewButton("Back to Home", 265, 50);
+        Label StartInstruction = ControlMaker.MakeNewLabel("Click white dropdown to select algorithm", 600, 30);
+        Label BackInstruction = ControlMaker.MakeNewLabel("Click Back to Home to select another algorithm", 650, 30);
         private void ClickHomeButton(object sender, EventArgs e)
         {
             foreach (Control controls in this.Controls)
@@ -55,7 +56,7 @@ namespace AlgoView
             this.Resize += (s, e) => Center(element, topoffset, midoffset);
             element.Show();
         }
-        
+
 
         private TextBox[] GetCurrentTextBoxes()
         {
@@ -69,7 +70,7 @@ namespace AlgoView
         private List<ListSnapshot> AlgorithmSteps = new List<ListSnapshot>();
 
         private List<string> StepExplainations = new List<string>();
-        private Label StepLabel = LabelMaker.MakeNewLabel("",600, 30);
+        private Label StepLabel = ControlMaker.MakeNewLabel("", 600, 30);
 
         private int CurrentStep = -1;
         private TextBox[] CurrentBoxes;
@@ -77,14 +78,14 @@ namespace AlgoView
         private Button StepBackButton;
         private Button StepForwardbutton;
 
-        private Label StepCount = LabelMaker.MakeNewLabel("", 150, 30);
+        private Label StepCount = ControlMaker.MakeNewLabel("", 150, 30);
         void UpdateStepCount()
         {
             StepCount.Text = "Step: " + Convert.ToString(CurrentStep);
         }
 
 
-        private PlayBack PauseControl = new PlayBack();    
+        private PlayBack PauseControl = new PlayBack();
 
         private void PauseButtonClick(object sender, EventArgs e)
         {
@@ -94,7 +95,7 @@ namespace AlgoView
         {
             PauseControl.Resume();
         }
-        
+
 
         private void StepBackClick(object sender, EventArgs e)
         {
@@ -135,7 +136,7 @@ namespace AlgoView
             {
                 if (int.TryParse(boxlist[i].Text, out int result))
                 {
-                    int x = (int)((i - (boxlist.Length - 1) / 2.0) * spacing);
+                    int x = (int)((i - (boxlist.Length - 1) / 2.0) * (boxlist[i].Width + 2));
                     PositionInListUI(boxlist[i], 400, x);
 
                     this.Resize += (s, e) =>
@@ -169,24 +170,26 @@ namespace AlgoView
             StepLabel.Text = StepExplainations[0];
         }
 
-
+        TextBox targetnum = ControlMaker.MakeNewBox("", 30);
         private void SetUpListUI(string inputquestion, string buttonname, Action<TextBox[]> onListCreated)
         {
-            Label askuserinput = LabelMaker.MakeNewLabel(inputquestion, 600, 50);
+            Label askuserinput = ControlMaker.MakeNewLabel(inputquestion, 600, 50);
             PositionInListUI(askuserinput, 400, 0);
 
-            Panel labeloutline = PanelMaker.MakeNewPanel("", 610, 60);
+            Panel labeloutline = ControlMaker.MakeNewPanel("", 610, 60);
             PositionInListUI(labeloutline, 395, 0);
             labeloutline.SendToBack();
 
-            TextBox firstnum = BoxMaker.MakeNewBox("", 30);
+            TextBox firstnum = ControlMaker.MakeNewBox("", 30);
             PositionInListUI(firstnum, 500, -50);
 
-            TextBox lastnum = BoxMaker.MakeNewBox("", 30);
+            TextBox lastnum = ControlMaker.MakeNewBox("", 30);
             PositionInListUI(lastnum, 500, 50);
 
-            Button makelist = ButtonMaker.MakeNewButton(buttonname, 100, 50);
+            Button makelist = ControlMaker.MakeNewButton(buttonname, 100, 50);
             PositionInListUI(makelist, 900, 0);
+
+            PositionInListUI(targetnum, 750, 210);
 
             Application.DoEvents();
 
@@ -194,11 +197,12 @@ namespace AlgoView
             {
                 makelist.Click += (sender, args) =>
                 {
-                    if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last))
+                    if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last) || !int.TryParse(targetnum.Text, out int validnum))
                     {
-                        MessageBox.Show("Invalid character inputted. Please enter integers.");
+                        MessageBox.Show($"Invalid character inputted. Please enter integers greater than {int.MinValue} or less than {int.MaxValue}");
                         firstnum.Clear();
                         lastnum.Clear();
+                        targetnum.Clear();
                         return;
                     }
                     if (first >= last)
@@ -208,7 +212,7 @@ namespace AlgoView
                         lastnum.Clear();
                         return;
                     }
-                    if(last - first > 49)
+                    if (last - first > 49)
                     {
                         MessageBox.Show("Range of numbers is 50 - otherwise won't fit on screen");
                         lastnum.Clear();
@@ -216,7 +220,7 @@ namespace AlgoView
                         return;
                     }
 
-                    SearchListMaker numberlistmaker = new SearchListMaker();
+                    ListMaker numberlistmaker = new ListMaker();
                     TextBox[] boxlist = numberlistmaker.MakeList(firstnum.Text, lastnum.Text);
 
                     DrawList(boxlist, firstnum, lastnum);
@@ -236,9 +240,10 @@ namespace AlgoView
                     makelist.Enabled = false;
                 };
             }
-            else if(inputquestion == SortQuestion)
+            else if (inputquestion == SortQuestion)
             {
-                ComboBox listType= new ComboBox();
+                targetnum.Hide();
+                ComboBox listType = new ComboBox();
                 listType.DropDownStyle = ComboBoxStyle.DropDownList;
                 listType.Size = new Size(375, 50);
                 listType.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
@@ -251,13 +256,13 @@ namespace AlgoView
                 listType.SelectedIndex = 0;
                 PositionInListUI(listType, 750, 0);
 
-                SortListMaker numberlistmaker = new SortListMaker();
+                ListMaker numberlistmaker = new ListMaker();
                 TextBox[] boxlist = Array.Empty<TextBox>();
 
                 string listType_reverse = listType.SelectedItem.ToString();
                 makelist.Enabled = false;
 
-                listType.SelectedIndexChanged += (object sender, EventArgs e)=>
+                listType.SelectedIndexChanged += (object sender, EventArgs e) =>
                 {
                     listType_reverse = listType.SelectedItem.ToString();
                     if (listType_reverse == "Randomised")
@@ -278,7 +283,15 @@ namespace AlgoView
                 {
                     if (!int.TryParse(firstnum.Text, out int first) || !int.TryParse(lastnum.Text, out int last))
                     {
-                        MessageBox.Show("Invalid character inputted. Please enter integers.");
+                        if (long.TryParse(firstnum.Text, out long start) || long.TryParse(firstnum.Text, out long end))
+                        {
+                            MessageBox.Show($"Inputted numbers are either less than {int.MinValue} or greater than {int.MaxValue}, please enter integers between these values");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid character inputted. Please enter integers.");
+                        }
+
                         firstnum.Clear();
                         lastnum.Clear();
                         return;
@@ -312,7 +325,7 @@ namespace AlgoView
                     {
                         boxlist = numberlistmaker.MakeRandomList(firstnum.Text, lastnum.Text);
                     }
-                    else if(listType_reverse == "Random no repeats")
+                    else if (listType_reverse == "Random no repeats")
                     {
                         boxlist = numberlistmaker.RandomListNoRepeats(firstnum.Text, lastnum.Text);
                     }
@@ -338,10 +351,10 @@ namespace AlgoView
 
             if (StepBackButton == null)
             {
-                StepBackButton = ButtonMaker.MakeNewButton("Step back", 250, 50);
+                StepBackButton = ControlMaker.MakeNewButton("Step back", 250, 50);
                 PositionInListUI(StepBackButton, 750, -400);
                 StepBackButton.Click += StepBackClick;
-                StepBackButton.Hide(); 
+                StepBackButton.Hide();
             }
             else
             {
@@ -350,7 +363,7 @@ namespace AlgoView
 
             if (StepForwardbutton == null)
             {
-                StepForwardbutton = ButtonMaker.MakeNewButton("Step forward", 250, 50);
+                StepForwardbutton = ControlMaker.MakeNewButton("Step forward", 250, 50);
                 PositionInListUI(StepForwardbutton, 750, 400);
                 StepForwardbutton.Click += StepForwardClick;
                 StepForwardbutton.Hide();
@@ -365,17 +378,17 @@ namespace AlgoView
         private ComboBox algorithmSelector;
 
         private int sortspeed = 1;
-        
+
         private void Form1_Load(object sender, EventArgs e)
         {
             PositionInListUI(StartInstruction, 75, -695);
             PositionInListUI(BackInstruction, 110, -656);
             PictureBox logo = new PictureBox();
-            logo.Size = new Size(250,236);
-            PositionInListUI(logo, 14,0);
+            logo.Size = new Size(250, 236);
+            PositionInListUI(logo, 14, 0);
             logo.Image = Image.FromFile("AlgoViewLogo.png");
-            Label AppName = LabelMaker.MakeNewLabel("AlgoView", 275, 55);
-            AppName.Font = new Font("OCR A Extended", 25, FontStyle.Bold); 
+            Label AppName = ControlMaker.MakeNewLabel("AlgoView", 275, 55);
+            AppName.Font = new Font("OCR A Extended", 25, FontStyle.Bold);
             AppName.ForeColor = Color.SkyBlue;
             PositionInListUI(AppName, 910, -825);
 
@@ -403,13 +416,13 @@ namespace AlgoView
 
                 if (selectedAlgorithm == "Bubble Sort")
                 {
-                    CheckBox sortmode = CheckBoxMaker.MakeNewCheckBox("Auto-Sort");
+                    CheckBox sortmode = ControlMaker.MakeNewCheckBox("Auto-Sort");
                     PositionInListUI(sortmode, 700, 0);
 
                     algorithmSelector.Enabled = false;
 
-                    Label speedlabel = LabelMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
-                    TextBox speedinput = BoxMaker.MakeNewBox("", 30);
+                    Label speedlabel = ControlMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
+                    TextBox speedinput = ControlMaker.MakeNewBox("", 30);
                     PositionInListUI(speedlabel, 780, -20);
                     PositionInListUI(speedinput, 780, 130);
                     speedlabel.Visible = false;
@@ -424,7 +437,7 @@ namespace AlgoView
 
                     SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
                     {
-                        if(sortmode.Checked == false)
+                        if (sortmode.Checked == false)
                         {
                             StepForwardbutton.Show();
                             StepBackButton.Show();
@@ -448,10 +461,10 @@ namespace AlgoView
                         {
                             sortmode.Enabled = false;
 
-                            Button pausebutton = ButtonMaker.MakeNewButton("||", 150, 40);
-                            PositionInListUI(pausebutton, 357,0);
-                            Button resumebutton = ButtonMaker.MakeNewButton("▶︎", 150, 40);
-                            PositionInListUI(resumebutton, 357,0);
+                            Button pausebutton = ControlMaker.MakeNewButton("||", 150, 40);
+                            PositionInListUI(pausebutton, 357, 0);
+                            Button resumebutton = ControlMaker.MakeNewButton("▶︎", 150, 40);
+                            PositionInListUI(resumebutton, 357, 0);
 
                             speedlabel.Show();
                             speedinput.Show();
@@ -463,7 +476,7 @@ namespace AlgoView
                                 pausebutton.Hide();
                                 resumebutton.Enabled = true;
                                 resumebutton.Show();
-                            }; 
+                            };
                             resumebutton.Click += (object sender, EventArgs e) =>
                             {
                                 PauseControl.Resume();
@@ -474,7 +487,7 @@ namespace AlgoView
                             };
 
 
-                            if(!int.TryParse(speedinput.Text, out int result) || result < 1 || result > 10)
+                            if (!int.TryParse(speedinput.Text, out int result) || result < 1 || result > 10)
                             {
                                 MessageBox.Show("Valid integer between 1 and 10 not inputted, executing with default speed 10");
                                 await ListMethods.BubbleSortAuto(numbers, PauseControl, 50);
@@ -495,62 +508,45 @@ namespace AlgoView
                 {
                     algorithmSelector.Enabled = false;
 
-                    Label numtofind = LabelMaker.MakeNewLabel("input number to search for:", 385, 30);
+                    Label numtofind = ControlMaker.MakeNewLabel("input number to search for:", 385, 30);
                     PositionInListUI(numtofind, 750, 0);
 
-                    TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(input, 750, 210);
-
-                    Label left = LabelMaker.MakeNewLabel("Left", 90, 30);
+                    Label left = ControlMaker.MakeNewLabel("Left", 90, 30);
                     PositionInListUI(left, 675, -150);
                     left.BackColor = Color.Crimson;
                     left.ForeColor = Color.Black;
 
-                    Label right = LabelMaker.MakeNewLabel("Right", 90, 30);
+                    Label right = ControlMaker.MakeNewLabel("Right", 90, 30);
                     PositionInListUI(right, 675, 150);
                     right.BackColor = Color.Blue;
                     right.ForeColor = Color.Black;
 
-                    Label mid = LabelMaker.MakeNewLabel("Middle", 90, 30);
+                    Label mid = ControlMaker.MakeNewLabel("Middle", 90, 30);
                     PositionInListUI(mid, 675, 0);
                     mid.BackColor = Color.Turquoise;
                     mid.ForeColor = Color.Black;
 
                     SetUpListUI(SearchQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        if(int.TryParse(input.Text, out int result))
-                        {
-                            numtofind.Show();
-                            AlgorithmSteps.Clear();
-                            StepExplainations.Clear();
-                            CurrentStep = 0;
-                            ListMethods.BinarySearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps, StepExplainations);
-                            PositionInListUI(StepLabel, 300, 400);
-                            PositionInListUI(StepCount, 325, 0);
-                            StepCount.Hide();
+                        numtofind.Show();
+                        AlgorithmSteps.Clear();
+                        StepExplainations.Clear();
+                        CurrentStep = 0;
+                        ListMethods.BinarySearch(numbers, Convert.ToInt32(targetnum.Text), AlgorithmSteps, StepExplainations);
+                        PositionInListUI(StepLabel, 300, 400);
+                        PositionInListUI(StepCount, 325, 0);
+                        StepCount.Hide();
 
-                            if (AlgorithmSteps.Count > 0)
-                            {
-                                NewStepStack(numbers);
-                            }
-                            else
-                            {
-                                MessageBox.Show("No steps were generated.");
-                            }
+                        if (AlgorithmSteps.Count > 0)
+                        {
+                            NewStepStack(numbers);
                         }
                         else
                         {
-                            MessageBox.Show("Invalid character entered");
-                            foreach(TextBox numberbox in numbers)
-                            {
-                                numberbox.Hide();
-                            }
-
-                            StepBackButton.Hide();
-                            StepForwardbutton.Hide();
-                            StepCount.Hide();
-                            input.Clear();
+                            MessageBox.Show("No steps were generated.");
                         }
+
+                        targetnum.Clear();
                     });
                 }
                 else if (selectedAlgorithm == "Insertion Sort")
@@ -583,76 +579,67 @@ namespace AlgoView
                 {
                     algorithmSelector.Enabled = false;
 
-                    Label numtofind = LabelMaker.MakeNewLabel("input number to search for:", 385, 30);
+                    Label numtofind = ControlMaker.MakeNewLabel("input number to search for:", 385, 30);
                     PositionInListUI(numtofind, 750, 0);
 
-                    TextBox input = BoxMaker.MakeNewBox("", 30);
-                    PositionInListUI(input, 750, 210);
-
-                    Label left = LabelMaker.MakeNewLabel("Lower Bound", 225, 30);
+                    Label left = ControlMaker.MakeNewLabel("Lower Bound", 225, 30);
                     PositionInListUI(left, 675, -300);
                     left.BackColor = Color.Crimson;
                     left.ForeColor = Color.Black;
 
-                    Label right = LabelMaker.MakeNewLabel("Upper Bound", 225, 30);
+                    Label right = ControlMaker.MakeNewLabel("Upper Bound", 225, 30);
                     PositionInListUI(right, 675, 300);
                     right.BackColor = Color.Blue;
                     right.ForeColor = Color.Black;
 
-                    Label mid = LabelMaker.MakeNewLabel("Target", 110, 30);
+                    Label mid = ControlMaker.MakeNewLabel("Target", 110, 30);
                     PositionInListUI(mid, 675, 0);
                     mid.BackColor = Color.Turquoise;
                     mid.ForeColor = Color.Black;
 
                     SetUpListUI(SearchQuestion, "Enter", (TextBox[] numbers) =>
                     {
-                        if (int.TryParse(input.Text, out int result))
-                        {
-                            numtofind.Show();
-                            AlgorithmSteps.Clear();
-                            CurrentStep = 0;
-                            StepExplainations.Clear();
-                            ListMethods.ExponentialSearch(numbers, Convert.ToInt32(input.Text), AlgorithmSteps, StepExplainations);
-                            PositionInListUI(StepCount, 325, 0);
-                            PositionInListUI(StepLabel, 300, 400);
-                            StepCount.Hide();
+                        numtofind.Show();
+                        AlgorithmSteps.Clear();
+                        CurrentStep = 0;
+                        StepExplainations.Clear();
+                        ListMethods.ExponentialSearch(numbers, Convert.ToInt32(targetnum.Text), AlgorithmSteps, StepExplainations);
+                        PositionInListUI(StepCount, 325, 0);
+                        PositionInListUI(StepLabel, 300, 400);
+                        StepCount.Hide();
 
-                            if (AlgorithmSteps.Count > 0)
-                            {
-                                NewStepStack(numbers);
-                            }
-                            else
-                            {
-                                MessageBox.Show("No steps were generated.");
-                            }
+                        if (AlgorithmSteps.Count > 0)
+                        {
+                            NewStepStack(numbers);
                         }
                         else
                         {
-                            MessageBox.Show("Invalid character entered");
-                            foreach (TextBox numberbox in numbers)
-                            {
-                                numberbox.Hide();
-                            }
-
-                            StepBackButton.Hide();
-                            StepForwardbutton.Hide();
-                            StepCount.Hide();
-                            input.Clear();
+                            MessageBox.Show("No steps were generated.");
                         }
+
+                        targetnum.Clear();
                     });
                 }
                 else if (selectedAlgorithm == "Merge sort")
                 {
-                    algorithmSelector.Enabled = false; 
-                    
-                    CheckBox sortmode = CheckBoxMaker.MakeNewCheckBox("Auto-Sort");
+                    algorithmSelector.Enabled = false;
+
+                    CheckBox sortmode = ControlMaker.MakeNewCheckBox("Auto-Sort");
                     PositionInListUI(sortmode, 700, 0);
 
-                    TextBox speedinput = BoxMaker.MakeNewBox("", 30);
-                    Label speedlabel = LabelMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
+                    TextBox speedinput = ControlMaker.MakeNewBox("", 30);
+                    Label speedlabel = ControlMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
                     PositionInListUI(speedlabel, 780, -20);
                     PositionInListUI(speedinput, 780, 130);
+                    speedinput.Hide();
+                    speedlabel.Hide();
                     int speed = 1;
+
+                    sortmode.CheckedChanged += (sender, e) =>
+                    {
+                        speedlabel.Visible = sortmode.Checked;
+                        speedinput.Visible = sortmode.Checked;
+                    };
 
                     SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
                     {
@@ -682,9 +669,9 @@ namespace AlgoView
                         {
                             sortmode.Enabled = false;
 
-                            Button pause = ButtonMaker.MakeNewButton("||", 150, 40);
+                            Button pause = ControlMaker.MakeNewButton("||", 150, 40);
                             PositionInListUI(pause, 357, 0);
-                            Button resume = ButtonMaker.MakeNewButton("▶︎", 150, 40);
+                            Button resume = ControlMaker.MakeNewButton("▶︎", 150, 40);
                             PositionInListUI(resume, 357, 0);
 
                             pause.Click += (object sender, EventArgs e) =>
@@ -704,7 +691,7 @@ namespace AlgoView
                                 pause.Show();
                             };
 
-                            if(int.TryParse(speedinput.Text, out int result))
+                            if (int.TryParse(speedinput.Text, out int result))
                             {
                                 speed = 500 / result;
                                 await ListMethods.MergeSortAuto(numbers, PauseControl, speed);
@@ -731,7 +718,7 @@ namespace AlgoView
                     algorithmSelector.Enabled = false;
                     SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
                     {
-                        
+
                     });
                 }
             };

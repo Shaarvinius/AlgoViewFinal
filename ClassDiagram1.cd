@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SearchListMaker">
+    <Position X="2.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ControlMakers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SortListMaker">
+    <Position X="4.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAEAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ControlMakers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ControlMaker">
+    <Position X="2.75" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgCAAAAAAAAAAAAAAAAAEAAAAAAAAAAAQAA=</HashCode>
+      <FileName>ControlMakers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ListSnapshot">
+    <Position X="9.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAACAAAAgAAggAAAAAA=</HashCode>
+      <FileName>StepBack\Stepforwardback.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayBack">
+    <Position X="9.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAgAAgAIAA=</HashCode>
+      <FileName>StepBack\Stepforwardback.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ListMethods">
+    <Position X="2.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAACAIAAAAgAAAAAAAYAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>ListAlgorithms.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AlgoView.Form1">
+    <Position X="6.5" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>MkAKAAAAoSAAkACQAACASAICEAAAQAgQAQQgAAQKAAg=</HashCode>
+      <FileName>Form1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

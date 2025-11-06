@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public class SearchListMaker
+
+public class ListMaker
 {
     public TextBox[] MakeList(string firstnum, string lastnum)
     {
@@ -17,7 +18,7 @@ public class SearchListMaker
         {
             list[i] = new TextBox();
             list[i].Multiline = true;
-            list[i].Size = new Size(30, 30 + length + i * 8);
+            list[i].Size = new Size((1500 / length), 30 + length + i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
@@ -27,11 +28,6 @@ public class SearchListMaker
 
         return list;
     }
-}
-
-
-public class SortListMaker
-{
     public TextBox[] MakeRandomList(string firstnum, string lastnum)
     {
         int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
@@ -45,12 +41,11 @@ public class SortListMaker
 
         Random randomnum = new Random();
         int listelement;
-
          
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
-            list[i].Size = new Size(30, 30);
+            list[i].Size = new Size((1500 / length), 30);
             listelement = randomnum.Next(Convert.ToInt32(firstnum), Convert.ToInt32(lastnum) + 1);
             list[i].Text = Convert.ToString(listelement);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
@@ -58,7 +53,7 @@ public class SortListMaker
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
             list[i].Multiline = true;
-            list[i].Size = new Size(30, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
+            list[i].Size = new Size((1500/length), 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
             list[i].ReadOnly = true;
         }
 
@@ -74,7 +69,7 @@ public class SortListMaker
         {
             list[i] = new TextBox();
             list[i].Multiline = true;
-            list[i].Size = new Size(30, 30 + 8 * length - i * 8);
+            list[i].Size = new Size((1500 / length), 30 + 8 * length - i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(lastnum) - i);
             list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
@@ -116,7 +111,7 @@ public class SortListMaker
             list[i].TextAlign = HorizontalAlignment.Center;
             list[i].Text = numbers[i].ToString();
             list[i].Multiline = true;
-            list[i].Size = new Size(30, 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
+            list[i].Size = new Size((1500 / length), 15 + length * 10 - 8 * (numbers.Max() - Convert.ToInt32(list[i].Text)));
             list[i].ReadOnly = true;
         }
 
@@ -132,8 +127,7 @@ public class SortListMaker
     }
 }
 
-
-public static class ButtonMaker
+public static class ControlMaker
 {
     public static Button MakeNewButton(string buttonname, int width, int height)
     {
@@ -146,14 +140,9 @@ public static class ButtonMaker
         custombutton.FlatAppearance.BorderColor = Color.Turquoise;
         custombutton.FlatAppearance.BorderSize = 2;
         custombutton.ForeColor = Color.Turquoise;
-
         return custombutton;
     }
-}
 
-
-public static class BoxMaker
-{
     public static TextBox MakeNewBox(string boxname, int width)
     {
         TextBox box = new TextBox();
@@ -163,27 +152,17 @@ public static class BoxMaker
         box.TextAlign = HorizontalAlignment.Center;
         box.ForeColor = Color.Turquoise;
         box.BackColor = Color.Black;
-
         return box;
     }
-}
 
-
-public static class PanelMaker
-{
     public static Panel MakeNewPanel(string boxname, int width, int height)
     {
         Panel panel = new Panel();
         panel.Size = new Size(width, height);
         panel.BackColor = Color.Turquoise;
-
         return panel;
     }
-}
 
-
-public static class LabelMaker
-{
     public static Label MakeNewLabel(string labelname, int width, int height)
     {
         Label label = new Label();
@@ -192,13 +171,9 @@ public static class LabelMaker
         label.Font = new Font("OCR A Extended", 11, FontStyle.Regular);
         label.ForeColor = Color.Turquoise;
         label.TextAlign = ContentAlignment.MiddleCenter;
-
         return label;
     }
-}
 
-public static class CheckBoxMaker
-{
     public static CheckBox MakeNewCheckBox(string condition)
     {
         CheckBox checkbox = new CheckBox();
@@ -208,7 +183,6 @@ public static class CheckBoxMaker
         checkbox.ForeColor = Color.Turquoise;
         checkbox.BackColor = Color.Black;
         checkbox.TextAlign = ContentAlignment.MiddleCenter;
-
         return checkbox;
     }
 }
