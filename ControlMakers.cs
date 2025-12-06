@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-
-public class ListMaker
+public class ListMaker // A class containing methods for making various lists for dynamic generation
 {
-    public TextBox[] MakeList(string firstnum, string lastnum)
+    public TextBox[] MakeList(string firstnum, string lastnum)// normal, ordered list
     {
         int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
         TextBox[] list = new TextBox[length];
@@ -28,7 +26,7 @@ public class ListMaker
 
         return list;
     }
-    public TextBox[] MakeRandomList(string firstnum, string lastnum)
+    public TextBox[] MakeRandomList(string firstnum, string lastnum)// shuffled lists with repeats
     {
         int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
         TextBox[] list = new TextBox[length];
@@ -60,7 +58,7 @@ public class ListMaker
         return list;
     }
 
-    public TextBox[] MakeReverseList(string firstnum, string lastnum)
+    public TextBox[] MakeReverseList(string firstnum, string lastnum)// reverses the order of a list
     {
         int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
         TextBox[] list = new TextBox[length];
@@ -81,7 +79,7 @@ public class ListMaker
         return list;
     }
 
-    public TextBox[] RandomListNoRepeats(string firstnum, string lastnum)
+    public TextBox[] RandomListNoRepeats(string firstnum, string lastnum)// randomly ordered lists but with no repeated values
     {
         int length = Convert.ToInt32(lastnum) - Convert.ToInt32(firstnum) + 1;
         TextBox[] list = new TextBox[length];
@@ -127,9 +125,9 @@ public class ListMaker
     }
 }
 
-public static class ControlMaker
+public static class ControlMaker // A class containing methods for making various controls for dynamic generation
 {
-    public static Button MakeNewButton(string buttonname, int width, int height)
+    public static Button MakeNewButton(string buttonname, int width, int height) // buttons
     {
         Button custombutton = new Button();
         custombutton.Size = new Size(width, height);
@@ -143,7 +141,7 @@ public static class ControlMaker
         return custombutton;
     }
 
-    public static TextBox MakeNewBox(string boxname, int width)
+    public static TextBox MakeNewBox(string boxname, int width) // textbox
     {
         TextBox box = new TextBox();
         box.Size = new Size(width, 25);
@@ -155,7 +153,7 @@ public static class ControlMaker
         return box;
     }
 
-    public static Panel MakeNewPanel(string boxname, int width, int height)
+    public static Panel MakeNewPanel(string boxname, int width, int height) // panel
     {
         Panel panel = new Panel();
         panel.Size = new Size(width, height);
@@ -163,7 +161,7 @@ public static class ControlMaker
         return panel;
     }
 
-    public static Label MakeNewLabel(string labelname, int width, int height)
+    public static Label MakeNewLabel(string labelname, int width, int height) // labels
     {
         Label label = new Label();
         label.Size = new Size(width, height);
@@ -174,7 +172,7 @@ public static class ControlMaker
         return label;
     }
 
-    public static CheckBox MakeNewCheckBox(string condition)
+    public static CheckBox MakeNewCheckBox(string condition) // checkboxes
     {
         CheckBox checkbox = new CheckBox();
         checkbox.Text = condition;

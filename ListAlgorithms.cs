@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AlgoView;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -7,10 +8,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-public class ListMethods
-{
 
-    public static void MergeSort(TextBox[] numbers, List<ListSnapshot> sortingsteps, List<string> Steplabels)
+public class ListMethods // a class containing all the list based algorithms
+{
+    private Form1 form;
+
+    public ListMethods(Form1 form)
+    {
+        this.form = form;
+    }
+    public static void MergeSort(TextBox[] numbers, List<string> Steplabels, Form1 form) // merge sort logic
     {
         if (numbers == null || numbers.Length <= 1)
             return;
@@ -44,7 +51,7 @@ public class ListMethods
                 int leftVal = int.Parse(leftnumbers[li]);
                 int rightVal = int.Parse(rightnumbers[ri]);
 
-                sortingsteps.Add(new ListSnapshot(numbers));
+                form.PushSnapshot(new ListSnapshot(numbers));
                 Steplabels.Add($"Compare {leftVal} and {rightVal}");
 
                 if (leftVal > rightVal)
@@ -60,7 +67,7 @@ public class ListMethods
                     Steplabels.Add($"{leftVal} = {rightVal}");
                 }
 
-                sortingsteps.Add(new ListSnapshot(numbers));
+                form.PushSnapshot(new ListSnapshot(numbers));
 
                 if (leftVal <= rightVal)
                 {
@@ -68,7 +75,7 @@ public class ListMethods
                     {
                         numbers[k].Text = leftnumbers[li];
                         numbers[k].Size = leftsizes[li];
-                        sortingsteps.Add(new ListSnapshot(numbers));
+                        form.PushSnapshot(new ListSnapshot(numbers));
                         Steplabels.Add($"Copy {leftVal} to index {k}");
                     }
                     li++;
@@ -79,7 +86,7 @@ public class ListMethods
                     {
                         numbers[k].Text = rightnumbers[ri];
                         numbers[k].Size = rightsizes[ri];
-                        sortingsteps.Add(new ListSnapshot(numbers));
+                        form.PushSnapshot(new ListSnapshot(numbers));
                         Steplabels.Add($"Copy {rightVal} to index {k}");
                     }
                     ri++;
@@ -93,7 +100,7 @@ public class ListMethods
                 {
                     numbers[k].Text = leftnumbers[li];
                     numbers[k].Size = leftsizes[li];
-                    sortingsteps.Add(new ListSnapshot(numbers));
+                    form.PushSnapshot(new ListSnapshot(numbers));
                     Steplabels.Add($"Copy {leftnumbers[li]} to index {k}");
                 }
                 li++;  
@@ -106,7 +113,7 @@ public class ListMethods
                 {
                     numbers[k].Text = rightnumbers[ri];
                     numbers[k].Size = rightsizes[ri];
-                    sortingsteps.Add(new ListSnapshot(numbers));
+                    form.PushSnapshot(new ListSnapshot(numbers));
                     Steplabels.Add($"Copy {rightnumbers[ri]} to index {k}");
                 }
                 ri++;
@@ -127,11 +134,11 @@ public class ListMethods
 
         Sort(0, numbers.Length - 1);
 
-        sortingsteps.Add(new ListSnapshot(numbers));
+        form.PushSnapshot(new ListSnapshot(numbers));
         Steplabels.Add("Done");
     }
 
-    public static async Task MergeSortAuto(TextBox[] numbers,PlayBack pausectrl, int speed)
+    public static async Task MergeSortAuto(TextBox[] numbers,PlayBack pausectrl, int speed) // merge sort logic without step by step feature
     {
         if (numbers == null || numbers.Length <= 1)
             return;
@@ -237,9 +244,9 @@ public class ListMethods
         await Sort(0, numbers.Length - 1);
     }
 
-    public static void InsertionSort(TextBox[] list, List<ListSnapshot> sortingsteps, List<string> Steplabels)
+    public static void InsertionSort(TextBox[] list,List<string> Steplabels, Form1 form) // insertion sort
     {
-        sortingsteps.Add(new ListSnapshot(list));
+        form.PushSnapshot(new ListSnapshot(list));
         Steplabels.Add("Initial state");
 
         for (int i = 1; i < list.Length; i++)
@@ -255,7 +262,7 @@ public class ListMethods
                 list[index].BackColor = Color.Crimson;
                 list[index].ForeColor = Color.White;
 
-                sortingsteps.Add(new ListSnapshot(list));
+                form.PushSnapshot(new ListSnapshot(list));
 
                 list[index].BackColor = Color.Aquamarine;
                 list[index].ForeColor = Color.Black;
@@ -273,18 +280,18 @@ public class ListMethods
             list[index].Text = content.ToString();
 
             Steplabels.Add($"{content} inserted correctly");
-            sortingsteps.Add(new ListSnapshot(list));
+            form.PushSnapshot(new ListSnapshot(list));
         }
 
         list[0].BackColor = Color.Aquamarine;
         list[0].ForeColor = Color.Black;
-        sortingsteps.Add(new ListSnapshot(list));
+        form.PushSnapshot(new ListSnapshot(list));
         Steplabels.Add("Done");
     }
 
 
 
-    public static void BubbleSort(TextBox[] list, List<ListSnapshot> sortingsteps, List<string> StepLabels)
+    public static void BubbleSort(TextBox[] list, List<string> StepLabels, Form1 form) // bubble sort with step by step feature integrated
     {
         int temp;
         int currentval;
@@ -303,7 +310,7 @@ public class ListMethods
                 nextval = Convert.ToInt32(list[i + 1].Text);
 
                 StepLabels.Add("Comparing " + currentval + " and " + nextval);
-                sortingsteps.Add(new ListSnapshot(list));
+                form.PushSnapshot(new ListSnapshot(list));
 
                 list[i].ForeColor = Color.White;
                 list[i + 1].ForeColor = Color.White;
@@ -320,7 +327,7 @@ public class ListMethods
                     list[i + 1].BackColor = Color.Blue;
                     StepLabels.Add(currentval + " <= " + nextval);
                 }
-                sortingsteps.Add(new ListSnapshot(list)); 
+                form.PushSnapshot(new ListSnapshot(list));
 
                 if (currentval > nextval)
                 {
@@ -341,7 +348,7 @@ public class ListMethods
                     list[i + 1].ForeColor = Color.Turquoise;
 
                     StepLabels.Add("Swapped " + list[i + 1].Text + " and " + list[i].Text);
-                    sortingsteps.Add(new ListSnapshot(list));
+                    form.PushSnapshot(new ListSnapshot(list));
 
                     swapped = true;
                 }
@@ -353,17 +360,17 @@ public class ListMethods
                     list[i + 1].ForeColor = Color.Turquoise;
 
                     StepLabels.Add("No swap needed");
-                    sortingsteps.Add(new ListSnapshot(list));
+                    form.PushSnapshot(new ListSnapshot(list));
                 }
             }
         }
 
-        sortingsteps.Add(new ListSnapshot(list));
+        form.PushSnapshot(new ListSnapshot(list));
         StepLabels.Add("Sorting done");
     }
 
 
-    public static async Task BubbleSortAuto(TextBox[] list, PlayBack pausectrl, int speed)
+    public static async Task BubbleSortAuto(TextBox[] list, PlayBack pausectrl, int speed) // automatic bubble sort
     {
         int length = list.Length;
         bool swapped = true;
@@ -420,13 +427,13 @@ public class ListMethods
     }
 
 
-    public static void BinarySearch(TextBox[] list, int numtofind, List<ListSnapshot> steps, List<string> StepLabels)
+    public static void BinarySearch(TextBox[] list, int numtofind, List<string> StepLabels, Form1 form) // binary search logic
     {
         int left = 0;
         int right = list.Length - 1;
         bool found = false;
 
-        steps.Add(new ListSnapshot(list));
+        form.PushSnapshot(new ListSnapshot(list));
         StepLabels.Add("Initial state");
 
         while (left <= right)
@@ -448,26 +455,26 @@ public class ListMethods
             list[right].BackColor = Color.Blue;
             list[right].ForeColor = Color.Black;
 
-            steps.Add(new ListSnapshot(list));
+            form.PushSnapshot(new ListSnapshot(list));
             StepLabels.Add("L: " + list[left].Text + "  M: " + list[mid].Text + "  R: " + list[right].Text);
 
             int midVal = Convert.ToInt32(list[mid].Text);
 
             if (midVal < numtofind)
             {
-                steps.Add(new ListSnapshot(list));
+                form.PushSnapshot(new ListSnapshot(list));
                 StepLabels.Add(midVal + " < " + numtofind);
                 left = mid + 1;
             }
             else if (midVal > numtofind)
             {
-                steps.Add(new ListSnapshot(list));
+                form.PushSnapshot(new ListSnapshot(list));
                 StepLabels.Add(midVal + " > " + numtofind);
                 right = mid - 1;
             }
             else
             {
-                steps.Add(new ListSnapshot(list));
+                form.PushSnapshot(new ListSnapshot(list));
                 StepLabels.Add("Found " + numtofind);
                 MessageBox.Show(numtofind + " found at index " + mid);
                 found = true;
@@ -483,13 +490,23 @@ public class ListMethods
     }
 
 
-    public static void ExponentialSearch(TextBox[] list, int target, List<ListSnapshot> steps, List<string> StepLabels)
+    public static void ExponentialSearch(TextBox[] list, int target, List<string> StepLabels, Form1 form) // exponential search
     {
         int item;
         int upperbound = 1;
         int lowerbound = 0;
         int lastupperbound = 0;
 
+        int first = Convert.ToInt32(list[0].Text);
+        if (first == target)
+        {
+            list[0].BackColor = Color.Turquoise;
+            list[0].ForeColor = Color.Black;
+            form.PushSnapshot(new ListSnapshot(list));
+            StepLabels.Add("Found " + target + " at index 0");
+            MessageBox.Show(target + " found at index 0");
+            return;
+        }
         while (upperbound < list.Length)
         {
             item = Convert.ToInt32(list[upperbound].Text);
@@ -510,7 +527,7 @@ public class ListMethods
                 break;
             }
 
-            steps.Add(new ListSnapshot(list));
+            form.PushSnapshot(new ListSnapshot(list));
             StepLabels.Add(target + " > " + item + ", so double Search Range");
         }
 
@@ -527,8 +544,8 @@ public class ListMethods
             list[i].ForeColor = Color.White;
         }
 
-        steps.Add(new ListSnapshot(list));
-        StepLabels.Add("Confirming range for binary search");
+        form.PushSnapshot(new ListSnapshot(list));
+        StepLabels.Add("Confirmed range for binary search");
 
         int midVal;
         bool numfound = false;
@@ -552,7 +569,7 @@ public class ListMethods
             list[mid].BackColor = Color.Turquoise;
             list[mid].ForeColor = Color.Black;
 
-            steps.Add(new ListSnapshot(list));
+            form.PushSnapshot(new ListSnapshot(list));
             StepLabels.Add("L: " + list[lowerbound].Text + "  M: " + list[mid].Text + "  R: " + list[upperbound].Text);
 
             midVal = Convert.ToInt32(list[mid].Text);
@@ -560,19 +577,19 @@ public class ListMethods
             if (midVal < target)
             {
                 lowerbound = mid + 1;
-                steps.Add(new ListSnapshot(list));
+                form.PushSnapshot(new ListSnapshot(list));
                 StepLabels.Add(midVal + " < " + target);
             }
             else if (midVal > target)
             {
                 upperbound = mid - 1;
-                steps.Add(new ListSnapshot(list));
+                form.PushSnapshot(new ListSnapshot(list));
                 StepLabels.Add(midVal + " > " + target);
             }
             else
             {
 
-                steps.Add(new ListSnapshot(list));
+                form.PushSnapshot(new ListSnapshot(list));
                 StepLabels.Add("Found " + target);
                 MessageBox.Show(target + " found at index " + mid);
                 numfound = true;
