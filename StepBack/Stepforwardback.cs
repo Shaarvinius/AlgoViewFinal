@@ -94,13 +94,8 @@ public class GraphSnapshot : ISnapshot
             nodes[i].Location = positions[i];
             nodes[i].Size = sizes[i];
         }
-
-        // if you use a drawing layer for edges, store highlightedEdge and trigger a redraw
-        // example: Form1.Instance.SetHighlightedEdge(highlightedEdge);
-        // example: Form1.Instance.InvalidateGraphPanel();
     }
 
-    // optional helper so your UI code can read the visited flags from the snapshot after restore
     public bool[] GetVisitedState()
     {
         bool[] copy = new bool[visitedState.Length];
@@ -172,5 +167,6 @@ public class PlayBack // logic for pausing and resuming
         paused = false;
     }
 
+    
     public bool IsPaused => paused;
 }

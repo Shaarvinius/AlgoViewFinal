@@ -16,8 +16,6 @@ using System.Drawing;
 
 namespace AlgoView
 {
-
-
     public partial class Form1
     {
         public Form1()
@@ -28,8 +26,8 @@ namespace AlgoView
 
         private Button HomeButton = ControlMaker.MakeNewButton("Back to Home", 265, 50);
         Label StartInstruction = ControlMaker.MakeNewLabel("Click white dropdown to select algorithm", 600, 30);
-        Label BackInstruction = ControlMaker.MakeNewLabel("Click Back to Home to select another algorithm", 650, 30);
-
+        Label BackInstruction = ControlMaker.MakeNewLabel("Click space or Back to Home to select another algorithm", 750, 30);
+        
         // Subroutine to go back to start state to allow the selection of a new algorithm
         private void ClickHomeButton(object sender, EventArgs e)
         {
@@ -70,8 +68,6 @@ namespace AlgoView
         }
 
         // All major fields are below
-
-        //private List<ListSnapshot> AlgorithmSteps = new List<ListSnapshot>(); // An abstract data type that is the state of the algorithm at a given moment
 
         private List<string> StepExplainations = new List<string>();
         private Label StepLabel = ControlMaker.MakeNewLabel("", 600, 30);
@@ -505,18 +501,17 @@ namespace AlgoView
 
                     algorithmSelector.Enabled = false;
 
-                    Label speedlabel = ControlMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
-                    TextBox speedinput = ControlMaker.MakeNewBox("", 30);
-                    PositionInListUI(speedlabel, 780, -20);
-                    PositionInListUI(speedinput, 780, 130);
+                    TrackBar speedbar = ControlMaker.MakeNewTrackbar();
+                    Label speedlabel = ControlMaker.MakeNewLabel("Speed", 260, 30);
+                    PositionInListUI(speedlabel, 830, 0);
+                    PositionInListUI(speedbar, 780, 0);
                     speedlabel.Visible = false;
-                    speedinput.Visible = false;
-                    int speed = 1;
+                    speedbar.Visible = false;
 
                     sortmode.CheckedChanged += (sender, e) =>
                     {
                         speedlabel.Visible = sortmode.Checked; 
-                        speedinput.Visible = sortmode.Checked;
+                        speedbar.Visible = sortmode.Checked;
                     };
 
                     SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
@@ -531,20 +526,11 @@ namespace AlgoView
                         {
                             sortmode.Enabled = false;
                             speedlabel.Show();
-                            speedinput.Show();
                             AddPauseResumeButtons(this, () => PauseControl.Pause(), () => PauseControl.Resume());
 
-                            // error handling for when the user doesn't input a speed
-                            if (!int.TryParse(speedinput.Text, out int result) || result < 1 || result > 10)
-                            {
-                                MessageBox.Show("Valid integer between 1 and 10 not inputted, executing with default speed 10");
-                                await ListMethods.BubbleSortAuto(numbers, PauseControl, 50);
-                            }
-                            else
-                            {
-                                speed = 500 / result;
-                                await ListMethods.BubbleSortAuto(numbers, PauseControl, speed);
-                            }
+                            int result = speedbar.Value;
+                            int speed = 500 / result;
+                            await ListMethods.BubbleSortAuto(numbers, PauseControl, speed, speedbar);
                         }
 
                         sortmode.Enabled = false;
@@ -593,11 +579,45 @@ namespace AlgoView
                 {
                     algorithmSelector.Enabled = false;
 
-                    SetUpListUI(SortQuestion, "Enter", (TextBox[] numbers) =>
+                    CheckBox sortmode = ControlMaker.MakeNewCheckBox("Auto-Sort"); // To select if algorithm should be automatic or step by step
+                    PositionInListUI(sortmode, 700, 0);
+
+                    algorithmSelector.Enabled = false;
+
+                    TrackBar speedbar = ControlMaker.MakeNewTrackbar();
+                    Label speedlabel = ControlMaker.MakeNewLabel("Speed", 260, 30);
+                    PositionInListUI(speedlabel, 830, 0);
+                    PositionInListUI(speedbar, 780, 0);
+                    speedlabel.Visible = false;
+                    speedbar.Visible = false;
+
+                    sortmode.CheckedChanged += (sender, e) =>
                     {
-                        StartNewAlgorithm(numbers);
-                        ListMethods.InsertionSort(numbers, StepExplainations, this);
-                        RewindToFirstStep();
+                        speedlabel.Visible = sortmode.Checked;
+                        speedbar.Visible = sortmode.Checked;
+                    };
+
+                    SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
+                    {
+                        if (sortmode.Checked == false)
+                        {
+                            StartNewAlgorithm(numbers);
+                            ListMethods.InsertionSort(numbers, StepExplainations, this);
+                            RewindToFirstStep();
+                        }
+                        else
+                        {
+                            sortmode.Enabled = false;
+                            speedlabel.Show();
+                            AddPauseResumeButtons(this, () => PauseControl.Pause(), () => PauseControl.Resume());
+
+                            int result = speedbar.Value;
+                            int speed = 500 / result;
+                            await ListMethods.InsertionSortAuto(numbers, PauseControl, speed, speedbar);
+                        }
+
+                        sortmode.Enabled = false;
+                        sortmode.Visible = false;
                     });
                 }
                 else if (selectedAlgorithm == "Exponential Search")
@@ -640,21 +660,22 @@ namespace AlgoView
                 {
                     algorithmSelector.Enabled = false;
 
-                    CheckBox sortmode = ControlMaker.MakeNewCheckBox("Auto-Sort");
+                    CheckBox sortmode = ControlMaker.MakeNewCheckBox("Auto-Sort"); // To select if algorithm should be automatic or step by step
                     PositionInListUI(sortmode, 700, 0);
 
-                    TextBox speedinput = ControlMaker.MakeNewBox("", 30);
-                    Label speedlabel = ControlMaker.MakeNewLabel("Enter speed (1-10): ", 260, 30);
-                    PositionInListUI(speedlabel, 780, -20);
-                    PositionInListUI(speedinput, 780, 130);
-                    speedinput.Hide();
-                    speedlabel.Hide();
-                    int speed = 1;
+                    algorithmSelector.Enabled = false;
+
+                    TrackBar speedbar = ControlMaker.MakeNewTrackbar();
+                    Label speedlabel = ControlMaker.MakeNewLabel("Speed", 260, 30);
+                    PositionInListUI(speedlabel, 830, 0);
+                    PositionInListUI(speedbar, 780, 0);
+                    speedlabel.Visible = false;
+                    speedbar.Visible = false;
 
                     sortmode.CheckedChanged += (sender, e) =>
                     {
                         speedlabel.Visible = sortmode.Checked;
-                        speedinput.Visible = sortmode.Checked;
+                        speedbar.Visible = sortmode.Checked;
                     };
 
                     SetUpListUI(SortQuestion, "Enter", async (TextBox[] numbers) =>
@@ -671,17 +692,9 @@ namespace AlgoView
                             sortmode.Enabled = false;
                             AddPauseResumeButtons(this, () => PauseControl.Pause(), () => PauseControl.Resume());
 
-                            if (int.TryParse(speedinput.Text, out int result))
-                            {
-                                speed = 500 / result;
-                                await ListMethods.MergeSortAuto(numbers, PauseControl, speed);
-                            }
-                            else
-                            {
-                                speed = 50;
-                                MessageBox.Show("Valid integer between 1 and 10 not inputted, executing with default speed 10");
-                                await ListMethods.MergeSortAuto(numbers, PauseControl, speed);
-                            }
+                            int result = speedbar.Value;
+                            int speed = 500 / result;
+                            await ListMethods.MergeSortAuto(numbers, PauseControl, speed, speedbar);
                         }
                     });
                 }

@@ -17,10 +17,40 @@ public class ListMethods // a class containing all the list based algorithms
     {
         this.form = form;
     }
-    public static void MergeSort(TextBox[] numbers, List<string> Steplabels, Form1 form) // merge sort logic
+    public static void MergeSort(TextBox[] numbers, List<string> Steplabels, Form1 form)
     {
         if (numbers == null || numbers.Length <= 1)
             return;
+
+        // helper to deterministic color from seed
+        Color GetColorForSeed(int seed)
+        {
+            Random r = new Random(seed);
+            int R = r.Next(40, 220);
+            int G = r.Next(40, 220);
+            int B = r.Next(40, 220);
+            return Color.FromArgb(R, G, B);
+        }
+
+        // helper to pick readable foreground based on luminance
+        Color ForeFor(Color c)
+        {
+            double lum = 0.299 * c.R + 0.587 * c.G + 0.114 * c.B;
+            return lum < 160 ? Color.White : Color.Black;
+        }
+
+        // helper to set the same colour for a segment and snapshot
+        void ColourRange(int left, int right, Color col, string label = null)
+        {
+            for (int i = left; i <= right; i++)
+            {
+                numbers[i].BackColor = col;
+                numbers[i].ForeColor = ForeFor(col);
+            }
+            form.PushSnapshot(new ListSnapshot(numbers));
+            if (!string.IsNullOrEmpty(label))
+                Steplabels.Add(label);
+        }
 
         void Merge(int left, int middle, int right)
         {
@@ -52,7 +82,7 @@ public class ListMethods // a class containing all the list based algorithms
                 int rightVal = int.Parse(rightnumbers[ri]);
 
                 form.PushSnapshot(new ListSnapshot(numbers));
-                Steplabels.Add($"Compare {leftVal} and {rightVal}");
+                Steplabels.Add("Compare " + leftVal + " and " + rightVal);
 
                 if (leftVal > rightVal)
                 {
@@ -76,7 +106,7 @@ public class ListMethods // a class containing all the list based algorithms
                         numbers[k].Text = leftnumbers[li];
                         numbers[k].Size = leftsizes[li];
                         form.PushSnapshot(new ListSnapshot(numbers));
-                        Steplabels.Add($"Copy {leftVal} to index {k}");
+                        Steplabels.Add("Copy " + leftVal + " to index " + k);
                     }
                     li++;
                 }
@@ -87,7 +117,7 @@ public class ListMethods // a class containing all the list based algorithms
                         numbers[k].Text = rightnumbers[ri];
                         numbers[k].Size = rightsizes[ri];
                         form.PushSnapshot(new ListSnapshot(numbers));
-                        Steplabels.Add($"Copy {rightVal} to index {k}");
+                        Steplabels.Add("Copy " + rightVal + " to index " + k);
                     }
                     ri++;
                 }
@@ -101,10 +131,10 @@ public class ListMethods // a class containing all the list based algorithms
                     numbers[k].Text = leftnumbers[li];
                     numbers[k].Size = leftsizes[li];
                     form.PushSnapshot(new ListSnapshot(numbers));
-                    Steplabels.Add($"Copy {leftnumbers[li]} to index {k}");
+                    Steplabels.Add("Copy " + leftnumbers[li] + " to index " + k);
                 }
-                li++;  
-                k++; 
+                li++;
+                k++;
             }
 
             while (ri < rightsize)
@@ -114,34 +144,72 @@ public class ListMethods // a class containing all the list based algorithms
                     numbers[k].Text = rightnumbers[ri];
                     numbers[k].Size = rightsizes[ri];
                     form.PushSnapshot(new ListSnapshot(numbers));
-                    Steplabels.Add($"Copy {rightnumbers[ri]} to index {k}");
+                    Steplabels.Add("Copy " + rightnumbers[ri] + " to index " + k);
                 }
                 ri++;
                 k++;
             }
         }
 
-        void Sort(int left, int right)
+        void Sort(int left, int right, Color segColor)
         {
+            ColourRange(left, right, segColor, "Segment " + left + "-" + right + " split");
+
             if (left < right)
             {
                 int middle = (left + right) / 2;
-                Sort(left, middle);
-                Sort(middle + 1, right);
+
+                Color leftColor = GetColorForSeed(left * 10007 + middle);
+                Color rightColor = GetColorForSeed((middle + 1) * 10009 + right);
+
+                Sort(left, middle, leftColor);
+                Sort(middle + 1, right, rightColor);
+
                 Merge(left, middle, right);
+
+                ColourRange(left, right, segColor, "Merged " + left + "-" + right);
             }
         }
 
-        Sort(0, numbers.Length - 1);
+        Color topColor = GetColorForSeed(numbers.Length * 7919);
+        Sort(0, numbers.Length - 1, topColor);
 
         form.PushSnapshot(new ListSnapshot(numbers));
         Steplabels.Add("Done");
     }
 
-    public static async Task MergeSortAuto(TextBox[] numbers,PlayBack pausectrl, int speed) // merge sort logic without step by step feature
+    public static async Task MergeSortAuto(TextBox[] numbers, PlayBack pausectrl, int speed, TrackBar SpeedSlider)
     {
         if (numbers == null || numbers.Length <= 1)
             return;
+
+        Color MakeColor(int seed)
+        {
+            Random r = new Random(seed);
+            int R = r.Next(40, 220);
+            int G = r.Next(40, 220);
+            int B = r.Next(40, 220);
+            return Color.FromArgb(R, G, B);
+        }
+
+        Color PickFore(Color c)
+        {
+            double lum = 0.299 * c.R + 0.587 * c.G + 0.114 * c.B;
+            return lum < 160 ? Color.White : Color.Black;
+        }
+
+        async Task ColourRange(int left, int right, Color col)
+        {
+            for (int i = left; i <= right; i++)
+            {
+                numbers[i].BackColor = col;
+                numbers[i].ForeColor = PickFore(col);
+            }
+
+            speed = 500 / SpeedSlider.Value;
+            await Task.Delay(speed);
+            await pausectrl.WaitIfPaused();
+        }
 
         async Task Merge(int left, int middle, int right)
         {
@@ -169,79 +237,76 @@ public class ListMethods // a class containing all the list based algorithms
 
             while (li < leftsize && ri < rightsize)
             {
-                int leftVal = int.Parse(leftnumbers[li]);
-                int rightVal = int.Parse(rightnumbers[ri]);
-
-                if (leftVal <= rightVal)
+                if (int.Parse(leftnumbers[li]) <= int.Parse(rightnumbers[ri]))
                 {
-                    if (numbers[k].Text != leftnumbers[li])
-                    {
-                        numbers[k].Text = leftnumbers[li];
-                        numbers[k].Size = leftsizes[li];
-                        await Task.Delay(speed + 25);
-                        await pausectrl.WaitIfPaused();
-                    }
+                    numbers[k].Text = leftnumbers[li];
+                    numbers[k].Size = leftsizes[li];
                     li++;
                 }
                 else
                 {
-                    if (numbers[k].Text != rightnumbers[ri])
-                    {
-                        numbers[k].Text = rightnumbers[ri];
-                        numbers[k].Size = rightsizes[ri];
-                        await Task.Delay(speed + 25);
-                        await pausectrl.WaitIfPaused();
-                    }
+                    numbers[k].Text = rightnumbers[ri];
+                    numbers[k].Size = rightsizes[ri];
                     ri++;
                 }
+
+                speed = 500 / SpeedSlider.Value;
+                await Task.Delay(speed);
+                await pausectrl.WaitIfPaused();
                 k++;
             }
 
             while (li < leftsize)
             {
-                if (numbers[k].Text != leftnumbers[li])
-                {
-                    numbers[k].Text = leftnumbers[li];
-                    numbers[k].Size = leftsizes[li];
-                    await Task.Delay(speed + 25);
-                    await pausectrl.WaitIfPaused();
-                }
+                numbers[k].Text = leftnumbers[li];
+                numbers[k].Size = leftsizes[li];
                 li++;
                 k++;
+
+                speed = 500 / SpeedSlider.Value;
+                await Task.Delay(speed);
+                await pausectrl.WaitIfPaused();
             }
 
             while (ri < rightsize)
             {
-                if (numbers[k].Text != rightnumbers[ri])
-                {
-                    numbers[k].Text = rightnumbers[ri];
-                    numbers[k].Size = rightsizes[ri];
-                    await Task.Delay(speed + 25);
-                    await pausectrl.WaitIfPaused();
-                }
+                numbers[k].Text = rightnumbers[ri];
+                numbers[k].Size = rightsizes[ri];
                 ri++;
                 k++;
+
+                speed = 500 / SpeedSlider.Value;
+                await Task.Delay(speed);
+                await pausectrl.WaitIfPaused();
             }
         }
 
-        async Task Sort(int left, int right)
+        async Task Sort(int left, int right, Color currentColor)
         {
+            await ColourRange(left, right, currentColor);
+
             if (left < right)
             {
-                int middle = (left + right) / 2;
+                int mid = (left + right) / 2;
 
-                await Sort(left, middle);
-                await Sort(middle + 1, right);
+                Color leftColor = MakeColor(left * 1237 + mid * 17);
+                Color rightColor = MakeColor((mid + 1) * 199 + right * 31);
+
+                await Sort(left, mid, leftColor);
+
+                await Sort(mid + 1, right, rightColor);
+
+                speed = 500 / SpeedSlider.Value;
                 await Task.Delay(speed);
                 await pausectrl.WaitIfPaused();
+                await Merge(left, mid, right);
 
-                await Merge(left, middle, right);
-                await Task.Delay(speed);
-                await pausectrl.WaitIfPaused();
+                await ColourRange(left, right, currentColor);
             }
         }
 
-        await Sort(0, numbers.Length - 1);
+        Color rootColor = MakeColor(numbers.Length * 4001);
+        await Sort(0, numbers.Length - 1, rootColor);
     }
 
     public static void InsertionSort(TextBox[] list,List<string> Steplabels, Form1 form) // insertion sort
@@ -287,6 +352,52 @@ public class ListMethods // a class containing all the list based algorithms
         list[0].ForeColor = Color.Black;
         form.PushSnapshot(new ListSnapshot(list));
         Steplabels.Add("Done");
+    }
+
+    public static async Task InsertionSortAuto(TextBox[] list, PlayBack pausectrl, int speed, TrackBar SpeedSlider)
+    {
+        for (int i = 1; i < list.Length; i++)
+        {
+            int content = Convert.ToInt32(list[i].Text);
+            int index = i;
+
+            while (index > 0 && Convert.ToInt32(list[index - 1].Text) > content)
+            {
+                int leftVal = Convert.ToInt32(list[index - 1].Text);
+                list[index - 1].BackColor = Color.DarkBlue;
+                list[index - 1].ForeColor = Color.White;
+                list[index].BackColor = Color.Crimson;
+                list[index].ForeColor = Color.White;
+
+                speed = 500 / SpeedSlider.Value;
+                await Task.Delay(speed);
+                await pausectrl.WaitIfPaused();
+
+
+                list[index].BackColor = Color.Aquamarine;
+                list[index].ForeColor = Color.Black;
+                list[index].Text = leftVal.ToString();
+                Size tempSize = list[index].Size;
+                list[index].Size = list[index - 1].Size;
+                list[index - 1].Size = tempSize;
+                list[index - 1].Text = content.ToString();
+
+                speed = 500 / SpeedSlider.Value;
+                await Task.Delay(speed);
+                await pausectrl.WaitIfPaused();
+
+                index--;
+            }
+
+            list[index].Text = content.ToString();
+        }
+
+        list[0].BackColor = Color.Aquamarine;
+        list[0].ForeColor = Color.Black;
+
+        speed = 500 / SpeedSlider.Value;
+        await Task.Delay(speed);
+        await pausectrl.WaitIfPaused();
     }
 
 
@@ -370,7 +481,7 @@ public class ListMethods // a class containing all the list based algorithms
     }
 
 
-    public static async Task BubbleSortAuto(TextBox[] list, PlayBack pausectrl, int speed) // automatic bubble sort
+    public static async Task BubbleSortAuto(TextBox[] list, PlayBack pausectrl, int speed, TrackBar SpeedSlider) // automatic bubble sort
     {
         int length = list.Length;
         bool swapped = true;
@@ -398,6 +509,7 @@ public class ListMethods // a class containing all the list based algorithms
                 list[i].ForeColor = Color.White;
                 list[i + 1].ForeColor = Color.White;
 
+                speed = 500 / SpeedSlider.Value;
                 await Task.Delay(speed);
                 await pausectrl.WaitIfPaused();
 
@@ -411,7 +523,7 @@ public class ListMethods // a class containing all the list based algorithms
                     list[i + 1].Size = list[i].Size;
                     list[i].Size = tempsize;
 
-                    swapped = true;
+                    speed = 500 / SpeedSlider.Value;
                     await Task.Delay(speed);
                     await pausectrl.WaitIfPaused();
                 }
@@ -420,6 +532,7 @@ public class ListMethods // a class containing all the list based algorithms
                 list[i + 1].BackColor = Color.Black;
                 list[i].ForeColor = Color.Turquoise;
                 list[i + 1].ForeColor = Color.Turquoise;
+                speed = 500 / SpeedSlider.Value;
                 await Task.Delay(speed);
                 await pausectrl.WaitIfPaused();
             }
@@ -588,7 +701,6 @@ public class ListMethods // a class containing all the list based algorithms
             }
             else
             {
-
                 form.PushSnapshot(new ListSnapshot(list));
                 StepLabels.Add("Found " + target);
                 MessageBox.Show(target + " found at index " + mid);

@@ -18,7 +18,7 @@ public class ListMaker // A class containing methods for making various lists fo
             list[i].Multiline = true;
             list[i].Size = new Size((1500 / length), 30 + length + i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(firstnum) + i);
-            list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+            list[i].Font = new Font("Arial", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
@@ -46,7 +46,7 @@ public class ListMaker // A class containing methods for making various lists fo
             list[i].Size = new Size((1500 / length), 30);
             listelement = randomnum.Next(Convert.ToInt32(firstnum), Convert.ToInt32(lastnum) + 1);
             list[i].Text = Convert.ToString(listelement);
-            list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+            list[i].Font = new Font("Arial", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
@@ -69,7 +69,7 @@ public class ListMaker // A class containing methods for making various lists fo
             list[i].Multiline = true;
             list[i].Size = new Size((1500 / length), 30 + 8 * length - i * 8);
             list[i].Text = Convert.ToString(Convert.ToInt32(lastnum) - i);
-            list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+            list[i].Font = new Font("Arial", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
@@ -103,7 +103,7 @@ public class ListMaker // A class containing methods for making various lists fo
         for (int i = 0; i < length; i++)
         {
             list[i] = new TextBox();
-            list[i].Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+            list[i].Font = new Font("Arial", 10, FontStyle.Regular);
             list[i].ForeColor = Color.Turquoise;
             list[i].BackColor = Color.Black;
             list[i].TextAlign = HorizontalAlignment.Center;
@@ -146,7 +146,7 @@ public static class ControlMaker // A class containing methods for making variou
         TextBox box = new TextBox();
         box.Size = new Size(width, 25);
         box.Text = boxname;
-        box.Font = new Font("OCR A Extended", 10, FontStyle.Regular);
+        box.Font = new Font("Arial", 10, FontStyle.Regular);
         box.TextAlign = HorizontalAlignment.Center;
         box.ForeColor = Color.Turquoise;
         box.BackColor = Color.Black;
@@ -182,5 +182,19 @@ public static class ControlMaker // A class containing methods for making variou
         checkbox.BackColor = Color.Black;
         checkbox.TextAlign = ContentAlignment.MiddleCenter;
         return checkbox;
+    }
+
+    public static TrackBar MakeNewTrackbar()
+    {
+        TrackBar slider = new TrackBar();
+        slider.Minimum = 1;
+        slider.Maximum = 10;
+        slider.Value = 5;
+        slider.TickFrequency = 1;
+        slider.BackColor = Color.Black;
+        slider.ForeColor = Color.Turquoise;
+        slider.Size = new Size(300, 45);
+
+        return slider;
     }
 }
