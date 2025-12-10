@@ -109,7 +109,10 @@ namespace AlgoView
         {
             StepBackStack.Push(snapshot);
             StepForwardStack.Clear();
+            if (StepExplainations.Count < StepBackStack.Count)
+                StepExplainations.Add("");
             CurrentStep = StepBackStack.Count - 1;
+            UpdateStepCount();
         }
 
         private void StepBackClick(object sender, EventArgs e)
@@ -124,6 +127,7 @@ namespace AlgoView
 
             StepBackButton.Enabled = StepBackStack.Count > 1;
             StepForwardbutton.Enabled = StepForwardStack.Count > 0;
+            CurrentStep = StepBackStack.Count - 1;
             UpdateStepCount();
             StepLabel.Text = StepExplainations[StepBackStack.Count - 1];
         }
@@ -139,6 +143,7 @@ namespace AlgoView
 
             StepBackButton.Enabled = StepBackStack.Count > 1;
             StepForwardbutton.Enabled = StepForwardStack.Count > 0;
+            CurrentStep = StepBackStack.Count - 1;
             UpdateStepCount();
             StepLabel.Text = StepExplainations[StepBackStack.Count - 1];
         }
@@ -153,8 +158,11 @@ namespace AlgoView
 
             if (StepBackStack.Count > 0)
                 StepBackStack.Peek().Restore();
+
+            CurrentStep = 0;
+            UpdateStepCount();
         }
-        // Subroutine to display lists on screen through dynamic control generation
+
 
         public void StartNewAlgorithm(TextBox[] items)
         {
@@ -169,6 +177,10 @@ namespace AlgoView
             StepBackButton.Show();
             PositionInListUI(StepCount, 325, 0);
             PositionInListUI(StepLabel, 300, 400);
+
+            CurrentStep = 0;
+            UpdateStepCount();
+            StepLabel.Text = StepExplainations[0];
         }
 
         private void DrawList(TextBox[] boxlist, TextBox firstnum, TextBox lastnum)
