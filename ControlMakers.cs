@@ -91,6 +91,7 @@ public class ListMaker // A class containing methods for making various lists fo
         }
 
         Random rng = new Random();
+
         //Fisher-Yates shuffle
         for(int i = length - 1; i > 0; i--)
         {
@@ -184,7 +185,7 @@ public static class ControlMaker // A class containing methods for making variou
         return checkbox;
     }
 
-    public static TrackBar MakeNewTrackbar()
+    public static TrackBar MakeNewTrackbar() // sliding trackbar for speed
     {
         TrackBar slider = new TrackBar();
         slider.Minimum = 1;

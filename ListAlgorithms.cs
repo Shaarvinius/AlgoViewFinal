@@ -178,7 +178,7 @@ public class ListMethods // a class containing all the list based algorithms
         Steplabels.Add("Done");
     }
 
-    public static async Task MergeSortAuto(TextBox[] numbers, PlayBack pausectrl, int speed, TrackBar SpeedSlider)
+    public static async Task MergeSortAuto(TextBox[] numbers, PlayBack pausectrl, int speed, TrackBar SpeedSlider)// automatic merge sort
     {
         if (numbers == null || numbers.Length <= 1)
             return;
@@ -354,7 +354,7 @@ public class ListMethods // a class containing all the list based algorithms
         Steplabels.Add("Done");
     }
 
-    public static async Task InsertionSortAuto(TextBox[] list, PlayBack pausectrl, int speed, TrackBar SpeedSlider)
+    public static async Task InsertionSortAuto(TextBox[] list, PlayBack pausectrl, int speed, TrackBar SpeedSlider) // automatic insertion sort
     {
         for (int i = 1; i < list.Length; i++)
         {
@@ -540,7 +540,7 @@ public class ListMethods // a class containing all the list based algorithms
     }
 
 
-    public static void BinarySearch(TextBox[] list, int numtofind, List<string> StepLabels, Form1 form) // binary search logic
+    public static void BinarySearch(TextBox[] list, int numtofind, List<string> StepLabels, Form1 form) // binary search
     {
         int left = 0;
         int right = list.Length - 1;

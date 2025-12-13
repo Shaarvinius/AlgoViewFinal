@@ -9,7 +9,7 @@ public interface ISnapshot
     void Restore();
 }
 
-public class ListSnapshot: ISnapshot // a class for stepping backwards and forwards in step by step visualisations for lists
+public class ListSnapshot: ISnapshot // format for list interface snapshots 
 {
     private TextBox[] boxes;
     private int[] values;
@@ -37,7 +37,7 @@ public class ListSnapshot: ISnapshot // a class for stepping backwards and forwa
         }
     }
 
-    public void Restore()
+    public void Restore() // restores previous state of each textbox
     {
         for (int i = 0; i < boxes.Length; i++)
         {
@@ -59,6 +59,7 @@ public class GraphSnapshot : ISnapshot
     private Size[] sizes;
     private bool[] visitedState;
     private (int from, int to)? highlightedEdge;
+
     public GraphSnapshot(Control[] nodeControls, bool[] visited, (int from, int to)? edge = null)
     {
         nodes = nodeControls;
@@ -79,11 +80,16 @@ public class GraphSnapshot : ISnapshot
             foreColours[i] = nodeControls[i].ForeColor;
             positions[i] = nodeControls[i].Location;
             sizes[i] = nodeControls[i].Size;
-            visitedState[i] = visited != null && i < visited.Length && visited[i];
+
+            if (visited != null && i < visited.Length)
+            {
+                visitedState[i] = visited[i];
+            }
         }
 
         highlightedEdge = edge;
     }
+
     public void Restore()
     {
         for (int i = 0; i < nodes.Length; i++)
@@ -111,8 +117,7 @@ public class GraphSnapshot : ISnapshot
 
 public class SteppingStack
 {
-    private List<ISnapshot> snapshots = new List<ISnapshot>();
-    //public ISnapshot this[int index] => snapshots[index];   for indexing if needed
+    private List<ISnapshot> snapshots = new List<ISnapshot>(); // list that acts like a stack
 
     public void Push(ISnapshot step)
     {
