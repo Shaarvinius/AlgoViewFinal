@@ -114,9 +114,6 @@ public class ListMaker // A class containing methods for making various lists fo
             list[i].ReadOnly = true;
         }
 
-        int biggestnum;
-        int smallestnum;
-
         for(int i = 0; i < length; i++)
         {
             

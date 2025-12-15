@@ -40,7 +40,7 @@ public class ListMethods // a class containing all the list based algorithms
         }
 
         // helper to set the same colour for a segment and snapshot
-        void ColourRange(int left, int right, Color col, string label = null)
+        void ColourRange(int left, int right, Color col, string label = "")
         {
             for (int i = left; i <= right; i++)
             {
@@ -484,11 +484,9 @@ public class ListMethods // a class containing all the list based algorithms
     public static async Task BubbleSortAuto(TextBox[] list, PlayBack pausectrl, int speed, TrackBar SpeedSlider) // automatic bubble sort
     {
         int length = list.Length;
-        bool swapped = true;
 
         while (length > 0)
         {
-            swapped = false;
             length--;
 
             for (int i = 0; i < length; i++)

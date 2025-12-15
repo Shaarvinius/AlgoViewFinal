@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AlgoView;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -52,21 +53,19 @@ public class ListSnapshot: ISnapshot // format for list interface snapshots
 public class GraphSnapshot : ISnapshot
 {
     private Control[] nodes;
-    private string[] labels;
     private Color[] backColours;
     private Color[] foreColours;
     private Point[] positions;
     private Size[] sizes;
-    private bool[] visitedState;
     private (int from, int to)? highlightedEdge;
+    private bool[] visitedState;
 
     public GraphSnapshot(Control[] nodeControls, bool[] visited, (int from, int to)? edge = null)
     {
         nodes = nodeControls;
-
+        highlightedEdge = edge;
         int length = nodeControls.Length;
 
-        labels = new string[length];
         backColours = new Color[length];
         foreColours = new Color[length];
         positions = new Point[length];
@@ -75,45 +74,36 @@ public class GraphSnapshot : ISnapshot
 
         for (int i = 0; i < length; i++)
         {
-            labels[i] = nodeControls[i].Text;
             backColours[i] = nodeControls[i].BackColor;
             foreColours[i] = nodeControls[i].ForeColor;
             positions[i] = nodeControls[i].Location;
             sizes[i] = nodeControls[i].Size;
-
             if (visited != null && i < visited.Length)
-            {
                 visitedState[i] = visited[i];
-            }
         }
-
-        highlightedEdge = edge;
     }
 
     public void Restore()
     {
         for (int i = 0; i < nodes.Length; i++)
         {
-            nodes[i].Text = labels[i];
             nodes[i].BackColor = backColours[i];
             nodes[i].ForeColor = foreColours[i];
             nodes[i].Location = positions[i];
             nodes[i].Size = sizes[i];
         }
+
+        if (nodes.Length > 0 && nodes[0].FindForm() is Form1 form)
+        {
+            form.CurrentHighlightedEdge = highlightedEdge;
+            form.Invalidate();
+        }
     }
 
-    public bool[] GetVisitedState()
-    {
-        bool[] copy = new bool[visitedState.Length];
-        Array.Copy(visitedState, copy, visitedState.Length);
-        return copy;
-    }
-
-    public (int from, int to)? GetHighlightedEdge()
-    {
-        return highlightedEdge;
-    }
+    public (int from, int to)? HighlightedEdge => highlightedEdge;
+    public bool[] GetVisitedState() => (bool[])visitedState.Clone();
 }
+
 
 public class SteppingStack
 {

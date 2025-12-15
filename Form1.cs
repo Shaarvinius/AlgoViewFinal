@@ -53,8 +53,6 @@ namespace AlgoView
             }
 
             graphEdges?.Clear();
-            graph = null;
-            graphVisited = null;
             currentHighlightedEdge = null;
             graphModeActive = false;
 
@@ -86,24 +84,21 @@ namespace AlgoView
                 .ToArray();
         }
 
-        // All major fields are below
+        // All major universal fields are below
         private Random rand = new Random();
 
         private List<string> StepExplainations = new List<string>();
-        private Label StepLabel = ControlMaker.MakeNewLabel("", 600, 30);
+        private Label StepLabel = ControlMaker.MakeNewLabel("", 600, 65);
         private Label StepCount = ControlMaker.MakeNewLabel("", 150, 30);
-
         private int CurrentStep = 0;
-        private TextBox[] CurrentBoxes;
 
         private Button StepBackButton;
         private Button StepForwardbutton;
-
-
         private SteppingStack StepBackStack = new SteppingStack();
         private SteppingStack StepForwardStack = new SteppingStack();
 
-        // Graph mode fields
+
+        // Graph related fields 
         private Button[] graphNodes;
         private Dictionary<int, List<(int to, int weight)>> graph;
         private List<(int from, int to, int weight)> graphEdges;
@@ -112,10 +107,15 @@ namespace AlgoView
         private bool graphModeActive = false;
         private bool weightedMode = false;
 
+        // Properties of graph-related fields to make them accessible when needed but still secure
         public Button[] GraphNodes => graphNodes;                      // read-only
         public Dictionary<int, List<(int to, int weight)>> Graph => graph; // read-only
         public List<(int from, int to, int weight)> GraphEdges => graphEdges; // read-only
-        public bool[] GraphVisited => graphVisited;                   // read-only
+        public bool[] GraphVisited // read/write
+        {
+            get => graphVisited;
+            set => graphVisited = value;
+        }
         public (int from, int to)? CurrentHighlightedEdge             // read/write
         {
             get => currentHighlightedEdge;
@@ -156,16 +156,13 @@ namespace AlgoView
             UpdateStepCount();
         }
 
-        public void PushGraphStep(ISnapshot snapshot, string label = "")
+        public void PushGraphStep(ISnapshot snapshot, string label)
         {
             StepBackStack.Push(snapshot);
             StepForwardStack.Clear();
 
-            // Add label only if not already present
             if (StepExplainations.Count < StepBackStack.Count)
                 StepExplainations.Add(label);
-            else
-                StepExplainations[CurrentStep] = label;
 
             CurrentStep = StepBackStack.Count - 1;
             UpdateStepCount();
@@ -309,11 +306,11 @@ namespace AlgoView
             int n = nodes.Length;
 
             int baseRadius = Math.Max(160, n * 28);
-            int radiusX = (int)(baseRadius * 1.25);
-            int radiusY = (int)(baseRadius * 0.85);
+            int radiusX = (int)(baseRadius * 1.30);
+            int radiusY = (int)(baseRadius * 0.70);
 
             int centerX = this.ClientSize.Width / 2;
-            int centerY = this.ClientSize.Height / 2 + 100;
+            int centerY = this.ClientSize.Height / 2 + 150;
 
             for (int i = 0; i < n; i++)
             {
@@ -332,7 +329,7 @@ namespace AlgoView
                 c.Top + c.Height / 2
             );
         }
-        protected override void OnPaint(PaintEventArgs e)
+        /*protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
@@ -345,48 +342,81 @@ namespace AlgoView
                 int to = edge.to;
                 int weight = edge.weight;
 
+                bool highlight =
+                    CurrentHighlightedEdge.HasValue &&
+                    (
+                        (CurrentHighlightedEdge.Value.from == from && CurrentHighlightedEdge.Value.to == to) ||
+                        (CurrentHighlightedEdge.Value.from == to && CurrentHighlightedEdge.Value.to == from)
+                    );
+
+                Pen pen = highlight
+                    ? new Pen(Color.Red, 4)
+                    : new Pen(Color.White, 2);
+
+                e.Graphics.DrawLine(pen, GetCenter(graphNodes[from]), GetCenter(graphNodes[to]));
+
+                pen.Dispose();
+
+                // weight drawing stays the same
+            }
+        }*/
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (!graphModeActive || graphEdges == null || graphNodes == null)
+                return;
+
+            foreach (var edge in graphEdges)
+            {
+                int from = edge.from;
+                int to = edge.to;
+
                 if (from < 0 || to < 0 || from >= graphNodes.Length || to >= graphNodes.Length)
                     continue;
 
                 Point p1 = GetCenter(graphNodes[from]);
                 Point p2 = GetCenter(graphNodes[to]);
 
-                Pen edgePen = Pens.White;
+                Pen pen = new Pen(Color.White, 2);  // Default color for edges
 
-                if (currentHighlightedEdge.HasValue)
+                if (CurrentHighlightedEdge.HasValue)
                 {
-                    var h = currentHighlightedEdge.Value;
-                    if ((h.from == from && h.to == to) ||
-                        (h.from == to && h.to == from))
+                    var h = CurrentHighlightedEdge.Value;
+                    if ((h.from == from && h.to == to) || (h.from == to && h.to == from))
                     {
-                        edgePen = Pens.Red;
+                        pen = new Pen(Color.Red, 4);  // Highlighting the edge in red
                     }
                 }
 
-                e.Graphics.DrawLine(edgePen, p1, p2);
+                e.Graphics.DrawLine(pen, p1, p2);  // Draw edge line
 
-                int midX = (p1.X + p2.X) / 2;
-                int midY = (p1.Y + p2.Y) / 2;
+                // Optionally, draw edge weight in the middle of the edge
+                if (weightedMode)
+                {
+                    int midX = (p1.X + p2.X) / 2;
+                    int midY = (p1.Y + p2.Y) / 2;
 
-                int dx = p2.X - p1.X;
-                int dy = p2.Y - p1.Y;
+                    int dx = p2.X - p1.X;
+                    int dy = p2.Y - p1.Y;
 
-                double length = Math.Sqrt(dx * dx + dy * dy);
-                if (length == 0) length = 1;
+                    double length = Math.Sqrt(dx * dx + dy * dy);
+                    if (length == 0) length = 1;
 
-                int offsetX = (int)(-dy / length * 12);
-                int offsetY = (int)(dx / length * 12);
+                    int offsetX = (int)(-dy / length * 12);
+                    int offsetY = (int)(dx / length * 12);
 
-                Point weightPos = new Point(midX + offsetX, midY + offsetY);
+                    Point weightPos = new Point(midX + offsetX, midY + offsetY);
 
-                e.Graphics.DrawString(
-                    weight.ToString(),
-                    this.Font,
-                    Brushes.Black,
-                    weightPos
-                );
+                    e.Graphics.DrawString(
+                        edge.weight.ToString(),
+                        this.Font,
+                        Brushes.White,
+                        weightPos
+                    );
+                }
             }
         }
+
 
         private void GenerateGraph(int nodeCount, string density)
         {
@@ -401,7 +431,7 @@ namespace AlgoView
             graphNodes = CreateGraphNodes(nodeCount);
             PositionGraphNodesCircular(graphNodes);
 
-            if (density == "Sparse")
+            if (density == "Low")
             {
                 for (int i = 0; i < nodeCount; i++)
                 {
@@ -411,7 +441,7 @@ namespace AlgoView
 
                 if (nodeCount > 4)
                 {
-                    int extraEdges = rand.Next(1, 3);
+                    int extraEdges = rand.Next(2, 6);
                     for (int k = 0; k < extraEdges; k++)
                     {
                         int a = rand.Next(nodeCount);
@@ -433,7 +463,7 @@ namespace AlgoView
                     }
                 }
             }
-            else if (density == "Complete")
+            else if (density == "Complete graph")
             {
                 for (int i = 0; i < nodeCount; i++)
                 {
@@ -451,7 +481,6 @@ namespace AlgoView
         // Subroutine to display interactive controls on the screen and take inputs to format lists
         private void SetUpListUI(string inputquestion, string buttonname, Action<TextBox[]> onListCreated)
         {
-
             Label askuserinput = ControlMaker.MakeNewLabel(inputquestion, 600, 50);
             PositionInUI(askuserinput, 400, 0);
 
@@ -510,6 +539,7 @@ namespace AlgoView
                     firstnum.Hide();
                     lastnum.Hide();
                     labeloutline.Hide();
+                    
 
                     Application.DoEvents();
 
@@ -624,6 +654,7 @@ namespace AlgoView
                     firstnum.Hide();
                     lastnum.Hide();
                     labeloutline.Hide();
+                    listType.Hide();
 
                     Application.DoEvents();
 
@@ -639,7 +670,7 @@ namespace AlgoView
             if (StepBackButton == null)
             {
                 StepBackButton = ControlMaker.MakeNewButton("Step back", 250, 50);
-                PositionInUI(StepBackButton, 750, -400);
+                PositionInUI(StepBackButton, 825, -400);
                 StepBackButton.Click += StepBackClick;
                 StepBackButton.Hide();
             }
@@ -651,7 +682,7 @@ namespace AlgoView
             if (StepForwardbutton == null)
             {
                 StepForwardbutton = ControlMaker.MakeNewButton("Step forward", 250, 50);
-                PositionInUI(StepForwardbutton, 750, 400);
+                PositionInUI(StepForwardbutton, 825, 400);
                 StepForwardbutton.Click += StepForwardClick;
                 StepForwardbutton.Hide();
             }
@@ -664,9 +695,7 @@ namespace AlgoView
         private void SetUpGraphUI(Action<Button[], List<(int from, int to, int weight)>> onGraphCreated)
         {
             graphModeActive = true;
-
             targetnum.Hide();
-
 
             Label nodeCountLabel = ControlMaker.MakeNewLabel("Number of nodes (3-14):", 250, 30);
             PositionInUI(nodeCountLabel, 350, 0);
@@ -674,14 +703,14 @@ namespace AlgoView
             TextBox nodeCountBox = ControlMaker.MakeNewBox("", 50);
             PositionInUI(nodeCountBox, 390, 0);
 
-            Label graphTypeLabel = ControlMaker.MakeNewLabel("Graph type: ", 200, 30);
-            PositionInUI(graphTypeLabel, 430, 0);
+            Label edgenumberlabel = ControlMaker.MakeNewLabel("Density of edges: ", 300, 30);
+            PositionInUI(edgenumberlabel, 430, 0);
 
             ComboBox densitySelector = new ComboBox();
-            densitySelector.Items.AddRange(new string[] { "Sparse", "Medium", "Complete" });
+            densitySelector.Items.AddRange(new string[] { "Low", "Medium", "Complete graph" });
             densitySelector.SelectedIndex = 0;
             densitySelector.DropDownStyle = ComboBoxStyle.DropDownList;
-            densitySelector.Size = new Size(250, 50);
+            densitySelector.Size = new Size(275, 50);
             PositionInUI(densitySelector, 500, 0);
 
             Button generateGraphButton = ControlMaker.MakeNewButton("Generate Graph", 150, 50);
@@ -691,21 +720,15 @@ namespace AlgoView
             {
                 if (!int.TryParse(nodeCountBox.Text, out int nodeCount) || nodeCount < 3 || nodeCount > 14)
                 {
-                    MessageBox.Show("Enter a valid number of nodes (3-14).");
+                    MessageBox.Show("Enter a valid number of nodes (3–14).");
                     return;
                 }
 
                 string density = densitySelector.SelectedItem.ToString();
 
-                if (density == "Medium" && nodeCount > 10)
+                if (density == "Complete graph" && nodeCount > 7)
                 {
-                    MessageBox.Show("Medium graphs support up to 10 nodes.");
-                    return;
-                }
-
-                if (density == "Complete" && nodeCount > 7)
-                {
-                    MessageBox.Show("Complete graphs support up to 7 nodes.");
+                    MessageBox.Show("Complete graphs are limited to 7 nodes.");
                     return;
                 }
 
@@ -714,7 +737,7 @@ namespace AlgoView
 
                 nodeCountLabel.Hide();
                 nodeCountBox.Hide();
-                graphTypeLabel.Hide();
+                edgenumberlabel.Hide();
                 densitySelector.Hide();
                 generateGraphButton.Hide();
 
@@ -724,14 +747,14 @@ namespace AlgoView
             if (StepBackButton == null)
             {
                 StepBackButton = ControlMaker.MakeNewButton("Step back", 250, 50);
-                PositionInUI(StepBackButton, 750, -400);
+                PositionInUI(StepBackButton, 800, -550);
                 StepBackButton.Click += StepBackClick;
             }
 
             if (StepForwardbutton == null)
             {
                 StepForwardbutton = ControlMaker.MakeNewButton("Step forward", 250, 50);
-                PositionInUI(StepForwardbutton, 750, 400);
+                PositionInUI(StepForwardbutton, 800, 550);
                 StepForwardbutton.Click += StepForwardClick;
             }
 
@@ -825,8 +848,8 @@ namespace AlgoView
 
                     TrackBar speedbar = ControlMaker.MakeNewTrackbar();
                     Label speedlabel = ControlMaker.MakeNewLabel("Speed", 260, 30);
-                    PositionInUI(speedlabel, 830, 0);
-                    PositionInUI(speedbar, 780, 0);
+                    PositionInUI(speedlabel, 300, -475);
+                    PositionInUI(speedbar, 320, -475);
                     speedlabel.Visible = false;
                     speedbar.Visible = false;
 
@@ -910,8 +933,8 @@ namespace AlgoView
 
                     TrackBar speedbar = ControlMaker.MakeNewTrackbar();
                     Label speedlabel = ControlMaker.MakeNewLabel("Speed", 260, 30);
-                    PositionInUI(speedlabel, 830, 0);
-                    PositionInUI(speedbar, 780, 0);
+                    PositionInUI(speedlabel, 300, -475);
+                    PositionInUI(speedbar, 320, -475);
                     speedlabel.Visible = false;
                     speedbar.Visible = false;
 
@@ -952,17 +975,17 @@ namespace AlgoView
                     PositionInUI(numtofind, 750, 0);
 
                     Label left = ControlMaker.MakeNewLabel("Lower Bound", 225, 30);
-                    PositionInUI(left, 675, -300);
+                    PositionInUI(left, 357, -300);
                     left.BackColor = Color.Crimson;
                     left.ForeColor = Color.Black;
 
                     Label right = ControlMaker.MakeNewLabel("Upper Bound", 225, 30);
-                    PositionInUI(right, 675, 300);
+                    PositionInUI(right, 357, 300);
                     right.BackColor = Color.Blue;
                     right.ForeColor = Color.Black;
 
                     Label mid = ControlMaker.MakeNewLabel("Target", 110, 30);
-                    PositionInUI(mid, 675, 0);
+                    PositionInUI(mid, 357, 0);
                     mid.BackColor = Color.Turquoise;
                     mid.ForeColor = Color.Black;
 
@@ -991,8 +1014,8 @@ namespace AlgoView
 
                     TrackBar speedbar = ControlMaker.MakeNewTrackbar();
                     Label speedlabel = ControlMaker.MakeNewLabel("Speed", 260, 30);
-                    PositionInUI(speedlabel, 830, 0);
-                    PositionInUI(speedbar, 780, 0);
+                    PositionInUI(speedlabel, 300, -475);
+                    PositionInUI(speedbar, 320, -475);
                     speedlabel.Visible = false;
                     speedbar.Visible = false;
 
