@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-
 public interface ISnapshot
 {
     void Restore();
@@ -161,7 +160,5 @@ public class PlayBack // logic for pausing and resuming
     {
         paused = false;
     }
-
-    
     public bool IsPaused => paused;
 }

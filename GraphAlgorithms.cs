@@ -37,7 +37,7 @@ namespace AlgoView
                 form.GraphNodes[current].BackColor = Color.Crimson;
                 form.GraphNodes[current].ForeColor = Color.White;
                 form.PushGraphStep(new GraphSnapshot((Button[])form.GraphNodes.Clone(), (bool[])form.GraphVisited.Clone(), null),
-                    $"Processing node {current}\nNodes visited: {string.Join(",", traversedNodes)}");
+                    $"Check node {current} for neighbours\nNodes visited: {string.Join(",", traversedNodes)}");
                 form.Invalidate();
 
                 foreach (var neighbor in form.Graph[current])
@@ -66,15 +66,70 @@ namespace AlgoView
                         queue.Enqueue(nextNode);
                     }
                 }
-
                 form.GraphNodes[current].BackColor = Color.Aquamarine;
                 form.GraphNodes[current].ForeColor = Color.Black;
             }
-
             form.PushGraphStep(new GraphSnapshot((Button[])form.GraphNodes.Clone(), (bool[])form.GraphVisited.Clone(), null),
                 "BFS Complete\nNodes visited: " + string.Join(",", traversedNodes));
             form.Invalidate();
         }
 
+
+
+        public static void DFS(Form1 form, int startNode)
+        {
+            int n = form.GraphNodes.Length;
+            bool[] visited = new bool[n];
+            List<int> traversedNodes = new List<int>();
+
+            void DFSVisit(int current)
+            {
+                visited[current] = true;
+                form.GraphVisited[current] = true;
+                traversedNodes.Add(current);
+
+                form.GraphNodes[current].BackColor = Color.Crimson;
+                form.GraphNodes[current].ForeColor = Color.White;
+
+                form.PushGraphStep(new GraphSnapshot((Button[])form.GraphNodes.Clone(), (bool[])form.GraphVisited.Clone(), null),
+                    "Visit node " + current + "\nNodes visited: " + string.Join(",", traversedNodes));
+                form.Invalidate();
+
+                foreach (var edge in form.Graph[current])
+                {
+                    int next = edge.to;
+
+                    if (!visited[next])
+                    {
+                        form.CurrentHighlightedEdge = (current, next);
+
+                        form.PushGraphStep(new GraphSnapshot((Button[])form.GraphNodes.Clone(), (bool[])form.GraphVisited.Clone(), (current, next)),
+                            "Traverse edge " + current + " -> " + next + "\nNodes visited: " + string.Join(",", traversedNodes));
+                        form.Invalidate();
+
+                        DFSVisit(next);
+                    }
+                }
+                form.GraphNodes[current].BackColor = Color.Aquamarine;
+                form.GraphNodes[current].ForeColor = Color.Black;
+
+                form.PushGraphStep(new GraphSnapshot((Button[])form.GraphNodes.Clone(), (bool[])form.GraphVisited.Clone(), null),
+                    "Backtrack from node " + current + "\nNodes visited: " + string.Join(",", traversedNodes));
+                form.Invalidate();
+            }
+            form.PushGraphStep(new GraphSnapshot((Button[])form.GraphNodes.Clone(), (bool[])form.GraphVisited.Clone(),null),
+                "Initial state\nNodes visited: "
+            );
+            form.Invalidate();
+
+            DFSVisit(startNode);// Key recursive step
+
+            form.PushGraphStep(
+                new GraphSnapshot((Button[])form.GraphNodes.Clone(),(bool[])form.GraphVisited.Clone(),null
+                ),
+                "DFS Complete\nNodes visited: " + string.Join(",", traversedNodes)
+            );
+            form.Invalidate();
+        }
     }
 }

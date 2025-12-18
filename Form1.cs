@@ -19,6 +19,7 @@ namespace AlgoView
 {
     public partial class Form1
     {
+        //<---------------------------Universal fields set-up subroutines that are used when AlgoView Starts--------------------------->\\
         public Form1()
         {
             InitializeComponent();
@@ -59,13 +60,14 @@ namespace AlgoView
             Invalidate();
         }
 
-        // Subroutines to align and position various controls
+
+
+        //<---------------------------Subroutines to show, align and position various controls--------------------------->\\
         public void Center(Control ctrl, int topoffset, int midoffset)
         {
             ctrl.Left = ((this.ClientSize.Width - ctrl.Width) / 2) + midoffset;
             ctrl.Top = topoffset;
         }
-
         private void PositionInUI(Control element, int topoffset, int midoffset)
         {
             this.Controls.Add(element);
@@ -73,8 +75,6 @@ namespace AlgoView
             this.Resize += (s, e) => Center(element, topoffset, midoffset);
             element.Show();
         }
-
-
         // Subroutine used to hide or change textboxes in a list algorithm
         private TextBox[] GetCurrentTextBoxes()
         {
@@ -84,11 +84,13 @@ namespace AlgoView
                 .ToArray();
         }
 
-        // All major universal fields are below
+
+
+        //<---------------------------All major universal fields and their properties--------------------------->\\
         private Random rand = new Random();
 
         private List<string> StepExplainations = new List<string>();
-        private Label StepLabel = ControlMaker.MakeNewLabel("", 600, 65);
+        private Label StepLabel = ControlMaker.MakeNewLabel("", 600, 100);
         private Label StepCount = ControlMaker.MakeNewLabel("", 150, 30);
         private int CurrentStep = 0;
 
@@ -127,7 +129,10 @@ namespace AlgoView
         private const string SearchQuestion = "Enter the lowest number in the left box and the highest in the right box: ";
         private const string SortQuestion = "Enter the lowest number in the left box and the highest in the right box(sort): ";
 
-        // Subroutines and fields used for the step backward / forward and pause/resume features for list algorithms
+
+
+        //<---------------------------Subroutines and fields used for the step backward / forward and pause / resume features--------------------------->\\
+        
         void UpdateStepCount()
         {
             StepCount.Text = "Step: " + Convert.ToString(CurrentStep);
@@ -144,26 +149,31 @@ namespace AlgoView
             PauseControl.Resume();
         }
 
-
         // Group of algorithms to control forward and back stepping
         public void PushSnapshot(ISnapshot snapshot) // Adds a snapshot of the list and interface to the stepping back stack
         {
             StepBackStack.Push(snapshot);
             StepForwardStack.Clear();
+
             if (StepExplainations.Count < StepBackStack.Count)
+            {
                 StepExplainations.Add("");
+            }
+                
             CurrentStep = StepBackStack.Count - 1;
             UpdateStepCount();
         }
 
-        public void PushGraphStep(ISnapshot snapshot, string label)
+        public void PushGraphStep(ISnapshot snapshot, string label) // Adds a snapshot of the graph and interface to the stepping back stack
         {
             StepBackStack.Push(snapshot);
             StepForwardStack.Clear();
 
             if (StepExplainations.Count < StepBackStack.Count)
-                StepExplainations.Add(label);
-
+            {
+                StepExplainations.Add(label); // the difference from PushListSnapshot is that it adds to step explainations simultaneously
+            }
+                
             CurrentStep = StepBackStack.Count - 1;
             UpdateStepCount();
         }
@@ -176,7 +186,6 @@ namespace AlgoView
                 StepForwardStack.Push(current);
                 StepBackStack.Peek().Restore();
             }
-
 
             StepBackButton.Enabled = StepBackStack.Count > 1;
             StepForwardbutton.Enabled = StepForwardStack.Count > 0;
@@ -201,7 +210,41 @@ namespace AlgoView
             StepLabel.Text = StepExplainations[StepBackStack.Count - 1];
         }
 
-        public void RewindToFirstStep() // After the algorithms are executed, they are "rewinded" to step 1 for visualisation
+        //logic for pause and resume buttons appearing and disappearing
+        public void AddPauseResumeButtons(Control parent, Action onPause, Action onResume)
+        {
+            Button pause = ControlMaker.MakeNewButton("||", 150, 40);
+            Button resume = ControlMaker.MakeNewButton("▶︎", 150, 40);
+
+            PositionInUI(pause, 357, 0);
+            PositionInUI(resume, 357, 0);
+
+            resume.Hide();
+            resume.Enabled = false;
+
+            pause.Click += (object sender, EventArgs e) =>
+            {
+                onPause();
+                pause.Hide();
+                pause.Enabled = false;
+                resume.Show();
+                resume.Enabled = true;
+            };
+
+            resume.Click += (object sender, EventArgs e) =>
+            {
+                onResume();
+                resume.Hide();
+                resume.Enabled = false;
+                pause.Show();
+                pause.Enabled = true;
+            };
+
+            parent.Controls.Add(pause);
+            parent.Controls.Add(resume);
+        }
+
+        public void RewindToFirstStep() // After the algorithms are executed, they are "rewinded" to the initial state for visualisation
         {
             while (StepBackStack.Count > 1)
             {
@@ -216,27 +259,50 @@ namespace AlgoView
             UpdateStepCount();
         }
 
-        // helper for clearing both stacks for a new algorithm to begin
-        // also helps with key interactive UI components and step counting/explainations
-        public void StartNewAlgorithm(TextBox[] items) 
+        // helper for setting up for a new list algorithm to begin, also helps with key interactive UI components and step counting/explainations
+        public void StartNewListAlgorithm(TextBox[] items)
         {
             StepBackStack.Clear();
             StepForwardStack.Clear();
             StepExplainations.Clear();
 
-            StepBackStack.Push(new ListSnapshot(items));
-            StepExplainations.Add("Initial state");
-
             StepForwardbutton.Show();
             StepBackButton.Show();
             PositionInUI(StepCount, 325, 0);
-            PositionInUI(StepLabel, 300, 400);
+            PositionInUI(StepLabel, 270, 550);
 
+            StepBackStack.Push(new ListSnapshot(items));
+            StepExplainations.Add("Initial state");
             CurrentStep = 0;
             UpdateStepCount();
             StepLabel.Text = StepExplainations[0];
         }
 
+        public void StartNewGraphAlgorithm(Button[] nodes, bool[] visited) // Equivelant of StartNewListAlgorithm for graph algorithms
+        {
+            StepBackStack.Clear();
+            StepForwardStack.Clear();
+            StepExplainations.Clear();
+
+            StepForwardbutton.Show();
+            StepBackButton.Show();
+            PositionInUI(StepCount, 325, -550);
+            PositionInUI(StepLabel, 270, 550);
+
+            CurrentHighlightedEdge = null;
+            StepBackStack.Push(new GraphSnapshot((Control[])nodes.Clone(), (bool[])visited.Clone(), null));
+            StepExplainations.Add("Initial state");
+
+            CurrentStep = 0;
+            UpdateStepCount();
+            StepLabel.Text = StepExplainations[0];
+
+            Invalidate();
+            targetnum.Hide();
+        }
+
+
+        //<---------------------------Subroutines used for generating and rendering interactive LISTS to be used for algorithms--------------------------->\\
         private void DrawList(TextBox[] boxlist, TextBox firstnum, TextBox lastnum) // subroutine for dynamically sizing and displaying lists
         {
             int spacing = 38;
@@ -267,215 +333,8 @@ namespace AlgoView
             }
         }
 
-        // Generate Buttons for graph nodes
-        public Button[] CreateGraphNodes(int nodeCount)
-        {
-            Button[] nodes = new Button[nodeCount];
 
-            for (int i = 0; i < nodeCount; i++)
-            {
-                nodes[i] = ControlMaker.MakeNewButton(i.ToString(), 50, 50);
-                this.Controls.Add(nodes[i]);
-            }
-
-            PositionGraphNodesCircular(nodes); // center x,y and radius
-            return nodes;
-        }
-
-        private void AddUndirectedEdge(int a, int b)
-        {
-            int weight = weightedMode ? rand.Next(1, 10) : 1;
-
-            graph[a].Add((b, weight));
-            graph[b].Add((a, weight));
-
-            graphEdges.Add((a, b, weight));
-        }
-
-        private bool EdgeExists(int a, int b)
-        {
-            return graph[a].Any(e => e.to == b);
-        }
-
-        // Circular layout helper
-        public void PositionGraphNodesCircular(Button[] nodes)
-        {
-            if (nodes == null || nodes.Length == 0)
-                return;
-
-            int n = nodes.Length;
-
-            int baseRadius = Math.Max(160, n * 28);
-            int radiusX = (int)(baseRadius * 1.30);
-            int radiusY = (int)(baseRadius * 0.70);
-
-            int centerX = this.ClientSize.Width / 2;
-            int centerY = this.ClientSize.Height / 2 + 150;
-
-            for (int i = 0; i < n; i++)
-            {
-                double angle = 2 * Math.PI * i / n;
-
-                int x = centerX + (int)(radiusX * Math.Cos(angle)) - nodes[i].Width / 2;
-                int y = centerY + (int)(radiusY * Math.Sin(angle)) - nodes[i].Height / 2;
-
-                nodes[i].Location = new Point(x, y);
-            }
-        }
-        private Point GetCenter(Control c)
-        {
-            return new Point(
-                c.Left + c.Width / 2,
-                c.Top + c.Height / 2
-            );
-        }
-        /*protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-            if (!graphModeActive || graphEdges == null || graphNodes == null)
-                return;
-
-            foreach (var edge in graphEdges)
-            {
-                int from = edge.from;
-                int to = edge.to;
-                int weight = edge.weight;
-
-                bool highlight =
-                    CurrentHighlightedEdge.HasValue &&
-                    (
-                        (CurrentHighlightedEdge.Value.from == from && CurrentHighlightedEdge.Value.to == to) ||
-                        (CurrentHighlightedEdge.Value.from == to && CurrentHighlightedEdge.Value.to == from)
-                    );
-
-                Pen pen = highlight
-                    ? new Pen(Color.Red, 4)
-                    : new Pen(Color.White, 2);
-
-                e.Graphics.DrawLine(pen, GetCenter(graphNodes[from]), GetCenter(graphNodes[to]));
-
-                pen.Dispose();
-
-                // weight drawing stays the same
-            }
-        }*/
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            if (!graphModeActive || graphEdges == null || graphNodes == null)
-                return;
-
-            foreach (var edge in graphEdges)
-            {
-                int from = edge.from;
-                int to = edge.to;
-
-                if (from < 0 || to < 0 || from >= graphNodes.Length || to >= graphNodes.Length)
-                    continue;
-
-                Point p1 = GetCenter(graphNodes[from]);
-                Point p2 = GetCenter(graphNodes[to]);
-
-                Pen pen = new Pen(Color.White, 2);  // Default color for edges
-
-                if (CurrentHighlightedEdge.HasValue)
-                {
-                    var h = CurrentHighlightedEdge.Value;
-                    if ((h.from == from && h.to == to) || (h.from == to && h.to == from))
-                    {
-                        pen = new Pen(Color.Red, 4);  // Highlighting the edge in red
-                    }
-                }
-
-                e.Graphics.DrawLine(pen, p1, p2);  // Draw edge line
-
-                // Optionally, draw edge weight in the middle of the edge
-                if (weightedMode)
-                {
-                    int midX = (p1.X + p2.X) / 2;
-                    int midY = (p1.Y + p2.Y) / 2;
-
-                    int dx = p2.X - p1.X;
-                    int dy = p2.Y - p1.Y;
-
-                    double length = Math.Sqrt(dx * dx + dy * dy);
-                    if (length == 0) length = 1;
-
-                    int offsetX = (int)(-dy / length * 12);
-                    int offsetY = (int)(dx / length * 12);
-
-                    Point weightPos = new Point(midX + offsetX, midY + offsetY);
-
-                    e.Graphics.DrawString(
-                        edge.weight.ToString(),
-                        this.Font,
-                        Brushes.White,
-                        weightPos
-                    );
-                }
-            }
-        }
-
-
-        private void GenerateGraph(int nodeCount, string density)
-        {
-            rand = new Random();
-
-            graph = new Dictionary<int, List<(int to, int weight)>>();
-            graphEdges = new List<(int from, int to, int weight)>();
-
-            for (int i = 0; i < nodeCount; i++)
-                graph[i] = new List<(int, int)>();
-
-            graphNodes = CreateGraphNodes(nodeCount);
-            PositionGraphNodesCircular(graphNodes);
-
-            if (density == "Low")
-            {
-                for (int i = 0; i < nodeCount; i++)
-                {
-                    int j = (i + 1) % nodeCount;
-                    AddUndirectedEdge(i, j);
-                }
-
-                if (nodeCount > 4)
-                {
-                    int extraEdges = rand.Next(2, 6);
-                    for (int k = 0; k < extraEdges; k++)
-                    {
-                        int a = rand.Next(nodeCount);
-                        int b = rand.Next(nodeCount);
-                        if (a != b && !EdgeExists(a, b))
-                            AddUndirectedEdge(a, b);
-                    }
-                }
-            }
-            else if (density == "Medium")
-            {
-                for (int i = 0; i < nodeCount; i++)
-                {
-                    while (graph[i].Count < 2)
-                    {
-                        int j = rand.Next(nodeCount);
-                        if (j != i && !EdgeExists(i, j))
-                            AddUndirectedEdge(i, j);
-                    }
-                }
-            }
-            else if (density == "Complete graph")
-            {
-                for (int i = 0; i < nodeCount; i++)
-                {
-                    for (int j = i + 1; j < nodeCount; j++)
-                        AddUndirectedEdge(i, j);
-                }
-            }
-
-            Invalidate();
-        }
-
-        // This field is a textbox that shows the number to be found in a searching algorithm
+        // This field is a textbox that shows the number to be found in a list searching algorithm
         TextBox targetnum = ControlMaker.MakeNewBox("", 30);
 
         // Subroutine to display interactive controls on the screen and take inputs to format lists
@@ -692,12 +551,197 @@ namespace AlgoView
             }
         }
 
+
+
+        //<---------------------------Subroutines used for generating and rendering interactive GRAPHS to be used for algorithms--------------------------->\\
+
+
+        // To generate Buttons for graph nodes
+        public Button[] CreateGraphNodes(int nodeCount)
+        {
+            Button[] nodes = new Button[nodeCount];
+
+            for (int i = 0; i < nodeCount; i++)
+            {
+                nodes[i] = ControlMaker.MakeNewButton(i.ToString(), 50, 50);
+                this.Controls.Add(nodes[i]);
+            }
+
+            PositionGraphNodesCircular(nodes); // center x,y and radius
+            return nodes;
+        }
+
+        private void AddUndirectedEdge(int a, int b)
+        {
+            int weight = weightedMode ? rand.Next(1, 10) : 1;
+
+            graph[a].Add((b, weight));
+            graph[b].Add((a, weight));
+
+            graphEdges.Add((a, b, weight));
+        }
+
+        private bool EdgeExists(int a, int b)
+        {
+            return graph[a].Any(e => e.to == b);
+        }
+
+        // Circular layout helper
+        public void PositionGraphNodesCircular(Button[] nodes)
+        {
+            if (nodes == null || nodes.Length == 0)
+                return;
+
+            int n = nodes.Length;
+
+            int baseRadius = Math.Max(160, n * 28);
+            int radiusX = (int)(baseRadius * 1.30);
+            int radiusY = (int)(baseRadius * 0.70);
+
+            int centerX = this.ClientSize.Width / 2;
+            int centerY = this.ClientSize.Height / 2 + 150;
+
+            for (int i = 0; i < n; i++)
+            {
+                double angle = 2 * Math.PI * i / n;
+
+                int x = centerX + (int)(radiusX * Math.Cos(angle)) - nodes[i].Width / 2;
+                int y = centerY + (int)(radiusY * Math.Sin(angle)) - nodes[i].Height / 2;
+
+                nodes[i].Location = new Point(x, y);
+            }
+        }
+
+        private Point GetCenter(Control c)
+        {
+            return new Point(
+                c.Left + c.Width / 2,
+                c.Top + c.Height / 2
+            );
+        }
+
+        protected override void OnPaint(PaintEventArgs e) // protected override to suit the ever changing nature of graph edges for visualisation
+        {
+            base.OnPaint(e);
+            if (!graphModeActive || graphEdges == null || graphNodes == null)
+                return;
+
+            foreach (var edge in graphEdges)
+            {
+                int from = edge.from;
+                int to = edge.to;
+
+                if (from < 0 || to < 0 || from >= graphNodes.Length || to >= graphNodes.Length)
+                    continue;
+
+                Point p1 = GetCenter(graphNodes[from]);
+                Point p2 = GetCenter(graphNodes[to]);
+
+                Pen pen = new Pen(Color.White, 2);  // Default color for edges
+
+                if (CurrentHighlightedEdge.HasValue)
+                {
+                    var h = CurrentHighlightedEdge.Value;
+                    if ((h.from == from && h.to == to) || (h.from == to && h.to == from))
+                    {
+                        pen = new Pen(Color.Red, 4);  // Highlighting the edge in red
+                    }
+                }
+
+                e.Graphics.DrawLine(pen, p1, p2);  // Draw edge line
+
+                // Optionally, draw edge weight in the middle of the edge
+                if (weightedMode)
+                {
+                    int midX = (p1.X + p2.X) / 2;
+                    int midY = (p1.Y + p2.Y) / 2;
+
+                    int dx = p2.X - p1.X;
+                    int dy = p2.Y - p1.Y;
+
+                    double length = Math.Sqrt(dx * dx + dy * dy);
+                    if (length == 0) length = 1;
+
+                    int offsetX = (int)(-dy / length * 12);
+                    int offsetY = (int)(dx / length * 12);
+
+                    Point weightPos = new Point(midX + offsetX, midY + offsetY);
+
+                    e.Graphics.DrawString(
+                        edge.weight.ToString(),
+                        this.Font,
+                        Brushes.White,
+                        weightPos
+                    );
+                }
+            }
+        }
+
+
+        private void GenerateGraph(int nodeCount, string density)
+        {
+            rand = new Random();
+
+            graph = new Dictionary<int, List<(int to, int weight)>>();
+            graphEdges = new List<(int from, int to, int weight)>();
+
+            for (int i = 0; i < nodeCount; i++)
+                graph[i] = new List<(int, int)>();
+
+            graphNodes = CreateGraphNodes(nodeCount);
+            PositionGraphNodesCircular(graphNodes);
+
+            if (density == "Low")
+            {
+                for (int i = 0; i < nodeCount; i++)
+                {
+                    int j = (i + 1) % nodeCount;
+                    AddUndirectedEdge(i, j);
+                }
+
+                if (nodeCount > 4)
+                {
+                    int extraEdges = rand.Next(2, 6);
+                    for (int k = 0; k < extraEdges; k++)
+                    {
+                        int a = rand.Next(nodeCount);
+                        int b = rand.Next(nodeCount);
+                        if (a != b && !EdgeExists(a, b))
+                            AddUndirectedEdge(a, b);
+                    }
+                }
+            }
+            else if (density == "Medium")
+            {
+                for (int i = 0; i < nodeCount; i++)
+                {
+                    while (graph[i].Count < 2)
+                    {
+                        int j = rand.Next(nodeCount);
+                        if (j != i && !EdgeExists(i, j))
+                            AddUndirectedEdge(i, j);
+                    }
+                }
+            }
+            else if (density == "Complete graph")
+            {
+                for (int i = 0; i < nodeCount; i++)
+                {
+                    for (int j = i + 1; j < nodeCount; j++)
+                        AddUndirectedEdge(i, j);
+                }
+            }
+
+            Invalidate();
+        }
+
+
         private void SetUpGraphUI(Action<Button[], List<(int from, int to, int weight)>> onGraphCreated)
         {
             graphModeActive = true;
             targetnum.Hide();
 
-            Label nodeCountLabel = ControlMaker.MakeNewLabel("Number of nodes (3-14):", 250, 30);
+            Label nodeCountLabel = ControlMaker.MakeNewLabel("Number of nodes (3-15):", 250, 30);
             PositionInUI(nodeCountLabel, 350, 0);
 
             TextBox nodeCountBox = ControlMaker.MakeNewBox("", 50);
@@ -718,9 +762,9 @@ namespace AlgoView
 
             generateGraphButton.Click += (s, e) =>
             {
-                if (!int.TryParse(nodeCountBox.Text, out int nodeCount) || nodeCount < 3 || nodeCount > 14)
+                if (!int.TryParse(nodeCountBox.Text, out int nodeCount) || nodeCount < 3 || nodeCount > 15)
                 {
-                    MessageBox.Show("Enter a valid number of nodes (3–14).");
+                    MessageBox.Show("Enter a valid number of nodes (3–15).");
                     return;
                 }
 
@@ -747,14 +791,14 @@ namespace AlgoView
             if (StepBackButton == null)
             {
                 StepBackButton = ControlMaker.MakeNewButton("Step back", 250, 50);
-                PositionInUI(StepBackButton, 800, -550);
+                PositionInUI(StepBackButton, 800, -600);
                 StepBackButton.Click += StepBackClick;
             }
 
             if (StepForwardbutton == null)
             {
                 StepForwardbutton = ControlMaker.MakeNewButton("Step forward", 250, 50);
-                PositionInUI(StepForwardbutton, 800, 550);
+                PositionInUI(StepForwardbutton, 800, 600);
                 StepForwardbutton.Click += StepForwardClick;
             }
 
@@ -763,43 +807,10 @@ namespace AlgoView
         }
 
 
-        // logic for pause and resume buttons appearing and disappearing
-        public void AddPauseResumeButtons(Control parent,Action onPause, Action onResume)
-        {
-            Button pause = ControlMaker.MakeNewButton("||", 150, 40);
-            Button resume = ControlMaker.MakeNewButton("▶︎", 150, 40);
 
-            PositionInUI(pause, 357, 0);
-            PositionInUI(resume, 357, 0);
-
-            resume.Hide();
-            resume.Enabled = false;
-
-            pause.Click += (object sender, EventArgs e) =>
-            {
-                onPause();
-                pause.Hide();
-                pause.Enabled = false;
-                resume.Show();
-                resume.Enabled = true;
-            };
-
-            resume.Click += (object sender, EventArgs e) =>
-            {
-                onResume();
-                resume.Hide();
-                resume.Enabled = false;
-                pause.Show();
-                pause.Enabled = true;
-            };
-
-            parent.Controls.Add(pause);
-            parent.Controls.Add(resume);
-        }
-
+        //<----------------------------Subroutine where everything from the logo and logic to data structures are displayed,---------------------------->\\
+        //<----------------------------using SetUpListUI and various other subroutines and fields---------------------------->\\
         private ComboBox algorithmSelector;
-
-        // Subroutine where the logo, logic and data structures are displayed, using SetUpListUI and various other subroutines and fields
         private void Form1_Load(object sender, EventArgs e)
         {
             PictureBox logo = new PictureBox();
@@ -827,8 +838,8 @@ namespace AlgoView
             algorithmSelector.Items.Add("Merge sort");
             algorithmSelector.Items.Add("Binary Search");
             algorithmSelector.Items.Add("Exponential Search");
-            algorithmSelector.Items.Add("DFS");
-            algorithmSelector.Items.Add("BFS");
+            algorithmSelector.Items.Add("Depth First Search");
+            algorithmSelector.Items.Add("Breadth First Search");
             algorithmSelector.Items.Add("Dijkstra's shortest path");
             algorithmSelector.SelectedIndex = 0;
             algorithmSelector.Refresh();
@@ -865,7 +876,7 @@ namespace AlgoView
                     {
                         if (sortmode.Checked == false)
                         {
-                            StartNewAlgorithm(numbers);
+                            StartNewListAlgorithm(numbers);
                             ListMethods.BubbleSort(numbers, StepExplainations, this);
                             RewindToFirstStep();
                         }
@@ -910,7 +921,7 @@ namespace AlgoView
                     SetUpListUI(SearchQuestion, "Enter", (TextBox[] numbers) =>
                     {
                         numtofind.Show();
-                        StartNewAlgorithm(numbers);
+                        StartNewListAlgorithm(numbers);
                         ListMethods.BinarySearch(numbers, Convert.ToInt32(targetnum.Text), StepExplainations, this); // Executes binary search
                         StepCount.Hide();
                         RewindToFirstStep();
@@ -948,7 +959,7 @@ namespace AlgoView
                     {
                         if (sortmode.Checked == false)
                         {
-                            StartNewAlgorithm(numbers);
+                            StartNewListAlgorithm(numbers);
                             ListMethods.InsertionSort(numbers, StepExplainations, this);
                             RewindToFirstStep();
                         }
@@ -992,7 +1003,7 @@ namespace AlgoView
                     SetUpListUI(SearchQuestion, "Enter", (TextBox[] numbers) =>
                     {
                         numtofind.Show();
-                        StartNewAlgorithm(numbers);
+                        StartNewListAlgorithm(numbers);
                         ListMethods.ExponentialSearch(numbers, Convert.ToInt32(targetnum.Text), StepExplainations, this);
                         RewindToFirstStep();
                         StepLabel.Text = "";
@@ -1030,7 +1041,7 @@ namespace AlgoView
                         if (!sortmode.Checked)
                         {
                             sortmode.Enabled = false;
-                            StartNewAlgorithm(numbers);
+                            StartNewListAlgorithm(numbers);
                             ListMethods.MergeSort(numbers, StepExplainations, this); // Executes merge sort
                             RewindToFirstStep();
                         }
@@ -1045,30 +1056,11 @@ namespace AlgoView
                         }
                     });
                 }
-                else if (selectedAlgorithm == "Depth first search")
+                else if (selectedAlgorithm == "Depth First Search")
                 {
                     algorithmSelector.Enabled = false;
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
-                    {
-                        algorithmSelector.Enabled = false;
-
-                        SetUpGraphUI((nodes, edges) =>
-                        {
-                            graphNodes = nodes;
-                            graphEdges = edges;
-                            graphVisited = new bool[nodes.Length];
-
-                            Invalidate(); // triggers OnPaint to draw edges
-                        });
-                    });
-                }
-                else if (selectedAlgorithm == "BFS")
-                {
-                    algorithmSelector.Enabled = false;
-
                     graphModeActive = true;
                     weightedMode = false;
-                    targetnum.Hide();
 
                     SetUpGraphUI((nodes, edges) =>
                     {
@@ -1076,22 +1068,29 @@ namespace AlgoView
                         graphEdges = edges;
                         graphVisited = new bool[nodes.Length];
 
-                        StepBackStack.Clear();
-                        StepForwardStack.Clear();
-                        StepExplainations.Clear();
-                       
-                        PositionInUI(StepLabel, 300, 400);
-                        GraphAlgorithms.BFS(this, 0);
-
-                        StepBackButton.Show();
-                        StepForwardbutton.Show();
-                        StepCount.Show();
-                        StepLabel.Show();
-
+                        StartNewGraphAlgorithm(graphNodes, graphVisited);
+                        GraphAlgorithms.DFS(this, 0);
                         RewindToFirstStep();
                     });
                 }
-                else if (selectedAlgorithm == "Dijkstra's shortest path")
+                else if (selectedAlgorithm == "Breadth First Search")
+                {
+                    algorithmSelector.Enabled = false;
+                    graphModeActive = true;
+                    weightedMode = false;
+
+                    SetUpGraphUI((nodes, edges) =>
+                    {
+                        graphNodes = nodes;
+                        graphEdges = edges;
+                        graphVisited = new bool[nodes.Length];
+
+                        StartNewGraphAlgorithm(graphNodes, graphVisited);
+                        GraphAlgorithms.BFS(this, 0);
+                        RewindToFirstStep();
+                    });
+                }
+                else if (selectedAlgorithm == "Dijkstra's Shortest Path")
                 {
                     algorithmSelector.Enabled = false;
                     SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>

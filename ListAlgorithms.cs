@@ -311,9 +311,6 @@ public class ListMethods // a class containing all the list based algorithms
 
     public static void InsertionSort(TextBox[] list,List<string> Steplabels, Form1 form) // insertion sort
     {
-        form.PushSnapshot(new ListSnapshot(list));
-        Steplabels.Add("Initial state");
-
         for (int i = 1; i < list.Length; i++)
         {
             int content = Convert.ToInt32(list[i].Text);
@@ -543,9 +540,6 @@ public class ListMethods // a class containing all the list based algorithms
         int left = 0;
         int right = list.Length - 1;
         bool found = false;
-
-        form.PushSnapshot(new ListSnapshot(list));
-        StepLabels.Add("Initial state");
 
         while (left <= right)
         {
