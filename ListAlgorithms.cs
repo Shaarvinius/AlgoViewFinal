@@ -47,7 +47,7 @@ public class ListMethods // a class containing all the list based algorithms
                 numbers[i].BackColor = col;
                 numbers[i].ForeColor = ForeFor(col);
             }
-            form.PushSnapshot(new ListSnapshot(numbers));
+            form.PushListSnapshot(new ListSnapshot(numbers));
             if (!string.IsNullOrEmpty(label))
                 Steplabels.Add(label);
         }
@@ -81,7 +81,7 @@ public class ListMethods // a class containing all the list based algorithms
                 int leftVal = int.Parse(leftnumbers[li]);
                 int rightVal = int.Parse(rightnumbers[ri]);
 
-                form.PushSnapshot(new ListSnapshot(numbers));
+                form.PushListSnapshot(new ListSnapshot(numbers));
                 Steplabels.Add("Compare " + leftVal + " and " + rightVal);
 
                 if (leftVal > rightVal)
@@ -97,7 +97,7 @@ public class ListMethods // a class containing all the list based algorithms
                     Steplabels.Add($"{leftVal} = {rightVal}");
                 }
 
-                form.PushSnapshot(new ListSnapshot(numbers));
+                form.PushListSnapshot(new ListSnapshot(numbers));
 
                 if (leftVal <= rightVal)
                 {
@@ -105,7 +105,7 @@ public class ListMethods // a class containing all the list based algorithms
                     {
                         numbers[k].Text = leftnumbers[li];
                         numbers[k].Size = leftsizes[li];
-                        form.PushSnapshot(new ListSnapshot(numbers));
+                        form.PushListSnapshot(new ListSnapshot(numbers));
                         Steplabels.Add("Copy " + leftVal + " to index " + k);
                     }
                     li++;
@@ -116,7 +116,7 @@ public class ListMethods // a class containing all the list based algorithms
                     {
                         numbers[k].Text = rightnumbers[ri];
                         numbers[k].Size = rightsizes[ri];
-                        form.PushSnapshot(new ListSnapshot(numbers));
+                        form.PushListSnapshot(new ListSnapshot(numbers));
                         Steplabels.Add("Copy " + rightVal + " to index " + k);
                     }
                     ri++;
@@ -130,7 +130,7 @@ public class ListMethods // a class containing all the list based algorithms
                 {
                     numbers[k].Text = leftnumbers[li];
                     numbers[k].Size = leftsizes[li];
-                    form.PushSnapshot(new ListSnapshot(numbers));
+                    form.PushListSnapshot(new ListSnapshot(numbers));
                     Steplabels.Add("Copy " + leftnumbers[li] + " to index " + k);
                 }
                 li++;
@@ -143,7 +143,7 @@ public class ListMethods // a class containing all the list based algorithms
                 {
                     numbers[k].Text = rightnumbers[ri];
                     numbers[k].Size = rightsizes[ri];
-                    form.PushSnapshot(new ListSnapshot(numbers));
+                    form.PushListSnapshot(new ListSnapshot(numbers));
                     Steplabels.Add("Copy " + rightnumbers[ri] + " to index " + k);
                 }
                 ri++;
@@ -174,7 +174,7 @@ public class ListMethods // a class containing all the list based algorithms
         Color topColor = GetColorForSeed(numbers.Length * 7919);
         Sort(0, numbers.Length - 1, topColor);
 
-        form.PushSnapshot(new ListSnapshot(numbers));
+        form.PushListSnapshot(new ListSnapshot(numbers));
         Steplabels.Add("Done");
     }
 
@@ -324,7 +324,7 @@ public class ListMethods // a class containing all the list based algorithms
                 list[index].BackColor = Color.Crimson;
                 list[index].ForeColor = Color.White;
 
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
 
                 list[index].BackColor = Color.Aquamarine;
                 list[index].ForeColor = Color.Black;
@@ -342,12 +342,12 @@ public class ListMethods // a class containing all the list based algorithms
             list[index].Text = content.ToString();
 
             Steplabels.Add($"{content} inserted correctly");
-            form.PushSnapshot(new ListSnapshot(list));
+            form.PushListSnapshot(new ListSnapshot(list));
         }
 
         list[0].BackColor = Color.Aquamarine;
         list[0].ForeColor = Color.Black;
-        form.PushSnapshot(new ListSnapshot(list));
+        form.PushListSnapshot(new ListSnapshot(list));
         Steplabels.Add("Done");
     }
 
@@ -418,7 +418,7 @@ public class ListMethods // a class containing all the list based algorithms
                 nextval = Convert.ToInt32(list[i + 1].Text);
 
                 StepLabels.Add("Comparing " + currentval + " and " + nextval);
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
 
                 list[i].ForeColor = Color.White;
                 list[i + 1].ForeColor = Color.White;
@@ -435,7 +435,7 @@ public class ListMethods // a class containing all the list based algorithms
                     list[i + 1].BackColor = Color.Blue;
                     StepLabels.Add(currentval + " <= " + nextval);
                 }
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
 
                 if (currentval > nextval)
                 {
@@ -456,7 +456,7 @@ public class ListMethods // a class containing all the list based algorithms
                     list[i + 1].ForeColor = Color.Turquoise;
 
                     StepLabels.Add("Swapped " + list[i + 1].Text + " and " + list[i].Text);
-                    form.PushSnapshot(new ListSnapshot(list));
+                    form.PushListSnapshot(new ListSnapshot(list));
 
                     swapped = true;
                 }
@@ -468,12 +468,12 @@ public class ListMethods // a class containing all the list based algorithms
                     list[i + 1].ForeColor = Color.Turquoise;
 
                     StepLabels.Add("No swap needed");
-                    form.PushSnapshot(new ListSnapshot(list));
+                    form.PushListSnapshot(new ListSnapshot(list));
                 }
             }
         }
 
-        form.PushSnapshot(new ListSnapshot(list));
+        form.PushListSnapshot(new ListSnapshot(list));
         StepLabels.Add("Sorting done");
     }
 
@@ -560,26 +560,26 @@ public class ListMethods // a class containing all the list based algorithms
             list[right].BackColor = Color.Blue;
             list[right].ForeColor = Color.Black;
 
-            form.PushSnapshot(new ListSnapshot(list));
+            form.PushListSnapshot(new ListSnapshot(list));
             StepLabels.Add("L: " + list[left].Text + "  M: " + list[mid].Text + "  R: " + list[right].Text);
 
             int midVal = Convert.ToInt32(list[mid].Text);
 
             if (midVal < numtofind)
             {
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
                 StepLabels.Add(midVal + " < " + numtofind);
                 left = mid + 1;
             }
             else if (midVal > numtofind)
             {
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
                 StepLabels.Add(midVal + " > " + numtofind);
                 right = mid - 1;
             }
             else
             {
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
                 StepLabels.Add("Found " + numtofind);
                 MessageBox.Show(numtofind + " found at index " + mid);
                 found = true;
@@ -607,7 +607,7 @@ public class ListMethods // a class containing all the list based algorithms
         {
             list[0].BackColor = Color.Turquoise;
             list[0].ForeColor = Color.Black;
-            form.PushSnapshot(new ListSnapshot(list));
+            form.PushListSnapshot(new ListSnapshot(list));
             StepLabels.Add("Found " + target + " at index 0");
             MessageBox.Show(target + " found at index 0");
             return;
@@ -632,7 +632,7 @@ public class ListMethods // a class containing all the list based algorithms
                 break;
             }
 
-            form.PushSnapshot(new ListSnapshot(list));
+            form.PushListSnapshot(new ListSnapshot(list));
             StepLabels.Add(target + " > " + item + ", so double Search Range");
         }
 
@@ -649,7 +649,7 @@ public class ListMethods // a class containing all the list based algorithms
             list[i].ForeColor = Color.White;
         }
 
-        form.PushSnapshot(new ListSnapshot(list));
+        form.PushListSnapshot(new ListSnapshot(list));
         StepLabels.Add("Confirmed range for binary search");
 
         int midVal;
@@ -674,7 +674,7 @@ public class ListMethods // a class containing all the list based algorithms
             list[mid].BackColor = Color.Turquoise;
             list[mid].ForeColor = Color.Black;
 
-            form.PushSnapshot(new ListSnapshot(list));
+            form.PushListSnapshot(new ListSnapshot(list));
             StepLabels.Add("L: " + list[lowerbound].Text + "  M: " + list[mid].Text + "  R: " + list[upperbound].Text);
 
             midVal = Convert.ToInt32(list[mid].Text);
@@ -682,18 +682,18 @@ public class ListMethods // a class containing all the list based algorithms
             if (midVal < target)
             {
                 lowerbound = mid + 1;
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
                 StepLabels.Add(midVal + " < " + target);
             }
             else if (midVal > target)
             {
                 upperbound = mid - 1;
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
                 StepLabels.Add(midVal + " > " + target);
             }
             else
             {
-                form.PushSnapshot(new ListSnapshot(list));
+                form.PushListSnapshot(new ListSnapshot(list));
                 StepLabels.Add("Found " + target);
                 MessageBox.Show(target + " found at index " + mid);
                 numfound = true;

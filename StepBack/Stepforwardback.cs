@@ -58,13 +58,14 @@ public class GraphSnapshot : ISnapshot
     private Size[] sizes;
     private (int from, int to)? highlightedEdge;
     private bool[] visitedState;
+    private Dictionary<char, List<int>> distanceHistorySnapshot;
 
-    public GraphSnapshot(Control[] nodeControls, bool[] visited, (int from, int to)? edge = null)
+    public GraphSnapshot(Control[] nodeControls, bool[] visited, (int from, int to)? edge = null, Dictionary<char, List<int>> distanceHistory = null)
     {
         nodes = nodeControls;
         highlightedEdge = edge;
-        int length = nodeControls.Length;
 
+        int length = nodeControls.Length;
         backColours = new Color[length];
         foreColours = new Color[length];
         positions = new Point[length];
@@ -79,6 +80,16 @@ public class GraphSnapshot : ISnapshot
             sizes[i] = nodeControls[i].Size;
             if (visited != null && i < visited.Length)
                 visitedState[i] = visited[i];
+        }
+
+        // deep clone distance history
+        if (distanceHistory != null)
+        {
+            distanceHistorySnapshot = new Dictionary<char, List<int>>();
+            foreach (var kvp in distanceHistory)
+            {
+                distanceHistorySnapshot[kvp.Key] = new List<int>(kvp.Value);
+            }
         }
     }
 
@@ -95,6 +106,17 @@ public class GraphSnapshot : ISnapshot
         if (nodes.Length > 0 && nodes[0].FindForm() is Form1 form)
         {
             form.CurrentHighlightedEdge = highlightedEdge;
+
+            // Restore distance history
+            if (distanceHistorySnapshot != null)
+            {
+                form.DistanceHistory = distanceHistorySnapshot.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => new List<int>(kvp.Value)
+                );
+            }
+
+            form.UpdateDistancePanel();
             form.Invalidate();
         }
     }
@@ -102,6 +124,7 @@ public class GraphSnapshot : ISnapshot
     public (int from, int to)? HighlightedEdge => highlightedEdge;
     public bool[] GetVisitedState() => (bool[])visitedState.Clone();
 }
+
 
 
 public class SteppingStack

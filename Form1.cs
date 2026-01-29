@@ -84,8 +84,6 @@ namespace AlgoView
                 .ToArray();
         }
 
-
-
         //<---------------------------All major universal fields and their properties--------------------------->\\
         private Random rand = new Random();
 
@@ -108,6 +106,11 @@ namespace AlgoView
         private (int from, int to)? currentHighlightedEdge;
         private bool graphModeActive = false;
         private bool weightedMode = false;
+        // The following can be used for any shortest distance algorithms in the future
+        private Panel distancePanel;                  // panel to hold shortest distances
+        private Dictionary<char, Label> distanceLabels; // label for each node
+        private char startNodeChar;                   // selected start node
+        public int[] CurrentDistances { get; set; }
 
         // Properties of graph-related fields to make them accessible when needed but still secure
         public Button[] GraphNodes => graphNodes;                      // read-only
@@ -150,7 +153,7 @@ namespace AlgoView
         }
 
         // Group of algorithms to control forward and back stepping
-        public void PushSnapshot(ISnapshot snapshot) // Adds a snapshot of the list and interface to the stepping back stack
+        public void PushListSnapshot(ISnapshot snapshot) // Adds a snapshot of the list and interface to the stepping back stack
         {
             StepBackStack.Push(snapshot);
             StepForwardStack.Clear();
@@ -280,6 +283,13 @@ namespace AlgoView
 
         public void StartNewGraphAlgorithm(Button[] nodes, bool[] visited) // Equivelant of StartNewListAlgorithm for graph algorithms
         {
+            if (edgeLabels != null)
+            {
+                foreach (var lbl in edgeLabels.Values)
+                    this.Controls.Remove(lbl);
+                edgeLabels.Clear();
+            }
+
             StepBackStack.Clear();
             StepForwardStack.Clear();
             StepExplainations.Clear();
@@ -290,7 +300,7 @@ namespace AlgoView
             PositionInUI(StepLabel, 270, 550);
 
             CurrentHighlightedEdge = null;
-            StepBackStack.Push(new GraphSnapshot((Control[])nodes.Clone(), (bool[])visited.Clone(), null));
+            StepBackStack.Push(new GraphSnapshot((Control[])nodes.Clone(), (bool[])visited.Clone(), null, DistanceHistory));
             StepExplainations.Add("Initial state");
 
             CurrentStep = 0;
@@ -300,6 +310,7 @@ namespace AlgoView
             Invalidate();
             targetnum.Hide();
         }
+
 
 
         //<---------------------------Subroutines used for generating and rendering interactive LISTS to be used for algorithms--------------------------->\\
@@ -529,7 +540,7 @@ namespace AlgoView
             if (StepBackButton == null)
             {
                 StepBackButton = ControlMaker.MakeNewButton("Step back", 250, 50);
-                PositionInUI(StepBackButton, 825, -400);
+                PositionInUI(StepBackButton, 900, -500);
                 StepBackButton.Click += StepBackClick;
                 StepBackButton.Hide();
             }
@@ -541,7 +552,7 @@ namespace AlgoView
             if (StepForwardbutton == null)
             {
                 StepForwardbutton = ControlMaker.MakeNewButton("Step forward", 250, 50);
-                PositionInUI(StepForwardbutton, 825, 400);
+                PositionInUI(StepForwardbutton, 900, 500);
                 StepForwardbutton.Click += StepForwardClick;
                 StepForwardbutton.Hide();
             }
@@ -563,7 +574,8 @@ namespace AlgoView
 
             for (int i = 0; i < nodeCount; i++)
             {
-                nodes[i] = ControlMaker.MakeNewButton(i.ToString(), 50, 50);
+                nodes[i] = ControlMaker.MakeNewButton(((char)('A' + i)).ToString(), 30, 30);
+                nodes[i].TextAlign = ContentAlignment.MiddleCenter;
                 this.Controls.Add(nodes[i]);
             }
 
@@ -573,7 +585,7 @@ namespace AlgoView
 
         private void AddUndirectedEdge(int a, int b)
         {
-            int weight = weightedMode ? rand.Next(1, 10) : 1;
+            int weight = weightedMode ? rand.Next(1,10) : 1;
 
             graph[a].Add((b, weight));
             graph[b].Add((a, weight));
@@ -590,26 +602,71 @@ namespace AlgoView
         public void PositionGraphNodesCircular(Button[] nodes)
         {
             if (nodes == null || nodes.Length == 0)
+            {
                 return;
+            }
 
             int n = nodes.Length;
+            int baseRadius = n * 40;
+            int radiusX;
+            int radiusY;
+            if (n <= 9)
+            {
+                radiusX = (int)(baseRadius * 1.40);
+                radiusY = (int)(baseRadius * 0.80);
+            }
+            else
+            {
+                radiusX = 504;
+                radiusY = 288;
+            }
 
-            int baseRadius = Math.Max(160, n * 28);
-            int radiusX = (int)(baseRadius * 1.30);
-            int radiusY = (int)(baseRadius * 0.70);
-
-            int centerX = this.ClientSize.Width / 2;
-            int centerY = this.ClientSize.Height / 2 + 150;
-
+            int centerX = ClientSize.Width / 2;
+            int centerY = ClientSize.Height / 2 + 150;
+            Random rand = new Random();
             for (int i = 0; i < n; i++)
             {
-                double angle = 2 * Math.PI * i / n;
+                int positionoffset = rand.Next(10, 80);
+                float angleoffset = rand.Next(5, 10);
+                double angle = 2 * Math.PI * i / n + angleoffset * 0.16;
+                int x;
+                int y;
+                if (i % 2 == 0)
+                {
+                    x = centerX + (int)(radiusX * Math.Cos(angle)) - nodes[i].Width / 2 + (int)(positionoffset * 1.4);
+                    y = centerY + (int)(radiusY * Math.Sin(angle)) - nodes[i].Height / 2 + (int)(positionoffset * 0.8);
+                }
+                else
+                {
+                    x = centerX + (int)(radiusX * Math.Cos(angle)) - nodes[i].Width / 2 - (int)(positionoffset * 1.4);
+                    y = centerY + (int)(radiusY * Math.Sin(angle)) - nodes[i].Height / 2 - (int)(positionoffset * 0.8);
+                }
 
-                int x = centerX + (int)(radiusX * Math.Cos(angle)) - nodes[i].Width / 2;
-                int y = centerY + (int)(radiusY * Math.Sin(angle)) - nodes[i].Height / 2;
-
-                nodes[i].Location = new Point(x, y);
+                if (y + nodes[i].Height > ClientSize.Height)
+                {
+                    y = ClientSize.Height - nodes[i].Height - 50;
+                }
+                if (y < centerY - radiusY)
+                {
+                    y = centerY - radiusY;
+                }
+                    
+                Point proposed = new Point(x, y);
+                if (i > 0 && Distance(proposed, nodes[i - 1].Location) < nodes[i].Width)
+                {
+                    proposed = new Point(proposed.X + 80, proposed.Y + 80);
+                }
+                if (i == n - 1 && Distance(proposed, nodes[0].Location) < nodes[i].Width)
+                {
+                    proposed = new Point(proposed.X + 80, proposed.Y + 80);
+                }
+                nodes[i].Location = proposed;
             }
+        }
+
+        private double Distance(Point a, Point b)
+        {
+            return Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
         }
 
         private Point GetCenter(Control c)
@@ -620,14 +677,17 @@ namespace AlgoView
             );
         }
 
-        protected override void OnPaint(PaintEventArgs e) // protected override to suit the ever changing nature of graph edges for visualisation
+
+        private Dictionary<(int, int), Label> edgeLabels;
+        protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             if (!graphModeActive || graphEdges == null || graphNodes == null)
                 return;
 
-            foreach (var edge in graphEdges)
+            for (int i = 0; i < graphEdges.Count; i++)
             {
+                var edge = graphEdges[i];
                 int from = edge.from;
                 int to = edge.to;
 
@@ -637,46 +697,55 @@ namespace AlgoView
                 Point p1 = GetCenter(graphNodes[from]);
                 Point p2 = GetCenter(graphNodes[to]);
 
-                Pen pen = new Pen(Color.White, 2);  // Default color for edges
+                bool edgeHighlighted =
+                    CurrentHighlightedEdge.HasValue &&
+                    (
+                        (CurrentHighlightedEdge.Value.from == from && CurrentHighlightedEdge.Value.to == to) ||
+                        (CurrentHighlightedEdge.Value.from == to && CurrentHighlightedEdge.Value.to == from)
+                    );
 
-                if (CurrentHighlightedEdge.HasValue)
-                {
-                    var h = CurrentHighlightedEdge.Value;
-                    if ((h.from == from && h.to == to) || (h.from == to && h.to == from))
-                    {
-                        pen = new Pen(Color.Red, 4);  // Highlighting the edge in red
-                    }
-                }
+                Pen pen = edgeHighlighted
+                    ? new Pen(Color.Red, 4)
+                    : new Pen(Color.White, 2);
 
-                e.Graphics.DrawLine(pen, p1, p2);  // Draw edge line
+                e.Graphics.DrawLine(pen, p1, p2);
 
-                // Optionally, draw edge weight in the middle of the edge
                 if (weightedMode)
                 {
+                    if (edgeLabels == null)
+                        edgeLabels = new Dictionary<(int, int), Label>();
+
+                    if (!edgeLabels.TryGetValue((from, to), out Label lbl))
+                    {
+                        lbl = ControlMaker.MakeNewLabel(edge.weight.ToString(), 30, 30);
+                        lbl.BackColor = Color.Transparent;
+                        lbl.ForeColor = Color.White;
+                        this.Controls.Add(lbl);
+                        edgeLabels[(from, to)] = lbl;
+                        edgeLabels[(to, from)] = lbl;
+                    }
+
                     int midX = (p1.X + p2.X) / 2;
                     int midY = (p1.Y + p2.Y) / 2;
+                    float dx = p2.X - p1.X;
+                    float dy = p2.Y - p1.Y;
+                    float len = (float)Math.Sqrt(dx * dx + dy * dy);
 
-                    int dx = p2.X - p1.X;
-                    int dy = p2.Y - p1.Y;
+                    if (len == 0) len = 1;
 
-                    double length = Math.Sqrt(dx * dx + dy * dy);
-                    if (length == 0) length = 1;
+                    float nx = -dy / len, ny = dx / len;
+                    int offset = 15;
+                    lbl.Left = midX + (int)(nx * offset) - lbl.Width / 2;
+                    lbl.Top = midY + (int)(ny * offset) - lbl.Height / 2;
+                    lbl.ForeColor = edgeHighlighted ? Color.Red : Color.White;
+                    lbl.Font = edgeHighlighted ? new Font(this.Font.FontFamily, this.Font.Size + 4, FontStyle.Bold) : this.Font;
 
-                    int offsetX = (int)(-dy / length * 12);
-                    int offsetY = (int)(dx / length * 12);
-
-                    Point weightPos = new Point(midX + offsetX, midY + offsetY);
-
-                    e.Graphics.DrawString(
-                        edge.weight.ToString(),
-                        this.Font,
-                        Brushes.White,
-                        weightPos
-                    );
+                    if (edgeHighlighted)
+                        lbl.BringToFront();
                 }
+
             }
         }
-
 
         private void GenerateGraph(int nodeCount, string density)
         {
@@ -735,13 +804,73 @@ namespace AlgoView
             Invalidate();
         }
 
+        private void CreateDistancePanel(int nodeCount, char startNode)
+        {
+            startNodeChar = startNode;
+
+            if (distancePanel != null)
+            {
+                this.Controls.Remove(distancePanel);
+                distancePanel.Dispose();
+            }
+
+            distancePanel = ControlMaker.MakeNewPanel("", 300, 30 + nodeCount * 30);
+            distancePanel.BackColor = Color.Black;
+            distancePanel.ForeColor = Color.White;
+            PositionInUI(distancePanel, 300, -800);
+
+            Label title = ControlMaker.MakeNewLabel($"Shortest routes from {startNodeChar}", 300, 25);
+            title.Font = new Font("OCR A Extended", 10, FontStyle.Bold);
+            distancePanel.Controls.Add(title);
+
+            distanceLabels = new Dictionary<char, Label>();
+
+            for (int i = 0; i < nodeCount; i++)
+            {
+                char nodeChar = (char)('A' + i);
+                Label lbl = ControlMaker.MakeNewLabel($"{nodeChar}: ", 300, 25);
+                lbl.TextAlign = ContentAlignment.MiddleLeft;
+                lbl.Top = 30 + i * 25;
+                distancePanel.Controls.Add(lbl);
+                distanceLabels[nodeChar] = lbl;
+            }
+        }
+
+        public Dictionary<char, List<int>> DistanceHistory; // stores cumulative distances per node
+
+        // Call after graph is generated and start node selected
+        private void InitializeDistanceHistory()
+        {
+            DistanceHistory = new Dictionary<char, List<int>>();
+            for (int i = 0; i < graphNodes.Length; i++)
+            {
+                char nodeChar = (char)('A' + i);
+                DistanceHistory[nodeChar] = new List<int>();
+            }
+        }
+
+        // Update distance panel to reflect all history values
+        public void UpdateDistancePanel()
+        {
+            if (distancePanel == null || distanceLabels == null) return;
+
+            for (int i = 0; i < graphNodes.Length; i++)
+            {
+                char nodeChar = (char)('A' + i);
+                List<int> history = DistanceHistory[nodeChar];
+
+                distanceLabels[nodeChar].Text = $"{nodeChar}: {string.Join(",", history)}";
+            }
+        }
+
+
 
         private void SetUpGraphUI(Action<Button[], List<(int from, int to, int weight)>> onGraphCreated)
         {
             graphModeActive = true;
             targetnum.Hide();
 
-            Label nodeCountLabel = ControlMaker.MakeNewLabel("Number of nodes (3-15):", 250, 30);
+            Label nodeCountLabel = ControlMaker.MakeNewLabel("Number of nodes (3-12):", 250, 30);
             PositionInUI(nodeCountLabel, 350, 0);
 
             TextBox nodeCountBox = ControlMaker.MakeNewBox("", 50);
@@ -762,9 +891,9 @@ namespace AlgoView
 
             generateGraphButton.Click += (s, e) =>
             {
-                if (!int.TryParse(nodeCountBox.Text, out int nodeCount) || nodeCount < 3 || nodeCount > 15)
+                if (!int.TryParse(nodeCountBox.Text, out int nodeCount) || nodeCount < 3 || nodeCount > 12)
                 {
-                    MessageBox.Show("Enter a valid number of nodes (3–15).");
+                    MessageBox.Show("Enter a valid number of nodes (3–12).");
                     return;
                 }
 
@@ -791,14 +920,14 @@ namespace AlgoView
             if (StepBackButton == null)
             {
                 StepBackButton = ControlMaker.MakeNewButton("Step back", 250, 50);
-                PositionInUI(StepBackButton, 800, -600);
+                PositionInUI(StepBackButton, 800, -700);
                 StepBackButton.Click += StepBackClick;
             }
 
             if (StepForwardbutton == null)
             {
                 StepForwardbutton = ControlMaker.MakeNewButton("Step forward", 250, 50);
-                PositionInUI(StepForwardbutton, 800, 600);
+                PositionInUI(StepForwardbutton, 800, 700);
                 StepForwardbutton.Click += StepForwardClick;
             }
 
@@ -840,7 +969,7 @@ namespace AlgoView
             algorithmSelector.Items.Add("Exponential Search");
             algorithmSelector.Items.Add("Depth First Search");
             algorithmSelector.Items.Add("Breadth First Search");
-            algorithmSelector.Items.Add("Dijkstra's shortest path");
+            algorithmSelector.Items.Add("Dijkstra's Shortest Path");
             algorithmSelector.SelectedIndex = 0;
             algorithmSelector.Refresh();
             PositionInUI(algorithmSelector, 290, 0);
@@ -1093,18 +1222,52 @@ namespace AlgoView
                 else if (selectedAlgorithm == "Dijkstra's Shortest Path")
                 {
                     algorithmSelector.Enabled = false;
-                    SetUpListUI("Enter the first number in the left box and the last in the right box: ", "Enter", (TextBox[] numbers) =>
+                    graphModeActive = true;
+                    weightedMode = true;
+
+                    SetUpGraphUI((nodes, edges) =>
                     {
-                        algorithmSelector.Enabled = false;
+                        graphNodes = nodes;
+                        graphEdges = edges;
+                        graphVisited = new bool[nodes.Length];
 
-                        SetUpGraphUI((nodes, edges) =>
+                        // <-- insert starting node input here -->
+                        Label startNodeLabel = ControlMaker.MakeNewLabel("Enter starting node (A-O):", 400, 30);
+                        PositionInUI(startNodeLabel, 620, 700);
+
+                        TextBox startNodeBox = ControlMaker.MakeNewBox("", 50);
+                        PositionInUI(startNodeBox, 660, 700);
+
+                        Button startNodeButton = ControlMaker.MakeNewButton("Start", 100, 50);
+                        PositionInUI(startNodeButton, 700, 700);
+
+                        startNodeButton.Click += (s, e) =>
                         {
-                            graphNodes = nodes;
-                            graphEdges = edges;
-                            graphVisited = new bool[nodes.Length];
+                            string input = startNodeBox.Text.Trim().ToUpper();
 
-                            Invalidate();
-                        });
+                            if (input.Length != 1 || input[0] < 'A' || input[0] >= 'A' + graphNodes.Length)
+                            {
+                                MessageBox.Show($"Invalid node. Enter a letter from A to {(char)('A' + graphNodes.Length - 1)}.");
+                                startNodeBox.Clear();
+                                return;
+                            }
+
+                            int startIndex = input[0] - 'A';
+
+                            CreateDistancePanel(graphNodes.Length, input[0]);
+                            InitializeDistanceHistory(); // <- initialize empty lists for each node
+                            startNodeLabel.Hide();
+                            startNodeBox.Hide();
+                            startNodeButton.Hide();
+
+                            CreateDistancePanel(graphNodes.Length, input[0]);
+                            InitializeDistanceHistory();
+                            DistanceHistory[input[0]].Add(0);
+
+                            StartNewGraphAlgorithm(graphNodes, graphVisited);
+                            GraphAlgorithms.Dijkstra(this, startIndex);
+                            RewindToFirstStep();
+                        };
                     });
                 }
             };
